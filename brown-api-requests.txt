@@ -70,8 +70,8 @@ Brown Dining Services (suffix: "dining/")
 	Format: {'req_type':REQ_DINING_HOURS, 'eatery':RATTY/VDUB/..., 'date':DAY}
 	Returns: {'eatery':RATTY/VDUB/..., 'open':OPEN_TIME, 'close':CLOSE_TIME}
 
-	REQ_DINING_FIND_FOOD = 2
-	Format: {'req_type':REQ_DINING_FIND_FOOD, 'food':NAME_OF_FOOD}
+	REQ_DINING_FIND = 2
+	Format: {'req_type':REQ_DINING_FIND, 'food':NAME_OF_FOOD}
 	Returns: where NAME_OF_FOOD is served and when it's served in the form
 		{'food':NAME_OF_FOOD, 'eatery':RATTY/VDUB/..., 'start':START_TIME,
 			'close':CLOSE_TIME}
