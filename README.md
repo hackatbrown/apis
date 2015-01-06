@@ -17,15 +17,15 @@ BASE_PATH = "https://api.brown.edu"
 **Suffix**: "*/shuttle/id*"  
 **Format**: None  
 **Returns**: a list of shuttle IDs in the form {'ids':[id1, id2, id3, ...]}  
-	Note: if there are no shuttles running, an empty list will be returned
+	*NOTE*: if there are no shuttles running, an empty list will be returned
 
 ### Request Shuttle Stops 
 **Suffix**: "*/shuttle/stops*"  
 **Format**: {'time':EVENING/DAYTIME/CURRENT}  
 	where EVENING = 'evening', DAYTIME = 'daytime', CURRENT = 'current'  
 **Returns**: a list of shuttle stops (name, coord) for given time of day in
-	the form {'stops': [(stop1_name, stop1_loc), (stop2_name, stop2_loc), ...]}
-	Note: if there are no shuttles running, an empty list will be returned
+	the form {'stops': [(stop1_name, stop1_loc), (stop2_name, stop2_loc), ...]}  
+	*NOTE*: if there are no shuttles running, an empty list will be returned
 
 ### Request Shuttle Info 
 **Suffix**: "*/shuttle/id/<SHUTTLE_ID>*" where SHUTTLE_ID is an ID of a shuttle  
@@ -38,7 +38,7 @@ BASE_PATH = "https://api.brown.edu"
 	'eta_minute':		-> estimated minute of arrival for next stop  
 	'occupancy':		-> current occupancy of shuttle  
 	'speed':			-> speed of this shuttle  
-	NOTE: if the shuttle is not currently operating, then a response of the form
+	*NOTE*: if the shuttle is not currently operating, then a response of the form
 		{'id':SHUTTLE_ID, 'loc':0} will be returned
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,21 +47,19 @@ BASE_PATH = "https://api.brown.edu"
 
 Dining constants: 	  
 
-'''
-RATTY = 'ratty'
-VDUB  = 'vdub'
-ACO	  = 'andrews'
-IVY	  = 'ivy'
-JOS   = 'jos'
-BLUE  = 'blueroom'
-'''
+	RATTY = 'ratty'
+	VDUB  = 'vdub'
+	ACO	  = 'andrews'
+	IVY	  = 'ivy'
+	JOS   = 'jos'
+	BLUE  = 'blueroom'
 
 ### Request Dining Menu
 **Suffix**: "*/dining/menu*"  
 **Format**: {'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'hour':HOUR, 'minute':MINUTE}  
 **Returns**: a dictionary of section titles mapped to items in the form  
 	{'eatery':RATTY/VDUB/..., 'menu':{'section1':[item1, item2, ...], ...}}  
-	NOTE: if the eatery is closed, an empty dictionary will be returned
+	*NOTE*: if the eatery is closed, an empty dictionary will be returned
 
 ### Request Dining Hours 
 **Suffix**: "*/dining/hours*"  
@@ -74,7 +72,7 @@ BLUE  = 'blueroom'
 **Returns**: where NAME_OF_FOOD is served and when it's served in the form  
 	{'food':NAME_OF_FOOD, 'eatery':RATTY/VDUB/..., 'start':{'hour':START_HOUR, 'minute':START_MINUTE},
 		'end':{'hour':END_HOUR, 'minute':END_MINUTE}}  
-	NOTE: if NAME_OF_FOOD is not served on campus, 'eatery' -> 0
+	*NOTE*: if NAME_OF_FOOD is not served on campus, 'eatery' -> 0
 
 ### Find Nutritional Info 
 **Suffix**: "*/dining/nutrition*"  
@@ -86,13 +84,13 @@ BLUE  = 'blueroom'
 		culture, salt, enzymes)")  
 	and these (self-explanatory) fields: 'portion_size', 'calories', 'fat', 'saturated_fat',
 		'cholesterol', 'sodium', 'carbohydrates', 'fiber', 'protein'  
-	NOTE: portion size is a string, calories is an integer representing calories,
+	*NOTE*: portion size is a string, calories is an integer representing calories,
 		and all other measurements are in milligrams represented as floats  
 
 ### Find Open Eateries 
 **Suffix**: "*/dining/open_eateries*"  
 **Format**: {'year':YEAR, 'month':MONTH, 'day':DAY, 'hour':HOUR, 'minute':MINUTE}  
-	NOTE: the current time will be used as a default  
+	*NOTE*: the current time will be used as a default  
 **Returns**: a list of open eateries at requested time in the form
 	{'open_eateries':[eatery1, eatery2, ...]}  
 
