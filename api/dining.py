@@ -2,6 +2,7 @@ from flask import request
 from api import app
 
 from datetime import datetime
+import json
 
 @app.route('/dining/menu')
 def req_dining_menu():
@@ -13,7 +14,7 @@ def req_dining_menu():
 	hour = request.args.get('hour', now.hour)
 	minute = request.args.get('minute', now.minute)
 
-	# TODO find menu for eatery on date at time
+	#TODO find menu for eatery at given time
 
 @app.route('/dining/hours')
 def req_dining_hours():

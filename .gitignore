@@ -5,6 +5,11 @@
 *.swp
 *.out
 
+# Virtualenv #
+##############
+venv
+.Python
+
 # Compiled Source #
 ###################
 *.pyc
