@@ -106,7 +106,7 @@ def req_dining_find():
 
 	# TODO do any preprocessing on 'food' string (lowercasing, stemming, etc)
 
-	results = menus.find({'food': {'$in': food}}, {'_id': 0, 'food': 0})
+	results = menus.find({'food': {'$in': [food]}}, {'_id': 0, 'food': 0})
 
 	result_list = [r for r in results]
 
