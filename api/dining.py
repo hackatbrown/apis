@@ -5,6 +5,18 @@ from datetime import datetime
 import json
 
 '''
+db.dining_menus contains documents of the form:
+{ 'eatery': str, 
+  'year': int,
+  'month': int,
+  'day': int,
+  'start_hour': int, 		<-- these four lines describe a menu's start/end
+  'start_minute': int, 			times, not the eatery's open/close times
+  'end_hour': int, 
+  'end_minute': int,
+  **sections_and_their_food_items
+}
+
 db.dining_hours contains documents of the form:
 { 'eatery': str, 
   'year': int,
@@ -28,14 +40,16 @@ db.dining_nutritional_info contains documents of the form:
   'carbohydrates': float,
   'fiber': float,
   'protein': float
-} 
+}
 
 '''
 
+menus = db.dining_menus
 hours = db.dining_hours
 nutritional_info = db.dining_nutritional_info
 
 # TODO verify all incoming values for eateries, dates, etc
+# TODO allow requests to omit time details and receive all menus for given day (or all open eateries, etc)
 
 @app.route('/dining/menu')
 def req_dining_menu():
@@ -47,7 +61,20 @@ def req_dining_menu():
 	hour = request.args.get('hour', now.hour)
 	minute = request.args.get('minute', now.minute)
 
-	# TODO find menu for eatery at given time
+	result = menus.find_one(
+		{'eatery': eatery,
+		 'year': year, 
+		 'month': month, 
+		 'day': day, 
+		 'start_hour': {'$lte': hour}, 
+		 'start_minute': {'$lte': minute},
+		 'end_hour': {'$gte': hour},
+		 'end_minute': {'$gte': minute}
+		 }, {'_id': 0})
+
+	if not result:
+		return jsonify(error="No menu found for {0} at {1:02d}:{2:02d} {3}/{4}/{5}.".format(eatery, hour, minute, month, day, year))
+	return jsonify(**result)
 
 @app.route('/dining/hours')
 def req_dining_hours():
@@ -73,7 +100,9 @@ def req_dining_hours():
 def req_dining_find():
 	food = request.args.get('food', None)
 
-	# TODO finding eatery serving food
+	# TODO do any preprocessing on 'food' string (lowercasing, stemming, etc)
+
+	return jsonify(error="Not implemented.")
 
 @app.route('/dining/nutrition')
 def req_dining_nutrition():
