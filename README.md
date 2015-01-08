@@ -70,7 +70,7 @@ Dining constants:
 ### Request Dining Hours 
 **Suffix**: "*/dining/hours*"  
 **Format**: {'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY}  
-**Returns**: {'eatery':RATTY/VDUB/..., 'open':{'hour':OPEN_HOUR, 'minute':OPEN_MINUTE}, 'close':{'hour':CLOSE_HOUR, 'minute':CLOSE_MINUTE}}  
+**Returns**: {'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'open_hour':OPEN_HOUR, 'open_minute':OPEN_MINUTE, 'close_hour':CLOSE_HOUR, 'close_minute':CLOSE_MINUTE}  
 
 ### Find Eatery Serving Specific Food 
 **Suffix**: "*/dining/find*"  
@@ -95,8 +95,8 @@ Dining constants:
 **Suffix**: "*/dining/open*"  
 **Format**: {'year':YEAR, 'month':MONTH, 'day':DAY, 'hour':HOUR, 'minute':MINUTE}  
 	*NOTE*: the current time will be used as a default  
-**Returns**: a list of open eateries at requested time in the form
-	{'open_eateries':[eatery1, eatery2, ...]}  
+**Returns**: a list of information for open eateries at requested time in the form
+	{'open_eateries':[eatery_hours1, eatery_hours2, ...]} and where each eatery_hours is of the same form as the response to a dining/hours request
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
