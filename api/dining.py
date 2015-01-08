@@ -2,6 +2,7 @@ from flask import request, jsonify
 from api import app, db
 
 from datetime import datetime
+from difflib import get_close_matches
 
 '''
 db.dining_menus contains documents of the form:
@@ -43,16 +44,20 @@ db.dining_nutritional_info contains documents of the form:
 
 '''
 
+# simplify database names
 menus = db.dining_menus
 hours = db.dining_hours
 nutritional_info = db.dining_nutritional_info
+
+# create list of valid eatery names
+valid_eatery_names = ['ratty', 'vdub', 'jos', 'ivy', 'andrews', 'blueroom']
 
 # TODO verify all incoming values for eateries, dates, etc
 # TODO allow requests to omit time details and receive all menus for given day (or all open eateries, etc)
 
 @app.route('/dining/menu')
 def req_dining_menu():
-	eatery = request.args.get('eatery')
+	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = datetime.now()	# use current datetime as default
 	year = request.args.get('year', now.year)
 	month = request.args.get('month', now.month)
@@ -79,7 +84,7 @@ def req_dining_menu():
 
 @app.route('/dining/hours')
 def req_dining_hours():
-	eatery = request.args.get('eatery')
+	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = datetime.now()	# use current date as default
 	year = request.args.get('year', now.year)
 	month = request.args.get('month', now.month)
@@ -158,5 +163,14 @@ def req_dining_open():
 
 
 
+# helper methods
 
+# verify_eatery - takes a string a matches to closest eatery name, 
+#  					or returns None if no close matches exist
+def verify_eatery(eatery):
+	eatery = eatery.lower()
+	closest = get_close_matches(eatery, valid_eatery_names, 1)
+	if len(closest) == 0:
+		return None
+	return closest[0]
 
