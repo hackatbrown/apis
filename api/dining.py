@@ -2,7 +2,6 @@ from flask import request, jsonify
 from api import app, db
 
 from datetime import datetime
-import json
 
 '''
 db.dining_menus contains documents of the form:
