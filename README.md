@@ -11,6 +11,11 @@ BASE_PATH = "https://api.brown.edu"
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+**Note about errors:** When requests fail for any reason, an error will be returned in the form:
+    {'error': "Some (hopefully) informative error message."}
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 ## Brown Shuttle
 
 ### Request Shuttle IDs
