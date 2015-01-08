@@ -1,12 +1,27 @@
-from flask import request
-from api import app
+from flask import request, jsonify
+from api import app, db
 
 from datetime import datetime
 import json
 
+'''
+db.dining_hours contains entries of the form:
+{ 'eatery': str, 
+  'year': int,
+  'month': int,
+  'day': int,
+  'open_hour': int, 
+  'open_minute': int, 
+  'close_hour': int, 
+  'close_minute': int
+}
+'''
+
+hours = db.dining_hours
+
 @app.route('/dining/menu')
 def req_dining_menu():
-	eatery = request.args.get('eatery')
+	eatery_name = request.args.get('eatery')
 	now = datetime.now()	# use current datetime as default
 	year = request.args.get('year', now.year)
 	month = request.args.get('month', now.month)
@@ -14,17 +29,21 @@ def req_dining_menu():
 	hour = request.args.get('hour', now.hour)
 	minute = request.args.get('minute', now.minute)
 
-	#TODO find menu for eatery at given time
+	# TODO find menu for eatery at given time
 
 @app.route('/dining/hours')
 def req_dining_hours():
-	eatery = request.args.get('eatery')
+	eatery= request.args.get('eatery')
 	now = datetime.now()	# use current date as default
 	year = request.args.get('year', now.year)
 	month = request.args.get('month', now.month)
-	day = request.args.get('month', now.day)
+	day = request.args.get('day', now.day)
 
-	# TODO find hours for eatery on date
+	result = hours.find_one({'eatery': eatery, 'year': year, 'month': month, 'day': day}, {'_id': 0})
+	if result:
+		return jsonify(**result)
+	# TODO write a better error response
+	return jsonify(error="No hours found for the eatery on that date.")
 
 @app.route('/dining/find')
 def req_dining_find():
