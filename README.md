@@ -79,9 +79,7 @@ Dining constants:
 **Format**: {'food':NAME_OF_FOOD}  
 **Returns**: the nutritional information for NAME_OF_FOOD with the following data,  
 	'food':NAME_OF_FOOD  
-	'ingredients':[ingredient1, ingredient2, ...] -> some ingredients may
-		contain sub-ingredients (e.g. "CHEESE (pasteurized part-skim milk, cheese
-		culture, salt, enzymes)")  
+	'ingredients':[ingredient1, ingredient2, ...] 
 	and these (self-explanatory) fields: 'portion_size', 'calories', 'fat', 'saturated_fat',
 		'cholesterol', 'sodium', 'carbohydrates', 'fiber', 'protein'  
 	*NOTE*: portion size is a string, calories is an integer representing calories,

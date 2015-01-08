@@ -5,7 +5,7 @@ from datetime import datetime
 import json
 
 '''
-db.dining_hours contains entries of the form:
+db.dining_hours contains documents of the form:
 { 'eatery': str, 
   'year': int,
   'month': int,
@@ -16,9 +16,24 @@ db.dining_hours contains entries of the form:
   'close_minute': int
 }
 
+db.dining_nutritional_info contains documents of the form:
+{ 'food': str,
+  'ingredients': [ str array ],
+  'portion_size': str,
+  'calories': float,
+  'fat': float,
+  'saturated_fat': float,
+  'cholesterol': float,
+  'sodium': float,
+  'carbohydrates': float,
+  'fiber': float,
+  'protein': float
+} 
+
 '''
 
 hours = db.dining_hours
+nutritional_info = db.dining_nutritional_info
 
 # TODO verify all incoming values for eateries, dates, etc
 
@@ -51,7 +66,6 @@ def req_dining_hours():
 		}, {'_id': 0})
 
 	if not result:
-		# TODO write a better error response
 		return jsonify(error="No hours found for {0} on {1}/{2}/{3}.".format(eatery, month, day, year))
 	return jsonify(**result)
 
@@ -65,7 +79,13 @@ def req_dining_find():
 def req_dining_nutrition():
 	food = request.args.get('food', None)
 
-	# TODO find nutritional info for food
+	# TODO do any preprocessing on 'food' string (lowercasing, stemming, etc)
+
+	result = nutritional_info.find_one({'food': food}, {'_id': 0})
+
+	if not result:
+		return jsonify(error="No nutritional information available for {0}.".format(food))
+	return jsonify(**result)
 
 @app.route('/dining/open')
 def req_dining_open():
@@ -90,7 +110,6 @@ def req_dining_open():
 
 	if len(open_eateries) == 0:
 		# no open eateries found
-		# TODO write a better error response
 		return jsonify(error="No open eateries at {0:02d}:{1:02d} on {2}/{3}/{4}.".format(int(hour), int(minute), month, day, year))
 	return jsonify(open_eateries=open_eateries)
 
