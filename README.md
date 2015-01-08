@@ -88,7 +88,7 @@ Dining constants:
 		and all other measurements are in milligrams represented as floats  
 
 ### Find Open Eateries 
-**Suffix**: "*/dining/open_eateries*"  
+**Suffix**: "*/dining/open*"  
 **Format**: {'year':YEAR, 'month':MONTH, 'day':DAY, 'hour':HOUR, 'minute':MINUTE}  
 	*NOTE*: the current time will be used as a default  
 **Returns**: a list of open eateries at requested time in the form
