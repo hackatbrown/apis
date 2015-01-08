@@ -20,9 +20,11 @@ db.dining_hours contains entries of the form:
 
 hours = db.dining_hours
 
+# TODO verify all incoming values for eateries, dates, etc
+
 @app.route('/dining/menu')
 def req_dining_menu():
-	eatery_name = request.args.get('eatery')
+	eatery = request.args.get('eatery')
 	now = datetime.now()	# use current datetime as default
 	year = request.args.get('year', now.year)
 	month = request.args.get('month', now.month)
@@ -34,7 +36,7 @@ def req_dining_menu():
 
 @app.route('/dining/hours')
 def req_dining_hours():
-	eatery= request.args.get('eatery')
+	eatery = request.args.get('eatery')
 	now = datetime.now()	# use current date as default
 	year = request.args.get('year', now.year)
 	month = request.args.get('month', now.month)
@@ -50,7 +52,7 @@ def req_dining_hours():
 
 	if not result:
 		# TODO write a better error response
-		return jsonify(error="No hours found for the eatery on specified date.")
+		return jsonify(error="No hours found for {0} on {1}/{2}/{3}.".format(eatery, month, day, year))
 	return jsonify(**result)
 
 @app.route('/dining/find')
@@ -89,7 +91,7 @@ def req_dining_open():
 	if len(open_eateries) == 0:
 		# no open eateries found
 		# TODO write a better error response
-		return jsonify(error="No open eateries at specified time.")
+		return jsonify(error="No open eateries at {0:02d}:{1:02d} on {2}/{3}/{4}.".format(int(hour), int(minute), month, day, year))
 	return jsonify(open_eateries=open_eateries)
 
 
