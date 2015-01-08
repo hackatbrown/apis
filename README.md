@@ -64,8 +64,8 @@ Dining constants:
 **Suffix**: "*/dining/menu*"  
 **Format**: {'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'hour':HOUR, 'minute':MINUTE}  
 **Returns**: a dictionary of section titles mapped to items in the form  
-	{'eatery':RATTY/VDUB/..., 'menu':{'section1':[item1, item2, ...], ...}}  
-	*NOTE*: if the eatery is closed, an empty dictionary will be returned
+	{'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'start_hour':START_HOUR, 'start_minute':START_MINUTE, 'end_hour':END_HOUR, 'end_minute':END_MINUTE, 'food':[item1, item2, ...]} where each food item is a string  
+	*NOTE*: if the eatery is closed, an error message is returned
 
 ### Request Dining Hours 
 **Suffix**: "*/dining/hours*"  
@@ -76,9 +76,8 @@ Dining constants:
 **Suffix**: "*/dining/find*"  
 **Format**: {'food':NAME_OF_FOOD}  
 **Returns**: where NAME_OF_FOOD is served and when it's served in the form  
-	{'food':NAME_OF_FOOD, 'eatery':RATTY/VDUB/..., 'start':{'hour':START_HOUR, 'minute':START_MINUTE},
-		'end':{'hour':END_HOUR, 'minute':END_MINUTE}}  
-	*NOTE*: if NAME_OF_FOOD is not served on campus, 'eatery' -> 0
+	{'food':NAME_OF_FOOD, 'results':[meal_info1, meal_info2, ...]} where meal_info is similar to the response for dining/menu, except without the 'food' field
+	*NOTE*: NAME_OF_FOOD may be autocorrected to another string if it does not match any foods in the database
 
 ### Find Nutritional Info 
 **Suffix**: "*/dining/nutrition*"  

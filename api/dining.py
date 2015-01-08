@@ -14,7 +14,7 @@ db.dining_menus contains documents of the form:
   'start_minute': int, 			times, not the eatery's open/close times
   'end_hour': int, 
   'end_minute': int,
-  **sections_and_their_food_items
+  'foods': [ str array ]
 }
 
 db.dining_hours contains documents of the form:
@@ -76,6 +76,8 @@ def req_dining_menu():
 		return jsonify(error="No menu found for {0} at {1:02d}:{2:02d} {3}/{4}/{5}.".format(eatery, hour, minute, month, day, year))
 	return jsonify(**result)
 
+
+
 @app.route('/dining/hours')
 def req_dining_hours():
 	eatery = request.args.get('eatery')
@@ -96,13 +98,24 @@ def req_dining_hours():
 		return jsonify(error="No hours found for {0} on {1}/{2}/{3}.".format(eatery, month, day, year))
 	return jsonify(**result)
 
+
+
 @app.route('/dining/find')
 def req_dining_find():
 	food = request.args.get('food', None)
 
 	# TODO do any preprocessing on 'food' string (lowercasing, stemming, etc)
 
-	return jsonify(error="Not implemented.")
+	results = menus.find({'food': {'$in': food}}, {'_id': 0, 'food': 0})
+
+	result_list = [r for r in results]
+
+	if len(result_list) == 0:
+		# specified food was not found
+		return jsonify(error="Could not find {0} in any of the eatery menus.".format(food))
+	return jsonify(food=food, results=result_list)
+
+
 
 @app.route('/dining/nutrition')
 def req_dining_nutrition():
@@ -115,6 +128,8 @@ def req_dining_nutrition():
 	if not result:
 		return jsonify(error="No nutritional information available for {0}.".format(food))
 	return jsonify(**result)
+
+
 
 @app.route('/dining/open')
 def req_dining_open():
