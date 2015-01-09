@@ -125,7 +125,7 @@ class Ratty(Eatery):
                 if c.text:
                     data[cols[ix]].append(c.text)
         data['Other'] = [col.text for col in rows[-1].findAll('td') if col.text and col.text != '.']
-        data = flatten(data)
+        data = [d.lower() for d in flatten(data)]
         return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, data)
 
     def add_menu_to_db(self, year, month, day, meal, food):

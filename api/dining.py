@@ -41,7 +41,6 @@ db.dining_nutritional_info contains documents of the form:
   'fiber': float,
   'protein': float
 }
-
 '''
 
 # simplify database names
@@ -49,7 +48,7 @@ menus = db.dining_menus
 hours = db.dining_hours
 nutritional_info = db.dining_nutritional_info
 
-# TODO these should be kept in the scraper module, so that they are updated with the database
+# TODO these should be updated with the database
 # create list of valid eatery names and valid food names
 valid_eatery_names = ['ratty', 'vdub', 'jos', 'ivy', 'andrews', 'blueroom']
 valid_food_names = []
@@ -72,14 +71,14 @@ def req_dining_menu():
 		 'year': year, 
 		 'month': month, 
 		 'day': day, 
-		 'start_hour': {'$lte': hour}, 
+		 'start_hour': {'$lte': hour}, 			# these lines need OR operators
 		 'start_minute': {'$lte': minute},
 		 'end_hour': {'$gte': hour},
 		 'end_minute': {'$gte': minute}
 		 }, {'_id': 0})
 
 	if not result:
-		return jsonify(error="No menu found for {0} at {1:02d}:{2:02d} {3}/{4}/{5}.".format(eatery, hour, minute, month, day, year))
+		return jsonify(error="No menu found for {0} at {1:02d}:{2:02d} {3}/{4}/{5}.".format(eatery, int(hour), int(minute), month, day, year))
 	return jsonify(**result)
 
 
@@ -178,6 +177,6 @@ def verify_food(food):
 	food = food.lower()
 	closest = get_close_matches(food, valid_food_names, 1)
 	if len(closest) == 0:
-		return None
+		return food 	# change this to None at some point
 	return closest[0]
 
