@@ -145,7 +145,7 @@ def req_dining_open():
 		{'year': year, 
 		 'month': month, 
 		 'day': day, 
-		 'open_hour': {'$lte': hour}, 
+		 'open_hour': {'$lte': hour}, 			# TODO fix this logic like in dining/menu
 		 'open_minute': {'$lte': minute},
 		 'close_hour': {'$gte': hour},
 		 'close_minute': {'$gte': minute}

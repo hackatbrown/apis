@@ -12,6 +12,14 @@ hours = db.dining_hours
 
 class Eatery:
 
+    '''
+    the method called on each eatery by 'scraper.py'
+    returns: None, scrapes menus and hours for this eatery and adds them to database
+    '''
+    def scrape(self):
+        self.scrape_menus()
+        self.scrape_hours()
+
     ''' 
     finds the days and meals for which menus are available
     returns: a tuple of the week days available (in order of date) and
@@ -24,13 +32,18 @@ class Eatery:
     def find_available_days_and_meals(self):
         pass
 
+    '''
+    scrapes a single menu for a given day and meal (menu_date is provided because
+        it is a field in the menu's database document)
+    returns: None, just adds menu to database (db.dining_menus)
+    '''
     def scrape_menu(self, menu_date, day, meal):
         pass
 
-    def scrape(self):
-        self.scrape_menus()
-        self.scrape_hours()
-
+    '''
+    scrapes all available menus for this eatery
+    returns: None, adds all menus to database
+    '''
     def scrape_menus(self):
         ordered_days, days_meals = self.find_available_days_and_meals()
         menu_date = date.today()
@@ -40,6 +53,27 @@ class Eatery:
                 print meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
             menu_date += timedelta(1)
 
+    '''
+    adds a single menu to the database
+    returns: the ObjectID of the menu in the database
+    '''
+    def add_menu_to_db(self, year, month, day, meal, food):
+        menu = {'eatery': self.name, 
+                'year': year,
+                'month': month,
+                'day': day,
+                'start_hour': self.mealtimes[meal]['start']['hour'],        
+                'start_minute': self.mealtimes[meal]['start']['minute'],     
+                'end_hour': self.mealtimes[meal]['end']['hour'], 
+                'end_minute': self.mealtimes[meal]['end']['minute'],
+                'food': food
+               }
+        return menus.update(menu, menu, upsert=True)['electionId']
+
+    '''
+    scrapes hours for this eatery
+    returns: None, adds hours to database
+    '''
     def scrape_hours(self):
         pass
 
@@ -128,26 +162,17 @@ class Ratty(Eatery):
         data = [d.lower() for d in flatten(data)]
         return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, data)
 
-    def add_menu_to_db(self, year, month, day, meal, food):
-        menu = {'eatery': self.name, 
-                'year': year,
-                'month': month,
-                'day': day,
-                'start_hour': self.mealtimes[meal]['start']['hour'],        
-                'start_minute': self.mealtimes[meal]['start']['minute'],     
-                'end_hour': self.mealtimes[meal]['end']['hour'], 
-                'end_minute': self.mealtimes[meal]['end']['minute'],
-                'food': food
-               }
-        return menus.update(menu, menu, upsert=True)['electionId']
-
+    # uses Ratty menu url and a given meal range (list of two spreadsheet cells) to form
+    #   the url of a meal's menu table
     def get_url(self, meal_range):
         return self.menu_url_base % tuple(meal_range)
 
+# gets the HTML for a given url
 def get_html(url):
     return urlopen(Request(url)).read()
 
 # utility method to flatten dictionaries
+# (using this because queries cannot handle sectioned menus yet, only a single list of foods)
 def flatten(dct):
     result = []
     for val in dct.values():
