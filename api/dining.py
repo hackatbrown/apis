@@ -4,6 +4,18 @@ from api import app, db
 from datetime import datetime
 from difflib import get_close_matches
 
+
+#TODO: Db model may need restructuring as meal names / details may change.
+#		Would reccomend making a primary key for each meal (some unique ID number).
+#		In the current model, updating a meal name
+#		would require parsing every single meal, which could lead to inconsistencies. 
+#
+#		Suggested Change(s):
+#			- Update DB model to reflect above statement
+#			- change 'food' to be an array of integers.
+#			- change db.dining_nutritional_info's primary key to be an int
+#				- food <str> -> food <int>
+#
 '''
 db.dining_menus contains documents of the form:
 { 'eatery': str, 
