@@ -90,11 +90,11 @@ class Ratty(Eatery):
         self.mealtimes = {'breakfast': {'start': {'hour':7, 'minute':30},
                                           'end': {'hour':11, 'minute':00}},
                           'brunch': {'start': {'hour':10, 'minute':30},
-                                          'end': {'hour':4, 'minute':00}},
+                                          'end': {'hour':16, 'minute':00}},
                           'lunch': {'start': {'hour':11, 'minute':00},
-                                          'end': {'hour':4, 'minute':00}},
-                          'dinner': {'start': {'hour':4, 'minute':00},
-                                          'end': {'hour':7, 'minute':30}}
+                                          'end': {'hour':16, 'minute':00}},
+                          'dinner': {'start': {'hour':16, 'minute':00},
+                                          'end': {'hour':19, 'minute':30}}
                          }
 
     def find_available_days_and_meals(self):

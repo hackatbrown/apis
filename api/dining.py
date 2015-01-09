@@ -53,28 +53,28 @@ nutritional_info = db.dining_nutritional_info
 valid_eatery_names = ['ratty', 'vdub', 'jos', 'ivy', 'andrews', 'blueroom']
 valid_food_names = []
 
-# TODO verify all incoming values for eateries, dates, etc
+# TODO consider the case where eateries are open past midnight ($lt, $gt operators may produce incorrect results)
 # TODO allow requests to omit time details and receive all menus for given day (or all open eateries, etc)
 
 @app.route('/dining/menu')
 def req_dining_menu():
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = datetime.now()	# use current datetime as default
-	year = request.args.get('year', now.year)
-	month = request.args.get('month', now.month)
-	day = request.args.get('day', now.day)
-	hour = request.args.get('hour', now.hour)
-	minute = request.args.get('minute', now.minute)
+	year = int(request.args.get('year', now.year))
+	month = int(request.args.get('month', now.month))
+	day = int(request.args.get('day', now.day))
+	hour = int(request.args.get('hour', now.hour))
+	minute = int(request.args.get('minute', now.minute))
 
 	result = menus.find_one(
 		{'eatery': eatery,
 		 'year': year, 
 		 'month': month, 
 		 'day': day, 
-		 'start_hour': {'$lte': hour}, 			# these lines need OR operators
-		 'start_minute': {'$lte': minute},
-		 'end_hour': {'$gte': hour},
-		 'end_minute': {'$gte': minute}
+		 '$or': [{'start_hour': {'$lt': hour}}, 	
+		 		 {'start_hour': hour, 'start_minute': {'$lte': minute}}],
+		 '$or': [{'end_hour': {'$gt': hour}}, 	
+		 		 {'end_hour': hour, 'end_minute': {'$gte': minute}}]
 		 }, {'_id': 0})
 
 	if not result:
@@ -87,9 +87,9 @@ def req_dining_menu():
 def req_dining_hours():
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = datetime.now()	# use current date as default
-	year = request.args.get('year', now.year)
-	month = request.args.get('month', now.month)
-	day = request.args.get('day', now.day)
+	year = int(request.args.get('year', now.year))
+	month = int(request.args.get('month', now.month))
+	day = int(request.args.get('day', now.day))
 
 	# find the hours document for this eatery on this date, exclude the ObjectID from the result
 	result = hours.find_one(
@@ -135,11 +135,11 @@ def req_dining_nutrition():
 @app.route('/dining/open')
 def req_dining_open():
 	now = datetime.now()	# use current datetime as default
-	year = request.args.get('year', now.year)
-	month = request.args.get('month', now.month)
-	day = request.args.get('day', now.day)
-	hour = request.args.get('hour', now.hour)
-	minute = request.args.get('minute', now.minute)
+	year = int(request.args.get('year', now.year))
+	month = int(request.args.get('month', now.month))
+	day = int(request.args.get('day', now.day))
+	hour = int(request.args.get('hour', now.hour))
+	minute = int(request.args.get('minute', now.minute))
 
 	results = hours.find(
 		{'year': year, 
