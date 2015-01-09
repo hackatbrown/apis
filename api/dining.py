@@ -14,7 +14,7 @@ db.dining_menus contains documents of the form:
   'start_minute': int, 			times, not the eatery's open/close times
   'end_hour': int, 
   'end_minute': int,
-  'foods': [ str array ]
+  'food': [ str array ]
 }
 
 db.dining_hours contains documents of the form:
@@ -49,8 +49,10 @@ menus = db.dining_menus
 hours = db.dining_hours
 nutritional_info = db.dining_nutritional_info
 
-# create list of valid eatery names
+# TODO these should be kept in the scraper module, so that they are updated with the database
+# create list of valid eatery names and valid food names
 valid_eatery_names = ['ratty', 'vdub', 'jos', 'ivy', 'andrews', 'blueroom']
+valid_food_names = []
 
 # TODO verify all incoming values for eateries, dates, etc
 # TODO allow requests to omit time details and receive all menus for given day (or all open eateries, etc)
@@ -106,9 +108,7 @@ def req_dining_hours():
 
 @app.route('/dining/find')
 def req_dining_find():
-	food = request.args.get('food', None)
-
-	# TODO do any preprocessing on 'food' string (lowercasing, stemming, etc)
+	food = verify_food(request.args.get('food', ''))
 
 	results = menus.find({'food': {'$in': [food]}}, {'_id': 0, 'food': 0})
 
@@ -123,9 +123,7 @@ def req_dining_find():
 
 @app.route('/dining/nutrition')
 def req_dining_nutrition():
-	food = request.args.get('food', None)
-
-	# TODO do any preprocessing on 'food' string (lowercasing, stemming, etc)
+	food = verify_food(request.args.get('food', ''))
 
 	result = nutritional_info.find_one({'food': food}, {'_id': 0})
 
@@ -165,11 +163,20 @@ def req_dining_open():
 
 # helper methods
 
-# verify_eatery - takes a string a matches to closest eatery name, 
+# verify_eatery - takes a string and matches to closest eatery name, 
 #  					or returns None if no close matches exist
 def verify_eatery(eatery):
 	eatery = eatery.lower()
 	closest = get_close_matches(eatery, valid_eatery_names, 1)
+	if len(closest) == 0:
+		return None
+	return closest[0]
+
+# verify_food - takes a string and matches to closest food name,
+#				  or returns None if no close matches exist
+def verify_food(food):
+	food = food.lower()
+	closest = get_close_matches(food, valid_food_names, 1)
 	if len(closest) == 0:
 		return None
 	return closest[0]
