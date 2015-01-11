@@ -180,3 +180,77 @@ def flatten(dct):
     return list(set(result))
 
 
+#A scraper for the VDub's menu
+class VDub(Eatery):
+
+    def __init__(self):
+        #TODO: Setup local variables
+        return
+
+    ''' 
+    finds the days and meals for which menus are available
+    returns: a tuple of the week days available (in order of date) and
+             a dict of those days mapped to lists of meals
+             ex: (['saturday', 'sunday', 'monday'],
+                  {'saturday':['breakfast', 'lunch', 'dinner'],
+                   'sunday':['lunch', 'dinner'],
+                   'monday':['breakfast', 'lunch', 'dinner']}])
+    '''
+    def find_available_days_and_meals(self):
+        pass
+
+    '''
+    scrapes a single menu for a given day and meal (menu_date is provided because
+        it is a field in the menu's database document)
+    returns: None, just adds menu to database (db.dining_menus)
+    '''
+    def scrape_menu(self, menu_date, day, meal):
+        #TODO: Implement VDub scraping
+        return None
+    '''
+    scrapes hours for this eatery
+    returns: None, adds hours to database
+    '''
+    def scrape_hours(self):
+        #TODO: Implement VDub Hour Scraping
+        return None
+
+#A scraper for the VDub's menu
+class Jos(Eatery):
+
+    def __init__(self):
+        #TODO: Setup Jos local variables
+
+    ''' 
+    finds the days and meals for which menus are available
+    returns: a tuple of the week days available (in order of date) and
+             a dict of those days mapped to lists of meals
+             ex: (['saturday', 'sunday', 'monday'],
+                  {'saturday':['breakfast', 'lunch', 'dinner'],
+                   'sunday':['lunch', 'dinner'],
+                   'monday':['breakfast', 'lunch', 'dinner']}])
+    '''
+    def find_available_days_and_meals(self):
+        #TODO: Implement Jos scraping
+        return None
+
+    '''
+    scrapes a single menu for a given day and meal (menu_date is provided because
+        it is a field in the menu's database document)
+    returns: None, just adds menu to database (db.dining_menus)
+    '''
+    def scrape_menu(self, menu_date, day, meal):
+        #TODO: Implement Jos scraping
+        return None
+    '''
+    scrapes hours for this eatery
+    returns: None, adds hours to database
+    '''
+    def scrape_hours(self):
+        #TODO: Implement Jos scraping
+        return None
+
+
+
+
+
