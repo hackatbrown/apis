@@ -71,13 +71,31 @@ valid_food_names = []
 @app.route('/dining/menu')
 def req_dining_menu():
 	eatery = verify_eatery(request.args.get('eatery', ''))
-	now = datetime.now()	# use current datetime as default
-	year = int(request.args.get('year', now.year))
-	month = int(request.args.get('month', now.month))
-	day = int(request.args.get('day', now.day))
-	hour = int(request.args.get('hour', now.hour))
-	minute = int(request.args.get('minute', now.minute))
+	now = getDiningDateTime()
+	#Originally used datetime.now(), replaced with the above
+	year_orig = int(request.args.get('year', -1))
+	month_orig = int(request.args.get('month', -1))
+	day_orig = int(request.args.get('day', -1))
+	hour_orig = int(request.args.get('hour', -1))
+	minute_orig = int(request.args.get('minute', -1))
 
+	year = year_orig
+	month = month_orig
+	day = day_orig
+	hour = hour_orig
+	minute = minute_orig
+
+	if year_orig < 0 or month_orig < 0 or day_orig < 0 or hour_orig < 0 or minute_orig < 0:
+		year = now.year
+		month = now.month
+		day = now.day
+		hour = now.hour
+		minute = now.minute
+
+	# TODO: not sure if this query is completely correct.
+	#
+	# There are edge cases that i'm sure we're missing.
+	#
 	result = menus.find_one(
 		{'eatery': eatery,
 		 'year': year, 
