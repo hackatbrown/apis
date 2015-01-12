@@ -3,7 +3,7 @@ from api import app, db
 
 from datetime import datetime
 from difflib import get_close_matches
-
+from util import getDiningDate, getDiningDateTime
 
 #TODO: Db model may need restructuring as meal names / details may change.
 #		Would reccomend making a primary key for each meal (some unique ID number).
@@ -97,11 +97,19 @@ def req_dining_menu():
 
 @app.route('/dining/hours')
 def req_dining_hours():
+	'''Gets the hours of the specified eatery. If arguments are omitted, assumes the current dining day.'''
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = datetime.now()	# use current date as default
-	year = int(request.args.get('year', now.year))
-	month = int(request.args.get('month', now.month))
-	day = int(request.args.get('day', now.day))
+	year = int(request.args.get('year', -1))
+	month = int(request.args.get('month', -1))
+	day = int(request.args.get('day', -1))
+
+	if (year < 0) or (month < 0) or (day < 0):
+		#the user didn't supply all arguments, call getDiningDate() to get the current dining period.
+		today = getDiningDate()
+		year  = today.year
+		month = today.month
+		day   = today.day
 
 	# find the hours document for this eatery on this date, exclude the ObjectID from the result
 	result = hours.find_one(
@@ -146,12 +154,19 @@ def req_dining_nutrition():
 
 @app.route('/dining/open')
 def req_dining_open():
-	now = datetime.now()	# use current datetime as default
-	year = int(request.args.get('year', now.year))
-	month = int(request.args.get('month', now.month))
-	day = int(request.args.get('day', now.day))
-	hour = int(request.args.get('hour', now.hour))
-	minute = int(request.args.get('minute', now.minute))
+	year = int(request.args.get('year', -1))
+	month = int(request.args.get('month', -1))
+	day = int(request.args.get('day', -1))
+	hour = int(request.args.get('hour', -1)
+	minute = int(request.args.get('minute', -1))
+
+	if year < 0 or month < 0 or day < 0 or hour < 0 or minute < 0:
+		today_dtime = getDiningDateTime()
+		year = today_dtime.year
+		month = today_dtime.month
+		day = today_dtime.day
+		hour = today_dtime.hour
+		minute = today_dtime.month
 
 	results = hours.find(
 		{'year': year, 
