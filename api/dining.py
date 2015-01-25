@@ -75,7 +75,7 @@ def dining_index():
 def req_dining_menu():
 	''' Endpoint for all menu requests (see README for documentation) '''
 	eatery = verify_eatery(request.args.get('eatery', ''))
-	now = get_dining_datetime()  #Originally used datetime.now(), replaced with the above
+	now = get_dining_datetime()
 	year = int(request.args.get('year', now.year))
 	month = int(request.args.get('month', now.month))
 	day = int(request.args.get('day', -1))
@@ -259,12 +259,12 @@ def get_dining_date():
 	''' Return the current dining date as a date object. This extends until 2am the 
 	    next morning. (e.g. 1:50AM on 11/17/2016 is reset to 11/16/2016)
 	'''
-	today_date = date.today()
-	today_dtime = datetime.now()
-	if today_dtime.hour < 2:
-		return (today_date - timedelta(1))
+	today = date.today()
+	now = datetime.now()
+	if now.hour < 2:
+		return (today - timedelta(1))
 	else:
-		return today_date
+		return today
 
 
 def get_dining_datetime():
@@ -272,12 +272,12 @@ def get_dining_datetime():
 	    the next morning. If it happens to be in the awkward 12am - 2am period, reset 
 	    to 11:59 the previous day for convenience.
 	'''
-	today_dtime = datetime.now()
-	if today_dtime.hour < 2:
-		today_dtime = (today_dtime - timedelta(1))
-		today_dtime.hour = 23
-		today_dtime.minute = 59
-		return today_dtime
+	now = datetime.now()
+	if now.hour < 2:
+		now = (now - timedelta(1))
+		now.hour = 23
+		now.minute = 59
+		return now
 	else:
-		return today_dtime
+		return now
 
