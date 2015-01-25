@@ -6,9 +6,9 @@ from difflib import get_close_matches
 from util import getDiningDate, getDiningDateTime
 
 #TODO: Db model may need restructuring as meal names / details may change.
-#		Would reccomend making a primary key for each meal (some unique ID number).
-#		In the current model, updating a meal name
-#		would require parsing every single meal, which could lead to inconsistencies. 
+#		Would recommend making a primary key for each food item (some unique ID number).
+#		In the current model, updating a food name would require parsing every single
+#		food item, which could lead to inconsistencies. 
 #
 #		Suggested Change(s):
 #			- Update DB model to reflect above statement
@@ -65,7 +65,6 @@ nutritional_info = db.dining_nutritional_info
 valid_eatery_names = ['ratty', 'vdub', 'jos', 'ivy', 'andrews', 'blueroom']
 valid_food_names = []
 
-# TODO consider the case where eateries are open past midnight ($lt, $gt operators may produce incorrect results)
 # TODO allow requests to omit time details and receive all menus for given day (or all open eateries, etc)
 
 @app.route('/dining')
