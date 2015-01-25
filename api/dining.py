@@ -3,7 +3,7 @@ from api import app, db
 
 from datetime import datetime
 from difflib import get_close_matches
-from util import getDiningDate, getDiningDateTime
+from util import get_dining_date, get_dining_datetime
 
 #TODO: Db model may need restructuring as meal names / details may change.
 #		Would recommend making a primary key for each food item (some unique ID number).
@@ -74,31 +74,31 @@ def dining_index():
 @app.route('/dining/menu')
 def req_dining_menu():
 	eatery = verify_eatery(request.args.get('eatery', ''))
-	now = get_dining_datetime()
-	#Originally used datetime.now(), replaced with the above
-	year_orig = int(request.args.get('year', -1))
-	month_orig = int(request.args.get('month', -1))
-	day_orig = int(request.args.get('day', -1))
-	hour_orig = int(request.args.get('hour', -1))
-	minute_orig = int(request.args.get('minute', -1))
+	now = get_dining_datetime()  #Originally used datetime.now(), replaced with the above
+	year = int(request.args.get('year', now.year))
+	month = int(request.args.get('month', now.month))
+	day = int(request.args.get('day', -1))
+	hour = int(request.args.get('hour', -1))
+	minute = int(request.args.get('minute', 0))
 
-	year = year_orig
-	month = month_orig
-	day = day_orig
-	hour = hour_orig
-	minute = minute_orig
+	# 'day' is the only required argument
+	if day == -1:
+		return jsonify(error="No date provided. Must provide 'day=<day_of_month' at minimum.")
 
-	if year_orig < 0 or month_orig < 0 or day_orig < 0 or hour_orig < 0 or minute_orig < 0:
-		year = now.year
-		month = now.month
-		day = now.day
-		hour = now.hour
-		minute = now.minute
+	# if no hour is given, return all menus for that day
+	if hour == -1:
+		results = menus.find({'eatery': eatery,
+							  'year': year,
+							  'month': month,
+							  'day': day
+							 }, {'_id': 0})
+		result_list = [r for r in results]
+		if len(result_list) == 0:
+			# no menus found for specified day
+			return jsonify(error="Could not find any menus for {0}/{1}/{2}.".format(month, day, year))
+		return jsonify(num_results=len(result_list), menus=result_list)
 
-	# TODO: not sure if this query is completely correct.
-	#
-	# There are edge cases that i'm sure we're missing.
-	#
+	# hour argument was supplied (or implied to be now), so find a menu for that datetime
 	result = menus.find_one(
 		{'eatery': eatery,
 		 'year': year, 
@@ -113,7 +113,7 @@ def req_dining_menu():
 	if not result:
 		return jsonify(error="No menu found for {0} at {1:02d}:{2:02d} {3}/{4}/{5}.".format(eatery, int(hour), int(minute), month, day, year))
 	print result
-	return jsonify(**result)
+	return jsonify(num_results=1, menus=[result])
 
 
 
