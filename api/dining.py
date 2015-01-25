@@ -3,7 +3,19 @@ from api import app, db
 
 from datetime import datetime
 from difflib import get_close_matches
+from util import getDiningDate, getDiningDateTime
 
+#TODO: Db model may need restructuring as meal names / details may change.
+#		Would reccomend making a primary key for each meal (some unique ID number).
+#		In the current model, updating a meal name
+#		would require parsing every single meal, which could lead to inconsistencies. 
+#
+#		Suggested Change(s):
+#			- Update DB model to reflect above statement
+#			- change 'food' to be an array of integers.
+#			- change db.dining_nutritional_info's primary key to be an int
+#				- food <str> -> food <int>
+#
 '''
 db.dining_menus contains documents of the form:
 { 'eatery': str, 
@@ -63,13 +75,31 @@ def dining_index():
 @app.route('/dining/menu')
 def req_dining_menu():
 	eatery = verify_eatery(request.args.get('eatery', ''))
-	now = datetime.now()	# use current datetime as default
-	year = int(request.args.get('year', now.year))
-	month = int(request.args.get('month', now.month))
-	day = int(request.args.get('day', now.day))
-	hour = int(request.args.get('hour', now.hour))
-	minute = int(request.args.get('minute', now.minute))
+	now = getDiningDateTime()
+	#Originally used datetime.now(), replaced with the above
+	year_orig = int(request.args.get('year', -1))
+	month_orig = int(request.args.get('month', -1))
+	day_orig = int(request.args.get('day', -1))
+	hour_orig = int(request.args.get('hour', -1))
+	minute_orig = int(request.args.get('minute', -1))
 
+	year = year_orig
+	month = month_orig
+	day = day_orig
+	hour = hour_orig
+	minute = minute_orig
+
+	if year_orig < 0 or month_orig < 0 or day_orig < 0 or hour_orig < 0 or minute_orig < 0:
+		year = now.year
+		month = now.month
+		day = now.day
+		hour = now.hour
+		minute = now.minute
+
+	# TODO: not sure if this query is completely correct.
+	#
+	# There are edge cases that i'm sure we're missing.
+	#
 	result = menus.find_one(
 		{'eatery': eatery,
 		 'year': year, 
@@ -89,11 +119,19 @@ def req_dining_menu():
 
 @app.route('/dining/hours')
 def req_dining_hours():
+	'''Gets the hours of the specified eatery. If arguments are omitted, assumes the current dining day.'''
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = datetime.now()	# use current date as default
-	year = int(request.args.get('year', now.year))
-	month = int(request.args.get('month', now.month))
-	day = int(request.args.get('day', now.day))
+	year = int(request.args.get('year', -1))
+	month = int(request.args.get('month', -1))
+	day = int(request.args.get('day', -1))
+
+	if (year < 0) or (month < 0) or (day < 0):
+		#the user didn't supply all arguments, call getDiningDate() to get the current dining period.
+		today = getDiningDate()
+		year  = today.year
+		month = today.month
+		day   = today.day
 
 	# find the hours document for this eatery on this date, exclude the ObjectID from the result
 	result = hours.find_one(
@@ -138,12 +176,19 @@ def req_dining_nutrition():
 
 @app.route('/dining/open')
 def req_dining_open():
-	now = datetime.now()	# use current datetime as default
-	year = int(request.args.get('year', now.year))
-	month = int(request.args.get('month', now.month))
-	day = int(request.args.get('day', now.day))
-	hour = int(request.args.get('hour', now.hour))
-	minute = int(request.args.get('minute', now.minute))
+	year = int(request.args.get('year', -1))
+	month = int(request.args.get('month', -1))
+	day = int(request.args.get('day', -1))
+	hour = int(request.args.get('hour', -1)
+	minute = int(request.args.get('minute', -1))
+
+	if year < 0 or month < 0 or day < 0 or hour < 0 or minute < 0:
+		today_dtime = getDiningDateTime()
+		year = today_dtime.year
+		month = today_dtime.month
+		day = today_dtime.day
+		hour = today_dtime.hour
+		minute = today_dtime.month
 
 	results = hours.find(
 		{'year': year, 
