@@ -56,6 +56,10 @@ valid_food_names = []
 # TODO consider the case where eateries are open past midnight ($lt, $gt operators may produce incorrect results)
 # TODO allow requests to omit time details and receive all menus for given day (or all open eateries, etc)
 
+@app.route('/dining')
+def dining_index():
+	return jsonify(error='No method specified.')
+
 @app.route('/dining/menu')
 def req_dining_menu():
 	eatery = verify_eatery(request.args.get('eatery', ''))
