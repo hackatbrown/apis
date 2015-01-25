@@ -113,6 +113,7 @@ def req_dining_menu():
 
 	if not result:
 		return jsonify(error="No menu found for {0} at {1:02d}:{2:02d} {3}/{4}/{5}.".format(eatery, int(hour), int(minute), month, day, year))
+	print result
 	return jsonify(**result)
 
 
@@ -179,7 +180,7 @@ def req_dining_open():
 	year = int(request.args.get('year', -1))
 	month = int(request.args.get('month', -1))
 	day = int(request.args.get('day', -1))
-	hour = int(request.args.get('hour', -1)
+	hour = int(request.args.get('hour', -1))
 	minute = int(request.args.get('minute', -1))
 
 	if year < 0 or month < 0 or day < 0 or hour < 0 or minute < 0:

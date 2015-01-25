@@ -27,7 +27,7 @@ for code in default_exceptions.iterkeys():
     app.error_handler_spec[None][code] = make_json_error
 
 if 'MONGO_URI' in os.environ:
-	db = pymongo.MongoClient(os.environ['MONGO_URI']).brown
+    db = pymongo.MongoClient(os.environ['MONGO_URI']).brown
 else:
 	print "The database URI's environment variable was not found."
 

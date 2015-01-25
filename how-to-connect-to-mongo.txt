@@ -1,0 +1,10 @@
+Toward the bottom of 'api/__init__.py', a connection will be made to MongoDB in order to read and write to the database. In order to connect, the program will use the 'MONGO_URI' environment variable (rather than hardcoding this URI into the codebase). 
+
+How to set the environment variable on OSX Mavericks/Yosemite:
+1. Open the terminal and navigate to the Brown APIs package. (cd ~/projects/api)
+2. If you're using a virtual environment, activate it. (source venv/bin/activate)
+3. Enter 'export MONGO_URI="this_is_where_you_put_the_URI_with_username_and_password"'.
+4. Enter 'env' and check to see that the variable was added correctly.
+5. Run and test the server by running 'python run.py'.
+
+You can get the actual Mongo URI by asking Joe for access to the database.
