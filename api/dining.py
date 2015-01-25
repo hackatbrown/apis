@@ -75,7 +75,7 @@ def dining_index():
 @app.route('/dining/menu')
 def req_dining_menu():
 	eatery = verify_eatery(request.args.get('eatery', ''))
-	now = getDiningDateTime()
+	now = get_dining_datetime()
 	#Originally used datetime.now(), replaced with the above
 	year_orig = int(request.args.get('year', -1))
 	month_orig = int(request.args.get('month', -1))
@@ -129,7 +129,7 @@ def req_dining_hours():
 
 	if (year < 0) or (month < 0) or (day < 0):
 		#the user didn't supply all arguments, call getDiningDate() to get the current dining period.
-		today = getDiningDate()
+		today = get_dining_date()
 		year  = today.year
 		month = today.month
 		day   = today.day
@@ -184,7 +184,7 @@ def req_dining_open():
 	minute = int(request.args.get('minute', -1))
 
 	if year < 0 or month < 0 or day < 0 or hour < 0 or minute < 0:
-		today_dtime = getDiningDateTime()
+		today_dtime = get_dining_datetime()
 		year = today_dtime.year
 		month = today_dtime.month
 		day = today_dtime.day
