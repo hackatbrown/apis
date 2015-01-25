@@ -73,6 +73,7 @@ def dining_index():
 
 @app.route('/dining/menu')
 def req_dining_menu():
+	''' Endpoint for all menu requests (see README for documentation) '''
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = get_dining_datetime()  #Originally used datetime.now(), replaced with the above
 	year = int(request.args.get('year', now.year))
@@ -123,9 +124,7 @@ def req_dining_menu():
 
 @app.route('/dining/hours')
 def req_dining_hours():
-	'''Gets the hours of the specified eatery. If arguments are omitted, assumes 
-	   the current dining day.
-	'''
+	''' Endpoint for all hours requests (see README for documentation) '''
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	year = int(request.args.get('year', -1))
 	month = int(request.args.get('month', -1))
@@ -155,6 +154,7 @@ def req_dining_hours():
 
 @app.route('/dining/find')
 def req_dining_find():
+	''' Endpoint for requests to find food (see README for documentation) '''
 	food = verify_food(request.args.get('food', ''))
 
 	results = menus.find({'food': {'$in': [food]}}, {'_id': 0, 'food': 0})
@@ -170,6 +170,7 @@ def req_dining_find():
 
 @app.route('/dining/nutrition')
 def req_dining_nutrition():
+	''' Endpoint for nutrtitional requests (see README for documentation) '''
 	food = verify_food(request.args.get('food', ''))
 
 	result = nutritional_info.find_one({'food': food}, {'_id': 0})
@@ -182,6 +183,7 @@ def req_dining_nutrition():
 
 @app.route('/dining/open')
 def req_dining_open():
+	''' Endpoint for open eatery requests (see README for documentation) '''
 	now = get_dining_datetime()
 	year = int(request.args.get('year', now.year))
 	month = int(request.args.get('month', now.month))
@@ -229,7 +231,7 @@ def req_dining_open():
 
 
 
-# helper methods
+# Helper methods
 
 def verify_eatery(eatery):
 	''' Take a string a match it to closest eatery name, or return
