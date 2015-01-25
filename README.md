@@ -63,9 +63,10 @@ Dining constants:
 ### Request Dining Menu
 **Suffix**: "*/dining/menu*"  
 **Format**: {'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'hour':HOUR, 'minute':MINUTE}  
-**Returns**: a dictionary of section titles mapped to items in the form  
-	{'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'start_hour':START_HOUR, 'start_minute':START_MINUTE, 'end_hour':END_HOUR, 'end_minute':END_MINUTE, 'food':[item1, item2, ...]} where each food item is a string  
-	*NOTE*: if the eatery is closed, an error message is returned
+**Returns**: the number of menus found and a list of those menus in the form: 
+	{num_results:NUM_RESULTS, menus:{'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'start_hour':START_HOUR, 'start_minute':START_MINUTE, 'end_hour':END_HOUR, 'end_minute':END_MINUTE, 'food':[item1, item2, ...]} where each food item is a string
+	*NOTE*: all arguments are optional *except* 'day' 
+	*NOTE*: if the eatery is closed, num_results will equal zero
 
 ### Request Dining Hours 
 **Suffix**: "*/dining/hours*"  

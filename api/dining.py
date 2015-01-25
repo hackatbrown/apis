@@ -81,12 +81,16 @@ def req_dining_menu():
 	hour = int(request.args.get('hour', -1))
 	minute = int(request.args.get('minute', 0))
 
-	# 'day' is the only required argument
-	if day == -1:
-		return jsonify(error="No date provided. Must provide 'day=<day_of_month' at minimum.")
+	# if no day of month provided, set ALL time info to now
+	if day < 0:
+		year = now.year
+		month = now.month
+		day = now.day
+		hour = now.hour
+		minute = now.minute
 
 	# if no hour is given, return all menus for that day
-	if hour == -1:
+	if hour < 0:
 		results = menus.find({'eatery': eatery,
 							  'year': year,
 							  'month': month,
@@ -119,19 +123,21 @@ def req_dining_menu():
 
 @app.route('/dining/hours')
 def req_dining_hours():
-	'''Gets the hours of the specified eatery. If arguments are omitted, assumes the current dining day.'''
+	'''Gets the hours of the specified eatery. If arguments are omitted, assumes 
+	   the current dining day.
+	'''
 	eatery = verify_eatery(request.args.get('eatery', ''))
-	now = datetime.now()	# use current date as default
 	year = int(request.args.get('year', -1))
 	month = int(request.args.get('month', -1))
 	day = int(request.args.get('day', -1))
 
 	if (year < 0) or (month < 0) or (day < 0):
-		#the user didn't supply all arguments, call getDiningDate() to get the current dining period.
-		today = get_dining_date()
-		year  = today.year
-		month = today.month
-		day   = today.day
+		# the user didn't supply all arguments, call get_dining_date() to get the 
+		# current dining period.
+		now = get_dining_date()
+		year  = now.year
+		month = now.month
+		day   = now.day
 
 	# find the hours document for this eatery on this date, exclude the ObjectID from the result
 	result = hours.find_one(
@@ -176,28 +182,42 @@ def req_dining_nutrition():
 
 @app.route('/dining/open')
 def req_dining_open():
-	year = int(request.args.get('year', -1))
-	month = int(request.args.get('month', -1))
+	now = get_dining_datetime()
+	year = int(request.args.get('year', now.year))
+	month = int(request.args.get('month', now.month))
 	day = int(request.args.get('day', -1))
 	hour = int(request.args.get('hour', -1))
-	minute = int(request.args.get('minute', -1))
+	minute = int(request.args.get('minute', 0))
 
-	if year < 0 or month < 0 or day < 0 or hour < 0 or minute < 0:
-		today_dtime = get_dining_datetime()
-		year = today_dtime.year
-		month = today_dtime.month
-		day = today_dtime.day
-		hour = today_dtime.hour
-		minute = today_dtime.month
+	# if no day of month provided, set ALL time info to now
+	if day < 0:
+		year = now.year
+		month = now.month
+		day = now.day
+		hour = now.hour
+		minute = now.minute
+
+	# if no hour provided, return all open eateries on provided (or implied) date
+	if hour < 0:
+		results = hours.find(
+			{'year': year, 
+			 'month': month, 
+			 'day': day, 
+			 }, {'_id': 0})
+		open_eateries = [r for r in results]
+		if len(open_eateries) == 0:
+			# no open eateries found
+			return jsonify(error="No open eateries on {0}/{1}/{2}.".format(month, day, year))
+		return jsonify(open_eateries=open_eateries)
 
 	results = hours.find(
 		{'year': year, 
 		 'month': month, 
-		 'day': day, 
-		 'open_hour': {'$lte': hour}, 			# TODO fix this logic like in dining/menu
-		 'open_minute': {'$lte': minute},
-		 'close_hour': {'$gte': hour},
-		 'close_minute': {'$gte': minute}
+		 'day': day,
+		 '$or': [{'open_hour': {'$lt': hour}}, 	
+		 		 {'open_hour': hour, 'open_minute': {'$lte': minute}}],
+		 '$or': [{'close_hour': {'$gt': hour}}, 	
+		 		 {'close_hour': hour, 'close_minute': {'$gte': minute}}]
 		 }, {'_id': 0})
 
 	open_eateries = [r for r in results]
@@ -211,21 +231,51 @@ def req_dining_open():
 
 # helper methods
 
-# verify_eatery - takes a string and matches to closest eatery name, 
-#  					or returns None if no close matches exist
 def verify_eatery(eatery):
+	''' Take a string a match it to closest eatery name, or return
+        None if no close matches exist
+	'''
 	eatery = eatery.lower()
 	closest = get_close_matches(eatery, valid_eatery_names, 1)
 	if len(closest) == 0:
 		return None
 	return closest[0]
 
-# verify_food - takes a string and matches to closest food name,
-#				  or returns None if no close matches exist
+
 def verify_food(food):
+	''' Take a string a match it to closest food name, or return
+	    None if no close matches exist
+	'''
 	food = food.lower()
 	closest = get_close_matches(food, valid_food_names, 1)
 	if len(closest) == 0:
-		return food 	# change this to None at some point
+		return food 	# TODO change this to None at some point
 	return closest[0]
+
+
+def get_dining_date():
+	''' Return the current dining date as a date object. This extends until 2am the 
+	    next morning. (e.g. 1:50AM on 11/17/2016 is reset to 11/16/2016)
+	'''
+	today_date = date.today()
+	today_dtime = datetime.now()
+	if today_dtime.hour < 2:
+		return (today_date - timedelta(1))
+	else:
+		return today_date
+
+
+def get_dining_datetime():
+	''' Return the current dining date as a datetime object. This extends until 2am 
+	    the next morning. If it happens to be in the awkward 12am - 2am period, reset 
+	    to 11:59 the previous day for convenience.
+	'''
+	today_dtime = datetime.now()
+	if today_dtime.hour < 2:
+		today_dtime = (today_dtime - timedelta(1))
+		today_dtime.hour = 23
+		today_dtime.minute = 59
+		return today_dtime
+	else:
+		return today_dtime
 
