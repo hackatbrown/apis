@@ -3,8 +3,10 @@
 
 from datetime import date, datetime
 
-def getDiningDate():
-	'''Returns the current dining date as a date object. This extends until 2am the next morning.'''
+def get_dining_date():
+	'''Returns the current dining date as a date object. This extends until 2am the 
+	   next morning. (e.g. 1:50AM on 11/17/2016 is reset to 11/16/2016)
+	'''
 	today_date = date.today()
 	today_dtime = datetime.now()
 	if today_dtime.hour < 2:
@@ -12,8 +14,11 @@ def getDiningDate():
 	else:
 		return today_date
 
-def getDiningDateTime():
-	''' Returns the current dining date as a datetime object. This extends until 2am the next morning. If it happens to be in the awkward 12am - 2am period, reset to 11:59 the previous day for convenience.'''
+def get_dining_datetime():
+	''' Returns the current dining date as a datetime object. This extends until 2am 
+	    the next morning. If it happens to be in the awkward 12am - 2am period, reset 
+	    to 11:59 the previous day for convenience.
+	'''
 	today_dtime = datetime.now()
 	if today_dtime.hour < 2:
 		today_dtime = (today_dtime - timedelta(1))
