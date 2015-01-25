@@ -1,6 +1,3 @@
-from os import sys, path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-
 from urllib2 import Request, unquote, urlopen
 from bs4 import BeautifulSoup as soup
 from datetime import date, timedelta
@@ -12,39 +9,35 @@ hours = db.dining_hours
 
 class Eatery:
 
-    '''
-    the method called on each eatery by 'scraper.py'
-    returns: None, scrapes menus and hours for this eatery and adds them to database
-    '''
     def scrape(self):
+        ''' This method is called on each eatery by 'scraper.py'
+            Return None, scrape menus and hours for this eatery and add them to database
+        '''
         self.scrape_menus()
         self.scrape_hours()
 
-    ''' 
-    finds the days and meals for which menus are available
-    returns: a tuple of the week days available (in order of date) and
-             a dict of those days mapped to lists of meals
-             ex: (['saturday', 'sunday', 'monday'],
-                  {'saturday':['breakfast', 'lunch', 'dinner'],
-                   'sunday':['lunch', 'dinner'],
-                   'monday':['breakfast', 'lunch', 'dinner']}])
-    '''
     def find_available_days_and_meals(self):
+        ''' Find the days and meals for which menus are available
+            Return a tuple of the week days available (in order of date) and
+                 a dict of those days mapped to lists of meals
+                 ex: (['saturday', 'sunday', 'monday'],
+                      {'saturday':['breakfast', 'lunch', 'dinner'],
+                       'sunday':['lunch', 'dinner'],
+                       'monday':['breakfast', 'lunch', 'dinner']}])
+        '''
         pass
 
-    '''
-    scrapes a single menu for a given day and meal (menu_date is provided because
-        it is a field in the menu's database document)
-    returns: None, just adds menu to database (db.dining_menus)
-    '''
     def scrape_menu(self, menu_date, day, meal):
+        ''' Scrape a single menu for a given day and meal (menu_date is provided because
+            it is a field in the menu's database document)
+            Return None, just add menu to database (db.dining_menus)
+        '''
         pass
 
-    '''
-    scrapes all available menus for this eatery
-    returns: None, adds all menus to database
-    '''
     def scrape_menus(self):
+        ''' Scrape all available menus for this eatery
+            Return None, add all menus to database
+        '''
         ordered_days, days_meals = self.find_available_days_and_meals()
         menu_date = date.today()
 
@@ -53,11 +46,10 @@ class Eatery:
                 print meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
             menu_date += timedelta(1)
 
-    '''
-    adds a single menu to the database
-    returns: the ObjectID of the menu in the database
-    '''
     def add_menu_to_db(self, year, month, day, meal, food):
+        ''' Add a single menu to the database
+            Return the ObjectID of the menu in the database
+        '''
         menu = {'eatery': self.name, 
                 'year': year,
                 'month': month,
@@ -70,12 +62,28 @@ class Eatery:
                }
         return menus.update(menu, menu, upsert=True)['electionId']
 
-    '''
-    scrapes hours for this eatery
-    returns: None, adds hours to database
-    '''
     def scrape_hours(self):
+        ''' Scrape hours for this eatery
+            Return None, add hours to database
+        '''
         pass
+
+    def add_hours_to_db(self, year, month, day, open_time, close_time):
+        ''' Add a single hours document to the database
+            'open' and 'close' are tuples (<hour>, <minute>)
+            Return the ObjectID of the hours document in the database
+        '''
+        hours_doc = {'eatery': self.name,
+                     'year': year,
+                     'month': month,
+                     'day': day,
+                     'open_hour': open_time[0],
+                     'open_minute': open_time[1],
+                     'close_hour': close_time[0],
+                     'close_minute': close_time[1]
+                    }
+        return hours.update(hours_doc, hours_doc, upsert=True)['electionId']
+
 
 class Ratty(Eatery):
 
@@ -162,95 +170,79 @@ class Ratty(Eatery):
         data = [d.lower() for d in flatten(data)]
         return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, data)
 
-    # uses Ratty menu url and a given meal range (list of two spreadsheet cells) to form
-    #   the url of a meal's menu table
+    def scrape_hours(self):
+        # this scraper is only valid for Spring 2015
+        today = date.today()
+        while (today.month != 5 or today.day != 16):
+            if today.month == 3 and today.day >= 21 and today.day <= 28:
+                # Spring break schedule
+                pass
+            elif today.weekday() == 6:
+                # Sunday brunch schedule
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (10, 30), (19, 30))
+            elif today.weekday() != 6:
+                # Weekday and Saturday schedule
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30))
+            today = today + timedelta(1)
+
     def get_url(self, meal_range):
+        ''' Use Ratty menu URL and given meal range (list of two spreadsheet cells) to
+            form the URL of a meal's menu table
+        '''
         return self.menu_url_base % tuple(meal_range)
 
-# gets the HTML for a given url
-def get_html(url):
-    return urlopen(Request(url)).read()
-
-# utility method to flatten dictionaries
-# (using this because queries cannot handle sectioned menus yet, only a single list of foods)
-def flatten(dct):
-    result = []
-    for val in dct.values():
-        result += val
-    return list(set(result))
 
 
-#A scraper for the VDub's menu
 class VDub(Eatery):
 
     def __init__(self):
         #TODO: Setup local variables
-        return
-
-    ''' 
-    finds the days and meals for which menus are available
-    returns: a tuple of the week days available (in order of date) and
-             a dict of those days mapped to lists of meals
-             ex: (['saturday', 'sunday', 'monday'],
-                  {'saturday':['breakfast', 'lunch', 'dinner'],
-                   'sunday':['lunch', 'dinner'],
-                   'monday':['breakfast', 'lunch', 'dinner']}])
-    '''
-    def find_available_days_and_meals(self):
         pass
 
-    '''
-    scrapes a single menu for a given day and meal (menu_date is provided because
-        it is a field in the menu's database document)
-    returns: None, just adds menu to database (db.dining_menus)
-    '''
+    def find_available_days_and_meals(self):
+        return None
+
     def scrape_menu(self, menu_date, day, meal):
         #TODO: Implement VDub scraping
         return None
-    '''
-    scrapes hours for this eatery
-    returns: None, adds hours to database
-    '''
+
     def scrape_hours(self):
         #TODO: Implement VDub Hour Scraping
         return None
 
-#A scraper for the VDub's menu
+
+
 class Jos(Eatery):
 
     def __init__(self):
         #TODO: Setup Jos local variables
+        pass
 
-    ''' 
-    finds the days and meals for which menus are available
-    returns: a tuple of the week days available (in order of date) and
-             a dict of those days mapped to lists of meals
-             ex: (['saturday', 'sunday', 'monday'],
-                  {'saturday':['breakfast', 'lunch', 'dinner'],
-                   'sunday':['lunch', 'dinner'],
-                   'monday':['breakfast', 'lunch', 'dinner']}])
-    '''
     def find_available_days_and_meals(self):
         #TODO: Implement Jos scraping
         return None
 
-    '''
-    scrapes a single menu for a given day and meal (menu_date is provided because
-        it is a field in the menu's database document)
-    returns: None, just adds menu to database (db.dining_menus)
-    '''
     def scrape_menu(self, menu_date, day, meal):
         #TODO: Implement Jos scraping
         return None
-    '''
-    scrapes hours for this eatery
-    returns: None, adds hours to database
-    '''
+
     def scrape_hours(self):
         #TODO: Implement Jos scraping
         return None
 
 
 
+# Helper methods
+
+def get_html(url):
+    ''' The HTML data for a given URL '''
+    return urlopen(Request(url)).read()
+
+def flatten(dct):
+    ''' Flatten a dictionary's values into a list '''
+    result = []
+    for val in dct.values():
+        result += val
+    return list(set(result))
 
 

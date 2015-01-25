@@ -1,9 +1,8 @@
 from flask import request, jsonify
 from api import app, db
 
-from datetime import datetime
+from datetime import datetime, date
 from difflib import get_close_matches
-from util import get_dining_date, get_dining_datetime
 
 #TODO: Db model may need restructuring as meal names / details may change.
 #		Would recommend making a primary key for each food item (some unique ID number).
@@ -69,7 +68,7 @@ valid_food_names = []
 
 @app.route('/dining')
 def dining_index():
-	return jsonify(error='No method specified.')
+	return jsonify(error='No method specified. See documentation for endpoints.')
 
 @app.route('/dining/menu')
 def req_dining_menu():
@@ -126,14 +125,13 @@ def req_dining_menu():
 def req_dining_hours():
 	''' Endpoint for all hours requests (see README for documentation) '''
 	eatery = verify_eatery(request.args.get('eatery', ''))
-	year = int(request.args.get('year', -1))
-	month = int(request.args.get('month', -1))
+	now = get_dining_date()
+	year = int(request.args.get('year', now.year))
+	month = int(request.args.get('month', now.month))
 	day = int(request.args.get('day', -1))
 
-	if (year < 0) or (month < 0) or (day < 0):
-		# the user didn't supply all arguments, call get_dining_date() to get the 
-		# current dining period.
-		now = get_dining_date()
+	# if no day is provided, set ALL date info to be today
+	if day < 0:
 		year  = now.year
 		month = now.month
 		day   = now.day
