@@ -84,7 +84,6 @@ def req_dining_menu():
 	else:
 		return jsonify(error=INVALID_CLIENT)
 
-	print request.args
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = get_dining_datetime()
 	year = int(request.args.get('year', now.year))
