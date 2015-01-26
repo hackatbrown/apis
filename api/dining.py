@@ -1,5 +1,6 @@
 from flask import request, jsonify
 from api import app, db
+from meta import is_valid_client, log_client, INVALID_CLIENT
 
 from datetime import datetime, date
 from difflib import get_close_matches
@@ -68,11 +69,21 @@ valid_food_names = []
 
 @app.route('/dining')
 def dining_index():
-	return jsonify(error='No method specified. See documentation for endpoints.')
+	client_id = request.args.get('client_id', 'missing_client')
+	if is_valid_client(client_id):
+		log_client(client_id, '/dining', str(datetime.now()))
+		return jsonify(error='No method specified. See documentation for endpoints.')
+	return jsonify(error=INVALID_CLIENT)
 
 @app.route('/dining/menu')
 def req_dining_menu():
 	''' Endpoint for all menu requests (see README for documentation) '''
+	client_id = request.args.get('client_id', 'missing_client')
+	if is_valid_client(client_id):
+		log_client(client_id, '/dining/menu', str(datetime.now()))
+	else:
+		return jsonify(error=INVALID_CLIENT)
+
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = get_dining_datetime()
 	year = int(request.args.get('year', now.year))
@@ -124,6 +135,12 @@ def req_dining_menu():
 @app.route('/dining/hours')
 def req_dining_hours():
 	''' Endpoint for all hours requests (see README for documentation) '''
+	client_id = request.args.get('client_id', 'missing_client')
+	if is_valid_client(client_id):
+		log_client(client_id, '/dining/hours', str(datetime.now()))
+	else:
+		return jsonify(error=INVALID_CLIENT)
+
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = get_dining_date()
 	year = int(request.args.get('year', now.year))
@@ -153,6 +170,12 @@ def req_dining_hours():
 @app.route('/dining/find')
 def req_dining_find():
 	''' Endpoint for requests to find food (see README for documentation) '''
+	client_id = request.args.get('client_id', 'missing_client')
+	if is_valid_client(client_id):
+		log_client(client_id, '/dining/find', str(datetime.now()))
+	else:
+		return jsonify(error=INVALID_CLIENT)
+
 	food = verify_food(request.args.get('food', ''))
 
 	results = menus.find({'food': {'$in': [food]}}, {'_id': 0, 'food': 0})
@@ -169,6 +192,12 @@ def req_dining_find():
 @app.route('/dining/nutrition')
 def req_dining_nutrition():
 	''' Endpoint for nutrtitional requests (see README for documentation) '''
+	client_id = request.args.get('client_id', 'missing_client')
+	if is_valid_client(client_id):
+		log_client(client_id, '/dining/nutrition', str(datetime.now()))
+	else:
+		return jsonify(error=INVALID_CLIENT)
+
 	food = verify_food(request.args.get('food', ''))
 
 	result = nutritional_info.find_one({'food': food}, {'_id': 0})
@@ -182,6 +211,12 @@ def req_dining_nutrition():
 @app.route('/dining/open')
 def req_dining_open():
 	''' Endpoint for open eatery requests (see README for documentation) '''
+	client_id = request.args.get('client_id', 'missing_client')
+	if is_valid_client(client_id):
+		log_client(client_id, '/dining/open', str(datetime.now()))
+	else:
+		return jsonify(error=INVALID_CLIENT)
+
 	now = get_dining_datetime()
 	year = int(request.args.get('year', now.year))
 	month = int(request.args.get('month', now.month))
