@@ -1,0 +1,5 @@
+How to run scripts (for scraping, etc):
+1. Navigate to the top-level directory (with api/, README.md, requirements.txt, etc).
+2. Run the command "python -m api.scripts.<scriptname>" where 'scriptname' does NOT include the '.py' extension.
+3. The above command runs the script from a package environment, allowing it to import the database from the api package.
+4. You can include any script arguments after the command (just like you normally would).
