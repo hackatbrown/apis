@@ -85,12 +85,98 @@ class Eatery:
         return hours.update(hours_doc, hours_doc, upsert=True)['electionId']
 
 
+
 class Ratty(Eatery):
 
     def __init__(self):
         self.name = 'ratty'
-        self.site_url = "http://www.brown.edu/Student_Services/Food_Services/eateries/refectory_menu.php"
-        self.menu_url_base = "https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AlK5raaYNAu5dE5GM0RoZ0lHSDdEUC1KdjZjZTZkekE&gid=0&output=html&widget=false&range=%s:%s"
+        self.base_url = "https://www.brown.edu/Student_Services/Food_Services/eateries/"
+        self.home_ext = "refectory.php"
+        self.mealtimes = {'breakfast': {'start': {'hour':7, 'minute':30},
+                                          'end': {'hour':11, 'minute':00}},
+                          'brunch':    {'start': {'hour':10, 'minute':30},
+                                          'end': {'hour':16, 'minute':00}},
+                          'lunch':     {'start': {'hour':11, 'minute':00},
+                                          'end': {'hour':16, 'minute':00}},
+                          'dinner':    {'start': {'hour':16, 'minute':00},
+                                          'end': {'hour':19, 'minute':30}}
+                         }
+
+    def find_available_days_and_meals(self):
+        html = get_html(self.base_url + self.home_ext)
+        parsed = soup(html, 'html5lib')
+        table  = parsed.find('table', {'class':'lines'})
+        rows = table.find_all('tr')[1:]
+        days = [str(unquote(r.find_all('td')[1].text)).lower() for r in rows]
+        days_meals = {}
+        for day in days:
+            if day != 'sunday':
+                days_meals[day] = ['breakfast', 'lunch', 'dinner']
+            else:
+                days_meals[day] = ['brunch', 'dinner']
+        return (days, days_meals)
+
+    def scrape_menu(self, menu_date, day, meal):
+        # start at the main page for the Ratty 
+        main_html = get_html(self.base_url + self.home_ext)
+        main_parsed = soup(main_html, 'html5lib')  # the Ratty website has errors, so the default parser fails -> use html5lib instead
+        
+        # Navigate to the specified day
+        menus_url = main_parsed.find('table', {'class':'lines'}).find('a', text=day.title())['href']
+        menus_html = get_html(self.base_url + menus_url)
+        menus_parsed = soup(menus_html, 'html5lib')
+
+        # Convert 'brunch' to 'lunch' in order to navigate the HTML correctly
+        meal_query = 'lunch' if meal == 'brunch' else meal
+        
+        # Get the table for the specified meal
+        meal_url = menus_parsed.find('iframe', {'id':meal_query.title()})['src']
+        meal_html = get_html(meal_url)
+        meal_parsed = soup(meal_html, 'html5lib')
+
+        # Scrape the table into a dict of sections (Chef's Corner, Bistro, etc)
+        table = meal_parsed.find('table', {'id':'tblMain'})
+        rows = table.find_all('tr')[1:]
+        cols = [unquote(col.text) for col in rows[0].find_all('td')[1:]]
+        data = {col:[] for col in cols}
+        for row in rows[1:-1]:
+            row_cols = row.find_all('td')[1:]
+            for ix, c in enumerate(row_cols):
+                if c.text:
+                    data[cols[ix]].append(c.text)
+        data['Other'] = [col.text for col in rows[-1].findAll('td') if col.text and col.text != '.']
+
+        # For now, convert the dict into a single list of food items before adding to the DB
+        data = [d.lower() for d in flatten(data)]
+        return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, data)
+
+    def scrape_hours(self):
+        # this hours scraper is only valid for Spring 2015
+        today = date.today()
+        if today < date(2015, 5, 15):
+            # only update once during the semester
+            print "hours are up to date"
+            return
+        while (today.month != 5 or today.day != 16):
+            if today.month == 3 and today.day >= 21 and today.day <= 28:
+                # Spring break schedule
+                pass
+            elif today.weekday() == 6:
+                # Sunday brunch schedule
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (10, 30), (19, 30))
+            elif today.weekday() != 6:
+                # Weekday and Saturday schedule
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30))
+            today = today + timedelta(1)
+
+
+
+class VDub(Eatery):
+
+    def __init__(self):
+        self.name = 'ratty'
+        self.site_url = "http://www.brown.edu/Student_Services/Food_Services/eateries/verneywoolley_menu.php"
+        self.menu_url_base = "https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0Aui-7xDvNkAIdElldE13aXl4RlNZTmtjNzhhaDg1Q0E&gid=0&output=html&widget=false&range=%s:%s"
         self.day_meal_ranges = {
                                 'monday': {
                                                 'breakfast':['R2C1','R14C4'],
@@ -138,66 +224,6 @@ class Ratty(Eatery):
                           'dinner': {'start': {'hour':16, 'minute':00},
                                           'end': {'hour':19, 'minute':30}}
                          }
-
-    def find_available_days_and_meals(self):
-        html = get_html(self.site_url)
-        parsed = soup(html, 'html5lib')
-        table  = parsed.find('table', {'class':'lines'})
-        rows = table.find_all('tr')[1:]
-        days = [str(unquote(r.find_all('td')[1].text)).lower() for r in rows]
-        days_meals = {}
-        for day in days:
-            if day != 'sunday':
-                days_meals[day] = ['breakfast', 'lunch', 'dinner']
-            else:
-                days_meals[day] = ['brunch', 'dinner']
-        return (days, days_meals)
-
-    def scrape_menu(self, menu_date, day, meal):
-        url = self.get_url(self.day_meal_ranges[day][meal])
-        html = get_html(url)
-        parsed = soup(html, 'html5lib')  # the Ratty website has errors, so the default parser fails -> use html5lib instead
-        table  = parsed.find('table', {'id':'tblMain'})
-        rows   = table.find_all('tr')[1:]
-        cols = [unquote(col.text) for col in rows[0].find_all('td')[1:]]
-        data = {col:[] for col in cols}
-        for row in rows[1:-1]:
-            row_cols = row.find_all('td')[1:]
-            for ix, c in enumerate(row_cols):
-                if c.text:
-                    data[cols[ix]].append(c.text)
-        data['Other'] = [col.text for col in rows[-1].findAll('td') if col.text and col.text != '.']
-        data = [d.lower() for d in flatten(data)]
-        return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, data)
-
-    def scrape_hours(self):
-        # this scraper is only valid for Spring 2015
-        today = date.today()
-        while (today.month != 5 or today.day != 16):
-            if today.month == 3 and today.day >= 21 and today.day <= 28:
-                # Spring break schedule
-                pass
-            elif today.weekday() == 6:
-                # Sunday brunch schedule
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (10, 30), (19, 30))
-            elif today.weekday() != 6:
-                # Weekday and Saturday schedule
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30))
-            today = today + timedelta(1)
-
-    def get_url(self, meal_range):
-        ''' Use Ratty menu URL and given meal range (list of two spreadsheet cells) to
-            form the URL of a meal's menu table
-        '''
-        return self.menu_url_base % tuple(meal_range)
-
-
-
-class VDub(Eatery):
-
-    def __init__(self):
-        #TODO: Setup local variables
-        pass
 
     def find_available_days_and_meals(self):
         return None
