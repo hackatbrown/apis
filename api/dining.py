@@ -26,7 +26,7 @@ db.dining_menus contains documents of the form:
   'start_minute': int, 			times, not the eatery's open/close times
   'end_hour': int, 
   'end_minute': int,
-  'food': [ str array ]
+  'food': {eatery_section :  }
 }
 
 db.dining_hours contains documents of the form:
@@ -42,6 +42,7 @@ db.dining_hours contains documents of the form:
 
 db.dining_nutritional_info contains documents of the form:
 { 'food': str,
+  
   'ingredients': [ str array ],
   'portion_size': str,
   'calories': float,

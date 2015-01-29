@@ -177,44 +177,9 @@ class VDub(Eatery):
         self.name = 'ratty'
         self.site_url = "http://www.brown.edu/Student_Services/Food_Services/eateries/verneywoolley_menu.php"
         self.menu_url_base = "https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0Aui-7xDvNkAIdElldE13aXl4RlNZTmtjNzhhaDg1Q0E&gid=0&output=html&widget=false&range=%s:%s"
-        self.day_meal_ranges = {
-                                'monday': {
-                                                'breakfast':['R2C1','R14C4'],
-                                                'lunch':['R2C5','R14C8'],
-                                                'dinner':['R2C9', 'R14C12']
-                                          },
-                                'tuesday': {
-                                                'breakfast':['R2C13','R14C16'],
-                                                'lunch':['R2C17','R14C20'],
-                                                'dinner':['R2C21', 'R14C24']
-                                           },
-                                'wednesday': {
-                                                'breakfast':['R2C25','R14C28'],
-                                                'lunch':['R2C29','R14C32'],
-                                                'dinner':['R2C33', 'R14C36']
-                                             },
-                                'thursday': {
-                                                'breakfast':['R2C37','R14C40'],
-                                                'lunch':['R2C41','R14C44'],
-                                                'dinner':['R2C45', 'R14C48']
-                                            },
-                                'friday': {
-                                                'breakfast':['R2C49','R14C52'],
-                                                'lunch':['R2C53','R14C56'],
-                                                'dinner':['R2C57', 'R14C60']
-                                          },
-                                'saturday': {
-                                                'breakfast':['R2C61','R14C64'],
-                                                'lunch':['R2C65','R14C68'],
-                                                'dinner':['R2C69', 'R14C72']
-                                            },
-                                'sunday': {
-                                                'breakfast':['R2C73','R14C76'],
-                                                'brunch':['R2C77','R14C80'],
-                                                'lunch':['R2C77','R14C80'],
-                                                'dinner':['R2C81', 'R14C84']
-                                          }
-                                }
+        #TODO: replace this section with VDub specific data
+        
+        
         self.mealtimes = {'breakfast': {'start': {'hour':7, 'minute':30},
                                           'end': {'hour':11, 'minute':00}},
                           'brunch': {'start': {'hour':10, 'minute':30},
