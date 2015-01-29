@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from api import app, db
+from api import app, db, make_json_error
 from meta import is_valid_client, log_client, INVALID_CLIENT
 
 from datetime import datetime, date
@@ -73,8 +73,8 @@ def dining_index():
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining', str(datetime.now()))
-		return jsonify(error='No method specified. See documentation for endpoints.')
-	return jsonify(error=INVALID_CLIENT)
+		return make_json_error('No method specified. See documentation for endpoints.')
+	return make_json_error(INVALID_CLIENT)
 
 @app.route('/dining/menu')
 def req_dining_menu():
@@ -83,7 +83,7 @@ def req_dining_menu():
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/menu', str(datetime.now()))
 	else:
-		return jsonify(error=INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT)
 
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = get_dining_datetime()
@@ -111,7 +111,7 @@ def req_dining_menu():
 		result_list = [r for r in results]
 		if len(result_list) == 0:
 			# no menus found for specified day
-			return jsonify(error="Could not find any menus for {0}/{1}/{2}.".format(month, day, year))
+			return make_json_error("Could not find any menus for {0}/{1}/{2}.".format(month, day, year))
 		return jsonify(num_results=len(result_list), menus=result_list)
 
 	# hour argument was supplied (or implied to be now), so find a menu for that datetime
@@ -127,7 +127,7 @@ def req_dining_menu():
 		 }, {'_id': 0})
 
 	if not result:
-		return jsonify(error="No menu found for {0} at {1:02d}:{2:02d} {3}/{4}/{5}.".format(eatery, int(hour), int(minute), month, day, year))
+		return make_json_error("No menu found for {0} at {1:02d}:{2:02d} {3}/{4}/{5}.".format(eatery, int(hour), int(minute), month, day, year))
 	return jsonify(num_results=1, menus=[result])
 
 
@@ -139,7 +139,7 @@ def req_dining_hours():
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/hours', str(datetime.now()))
 	else:
-		return jsonify(error=INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT)
 
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = get_dining_date()
@@ -162,7 +162,7 @@ def req_dining_hours():
 		}, {'_id': 0})
 
 	if not result:
-		return jsonify(error="No hours found for {0} on {1}/{2}/{3}.".format(eatery, month, day, year))
+		return make_json_error("No hours found for {0} on {1}/{2}/{3}.".format(eatery, month, day, year))
 	return jsonify(**result)
 
 
@@ -174,7 +174,7 @@ def req_dining_find():
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/find', str(datetime.now()))
 	else:
-		return jsonify(error=INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT)
 
 	food = verify_food(request.args.get('food', ''))
 
@@ -184,7 +184,7 @@ def req_dining_find():
 
 	if len(result_list) == 0:
 		# specified food was not found
-		return jsonify(error="Could not find {0} in any of the eatery menus.".format(food))
+		return make_json_error("Could not find {0} in any of the eatery menus.".format(food))
 	return jsonify(food=food, results=result_list)
 
 
@@ -196,14 +196,14 @@ def req_dining_nutrition():
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/nutrition', str(datetime.now()))
 	else:
-		return jsonify(error=INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT)
 
 	food = verify_food(request.args.get('food', ''))
 
 	result = nutritional_info.find_one({'food': food}, {'_id': 0})
 
 	if not result:
-		return jsonify(error="No nutritional information available for {0}.".format(food))
+		return make_json_error("No nutritional information available for {0}.".format(food))
 	return jsonify(**result)
 
 
@@ -215,7 +215,7 @@ def req_dining_open():
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/open', str(datetime.now()))
 	else:
-		return jsonify(error=INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT)
 
 	now = get_dining_datetime()
 	year = int(request.args.get('year', now.year))
@@ -242,7 +242,7 @@ def req_dining_open():
 		open_eateries = [r for r in results]
 		if len(open_eateries) == 0:
 			# no open eateries found
-			return jsonify(error="No open eateries on {0}/{1}/{2}.".format(month, day, year))
+			return make_json_error("No open eateries on {0}/{1}/{2}.".format(month, day, year))
 		return jsonify(open_eateries=open_eateries)
 
 	results = hours.find(
@@ -259,7 +259,7 @@ def req_dining_open():
 
 	if len(open_eateries) == 0:
 		# no open eateries found
-		return jsonify(error="No open eateries at {0:02d}:{1:02d} on {2}/{3}/{4}.".format(int(hour), int(minute), month, day, year))
+		return make_json_error("No open eateries at {0:02d}:{1:02d} on {2}/{3}/{4}.".format(int(hour), int(minute), month, day, year))
 	return jsonify(open_eateries=open_eateries)
 
 

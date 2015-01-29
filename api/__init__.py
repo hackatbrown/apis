@@ -14,7 +14,7 @@ import os
     { "error": "405: Method Not Allowed" }
 '''
 def make_json_error(ex):
-    response = jsonify(error=str(ex))
+    response = jsonify(error=[str(ex)])
     response.status_code = (ex.code
                             if isinstance(ex, HTTPException)
                             else 500)
