@@ -26,7 +26,8 @@ db.dining_menus contains documents of the form:
   'start_minute': int, 			times, not the eatery's open/close times
   'end_hour': int, 
   'end_minute': int,
-  'food': { str : [ str list ], ... }
+  'menu_sections': { str : [ str list ], 	<-- categories (e.g. Chef's Corner, Bistro, ...)
+  					 ... }						mapped to lists of food items
   'meal': str
 }
 
@@ -107,7 +108,7 @@ def req_dining_menu():
 							  'year': year,
 							  'month': month,
 							  'day': day
-							 }, {'_id': 0})
+							 }, {'_id': 0, 'food': 0})
 		result_list = [r for r in results]
 		if len(result_list) == 0:
 			# no menus found for specified day
@@ -124,7 +125,7 @@ def req_dining_menu():
 		 		 {'start_hour': hour, 'start_minute': {'$lte': minute}}],
 		 '$or': [{'end_hour': {'$gt': hour}}, 	
 		 		 {'end_hour': hour, 'end_minute': {'$gte': minute}}]
-		 }, {'_id': 0})
+		 }, {'_id': 0, 'food': 0})
 
 	if not result:
 		return make_json_error("No menu found for {0} at {1:02d}:{2:02d} {3}/{4}/{5}.".format(eatery, int(hour), int(minute), month, day, year))
@@ -185,7 +186,7 @@ def req_dining_find():
 	if len(result_list) == 0:
 		# specified food was not found
 		return make_json_error("Could not find {0} in any of the eatery menus.".format(food))
-	return jsonify(food=food, results=result_list)
+	return jsonify(food=food, results=result_list, num_results=len(result_list))
 
 
 

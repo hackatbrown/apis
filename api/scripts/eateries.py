@@ -46,7 +46,7 @@ class Eatery:
                 print meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
             menu_date += timedelta(1)
 
-    def add_menu_to_db(self, year, month, day, meal, food):
+    def add_menu_to_db(self, year, month, day, meal, food, section_dict={}):
         ''' Add a single menu to the database
             Return the ObjectID of the menu in the database
         '''
@@ -60,6 +60,7 @@ class Eatery:
                 'end_minute': self.mealtimes[meal]['end']['minute'],
                 'food': food
                }
+        menu.update(section_dict)
         return menus.update(menu, menu, upsert=True)['electionId']
 
     def scrape_hours(self):
@@ -143,12 +144,12 @@ class Ratty(Eatery):
             row_cols = row.find_all('td')[1:]
             for ix, c in enumerate(row_cols):
                 if c.text:
-                    data[cols[ix]].append(c.text)
-        data['Other'] = [col.text for col in rows[-1].findAll('td') if col.text and col.text != '.']
+                    data[cols[ix]].append(c.text.lower())
+        data['Other'] = [col.text.lower() for col in rows[-1].findAll('td') if col.text and col.text != '.']
 
         # For now, convert the dict into a single list of food items before adding to the DB
-        data = [d.lower() for d in flatten(data)]
-        return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, data)
+        flat_data = [d.lower() for d in flatten(data)]
+        return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, flat_data, data)
 
     def scrape_hours(self):
         # this hours scraper is only valid for Spring 2015
