@@ -32,7 +32,8 @@ if 'MONGO_URI' in os.environ:
 else:
     print "The database URI's environment variable was not found."
 
-limiter = Limiter(app, global_limits=["4/second", "100/minute"], key_func=lambda : request.args.get('client_id', 'missing_client'))
+RATE_LIMIT = "4/second;65/minute;3000/hour"
+limiter = Limiter(app, key_func=lambda : request.args.get('client_id', 'missing_client'))
 
 import meta
 import dining

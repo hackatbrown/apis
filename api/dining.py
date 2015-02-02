@@ -1,6 +1,6 @@
 from flask import request, jsonify
-from api import app, db, make_json_error
-from meta import is_valid_client, log_client
+from api import app, db, make_json_error, limiter, RATE_LIMIT
+from meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 
 from datetime import datetime, date
 from difflib import get_close_matches
@@ -26,9 +26,12 @@ db.dining_menus contains documents of the form:
   'start_minute': int, 			times, not the eatery's open/close times
   'end_hour': int, 
   'end_minute': int,
-  'menu_sections': { str : [ str list ], 	<-- categories (e.g. Chef's Corner, Bistro, ...)
-  					 ... }						mapped to lists of food items
-  'meal': str
+  'meal': str,
+  'food': [ str list ]		<-- list of all food items on menu
+  '<section>': [ str list ], 	<-- categories (e.g. Chef's Corner, Bistro, ...)
+   ...								mapped to lists of food items
+   ...
+   ...
 }
 
 db.dining_hours contains documents of the form:
@@ -67,24 +70,27 @@ nutritional_info = db.dining_nutritional_info
 valid_eatery_names = ['ratty', 'vdub', 'jos', 'ivy', 'andrews', 'blueroom']
 valid_food_names = []
 
-# TODO allow requests to omit time details and receive all menus for given day (or all open eateries, etc)
 
 @app.route('/dining')
+@limiter.shared_limit(RATE_LIMIT, 'dining')
 def dining_index():
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining', str(datetime.now()))
 		return make_json_error('No method specified. See documentation for endpoints.')
-	return make_json_error(INVALID_CLIENT)
+	return make_json_error(INVALID_CLIENT_MSG)
+
+
 
 @app.route('/dining/menu')
+@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_menu():
 	''' Endpoint for all menu requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/menu', str(datetime.now()))
 	else:
-		return make_json_error(INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT_MSG)
 
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = get_dining_datetime()
@@ -134,13 +140,14 @@ def req_dining_menu():
 
 
 @app.route('/dining/hours')
+@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_hours():
 	''' Endpoint for all hours requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/hours', str(datetime.now()))
 	else:
-		return make_json_error(INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT_MSG)
 
 	eatery = verify_eatery(request.args.get('eatery', ''))
 	now = get_dining_date()
@@ -169,13 +176,14 @@ def req_dining_hours():
 
 
 @app.route('/dining/find')
+@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_find():
 	''' Endpoint for requests to find food (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/find', str(datetime.now()))
 	else:
-		return make_json_error(INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT_MSG)
 
 	food = verify_food(request.args.get('food', ''))
 
@@ -191,13 +199,14 @@ def req_dining_find():
 
 
 @app.route('/dining/nutrition')
+@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_nutrition():
 	''' Endpoint for nutrtitional requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/nutrition', str(datetime.now()))
 	else:
-		return make_json_error(INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT_MSG)
 
 	food = verify_food(request.args.get('food', ''))
 
@@ -210,13 +219,14 @@ def req_dining_nutrition():
 
 
 @app.route('/dining/open')
+@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_open():
 	''' Endpoint for open eatery requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/dining/open', str(datetime.now()))
 	else:
-		return make_json_error(INVALID_CLIENT)
+		return make_json_error(INVALID_CLIENT_MSG)
 
 	now = get_dining_datetime()
 	year = int(request.args.get('year', now.year))
