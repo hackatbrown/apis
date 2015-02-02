@@ -9,6 +9,9 @@ hours = db.dining_hours
 
 class Eatery:
 
+    #A set of meal names to ignore, because dining services will often put things that aren't meals in the spreadsheets.
+    meal_ignore_list = set("winter 6")
+
     def scrape(self):
         ''' This method is called on each eatery by 'scraper.py'
             Return None, scrape menus and hours for this eatery and add them to database
@@ -41,10 +44,11 @@ class Eatery:
         ordered_days, days_meals = self.find_available_days_and_meals()
         menu_date = date.today()
 
-        for day in ordered_days:
-            for meal in days_meals[day]:
-                print meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
-            menu_date += timedelta(1)
+        if ordered_days and days_meals:
+            for day in ordered_days:
+                for meal in days_meals[day]:
+                    print meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
+                menu_date += timedelta(1)
 
     def add_menu_to_db(self, year, month, day, meal, food, section_dict={}):
         ''' Add a single menu to the database
@@ -180,19 +184,41 @@ class VDub(Eatery):
         self.menu_url_base = "https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0Aui-7xDvNkAIdElldE13aXl4RlNZTmtjNzhhaDg1Q0E&gid=0&output=html&widget=false&range=%s:%s"
         #TODO: replace this section with VDub specific data
         
-        
         self.mealtimes = {'breakfast': {'start': {'hour':7, 'minute':30},
+                                          'end': {'hour':9, 'minute':30}},
+                          'continental breakfast': {'start': {'hour':9, 'minute':30},
                                           'end': {'hour':11, 'minute':00}},
-                          'brunch': {'start': {'hour':10, 'minute':30},
-                                          'end': {'hour':16, 'minute':00}},
                           'lunch': {'start': {'hour':11, 'minute':00},
-                                          'end': {'hour':16, 'minute':00}},
-                          'dinner': {'start': {'hour':16, 'minute':00},
+                                          'end': {'hour':14, 'minute':00}},
+                          'dinner': {'start': {'hour':16, 'minute':30},
                                           'end': {'hour':19, 'minute':30}}
                          }
 
     def find_available_days_and_meals(self):
-        return None
+        ''' Find the days and meals for which menus are available
+            Return a tuple of the week days available (in order of date) and
+                 a dict of those days mapped to lists of meals
+                 ex: (['saturday', 'sunday', 'monday'],
+                      {'saturday':['breakfast', 'lunch', 'dinner'],
+                       'sunday':['lunch', 'dinner'],
+                       'monday':['breakfast', 'lunch', 'dinner']}])
+        '''
+        html = get_html(self.site_url)
+        parsed_html = soup(html, 'html5lib')
+        
+        #search for all 'h4's in the page. The VDub staff uses these as headers for the days available
+        available_days = [x.text.split()[0] for x in parsed_html.find_all("h4")]
+        if not available_days:
+            print "No days available! Couldn't find any h4s"
+        else:
+            for day in available_days:
+                print "Day Available: " + str(day)
+
+        #The VDub serves breakfast, lunch, and dinner every weekday. 
+        days_meals = {}
+        for day in available_days:
+            days_meals[day] = ['breakfast', 'continental breakfast', 'lunch', 'dinner']
+        return (available_days, days_meals)
 
     def scrape_menu(self, menu_date, day, meal):
         #TODO: Implement VDub scraping
