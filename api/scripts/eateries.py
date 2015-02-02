@@ -1,6 +1,7 @@
 from urllib2 import Request, unquote, urlopen
 from bs4 import BeautifulSoup as soup
 from datetime import date, timedelta
+import time
 from api import db
 
 # simplify database names
@@ -45,11 +46,13 @@ class Eatery:
         menu_date = date.today()
 
         if ordered_days and days_meals:
+            print "Scraping Eatery ",self.name,"!"
+            now = time.time()
             for day in ordered_days:
                 for meal in days_meals[day]:
-                    print meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
+                    print self.name," : ", meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
                 menu_date += timedelta(1)
-
+            print "Finished Scraping ",self.name,"(" + str(time.time() - now) + " seconds)"
     def add_menu_to_db(self, year, month, day, meal, food, section_dict={}):
         ''' Add a single menu to the database
             Return the ObjectID of the menu in the database
@@ -179,7 +182,7 @@ class Ratty(Eatery):
 class VDub(Eatery):
 
     def __init__(self):
-        self.name = 'ratty'
+        self.name = 'vdub'
         self.site_url = "http://www.brown.edu/Student_Services/Food_Services/eateries/verneywoolley_menu.php"
         self.menu_url_base = "https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0Aui-7xDvNkAIdElldE13aXl4RlNZTmtjNzhhaDg1Q0E&gid=0&output=html&widget=false&range=%s:%s"
         #TODO: replace this section with VDub specific data
@@ -208,12 +211,7 @@ class VDub(Eatery):
         
         #search for all 'h4's in the page. The VDub staff uses these as headers for the days available
         available_days = [x.text.split()[0].lower() for x in parsed_html.find_all("h4")]
-        if not available_days:
-            print "No days available! Couldn't find any h4s"
-        else:
-            for day in available_days:
-                print "Day Available: " + str(day)
-
+        
         #The VDub serves breakfast, lunch, and dinner every weekday. 
         days_meals = {}
         for day in available_days:
@@ -237,14 +235,14 @@ class VDub(Eatery):
             n = days.index(day)
         else:
             #this day isn't available
-            print "Tried to get a day '" + str(day) + "' for which data didn't exist!\n"
-            print "Available days: " + str(days)
+            #print "Tried to get a day '" + str(day) + "' for which data didn't exist!\n"
+            #print "Available days: " + str(days)
             return
 
         if not meal in meals[day]:
             #this meal isn't available!
-            print "Tried to get a meal \'" + str(meal) + "\' that didn't exist!\n"
-            print "Available meals for \'" + str(day) + "\' - " + str(meals[day]) + "."
+            #print "Tried to get a meal \'" + str(meal) + "\' that didn't exist!\n"
+            #print "Available meals for \'" + str(day) + "\' - " + str(meals[day]) + "."
             return
 
         #get the n-th iframe
@@ -274,11 +272,23 @@ class VDub(Eatery):
         # For now, convert the dict into a single list of food items before adding to the DB
         flat_data = [d.lower().strip() for d in flatten(data) if not d in self.meal_ignore_list]
         
-        print str(flat_data)
+        if meal == "breakfast":
+            offset = 0
+        elif meal == "lunch":
+            offset = 1
+        elif meal == "dinner":
+            offset = 2
 
+        #start at 'offset'
+        flat_data = flat_data[offset:]
 
-        return
-        #return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, flat_data, data)
+        #only take every fourth element
+        flat_data = flat_data[0::4]
+        
+        data = {}
+        data['Other'] = flat_data
+
+        return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, flat_data, data)
 
 
     def scrape_hours(self):
