@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from api import app, db, make_json_error, limiter, RATE_LIMIT
+from api import app, db, make_json_error, limiter
 from meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 
 from datetime import datetime, date

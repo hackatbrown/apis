@@ -1,5 +1,5 @@
 from flask import jsonify
-from api import app, db, limiter, RATE_LIMIT
+from api import app, db, limiter
 
 '''
 db.clients contains documents of the form:
