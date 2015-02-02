@@ -72,7 +72,6 @@ valid_food_names = []
 
 
 @app.route('/dining')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 def dining_index():
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
@@ -83,7 +82,6 @@ def dining_index():
 
 
 @app.route('/dining/menu')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_menu():
 	''' Endpoint for all menu requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
@@ -140,7 +138,6 @@ def req_dining_menu():
 
 
 @app.route('/dining/hours')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_hours():
 	''' Endpoint for all hours requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
@@ -176,7 +173,6 @@ def req_dining_hours():
 
 
 @app.route('/dining/find')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_find():
 	''' Endpoint for requests to find food (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
@@ -199,7 +195,6 @@ def req_dining_find():
 
 
 @app.route('/dining/nutrition')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_nutrition():
 	''' Endpoint for nutrtitional requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
@@ -219,7 +214,6 @@ def req_dining_nutrition():
 
 
 @app.route('/dining/open')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 def req_dining_open():
 	''' Endpoint for open eatery requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')

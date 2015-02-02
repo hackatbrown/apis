@@ -23,7 +23,6 @@ db.clients contains documents of the form:
 clients = db.clients
 
 @app.route('/')
-@limiter.limit(RATE_LIMIT)
 def root():
     return jsonify(hello='world')
 
