@@ -50,11 +50,35 @@ def is_valid_client(client_id):
     return False
 
 def log_client(client_id, endpoint, timestamp):
-    ''' Log a client's activity with the time of occurence '''
+    ''' Log a client's activity with the time of occurence 
+        Return True if successfully logged, otherwise False
+    '''
     result = clients.update({'client_id': client_id}, {'$inc': {'requests': 1}, '$push': {'activity': {'endpoint': endpoint, 'timestamp': timestamp}}})
     if u'nModified' in result and result[u'nModified'] == 1:
         return True
     print "Bad result from log_client: ", result
+    return False
+
+def invalidate_client(client_id):
+    ''' Invalidate a client, revoking future access
+        Return True if client's access mode was modified to False, or 
+            return False if client's access mode was already False or
+            the operation was unsuccessful
+    '''
+    result = clients.update({'client_id': client_id}, {'$set': {'valid': False}})
+    if u'nModified' in result and result[u'nModified'] == 1:
+        return True
+    return False
+
+def validate_client(client_id):
+    ''' Validate a client, enabling future access
+        Return True if client's access mode was modified to True, or 
+            return False if client's access mode was already True or
+            the operation was unsuccessful
+    '''
+    result = clients.update({'client_id': client_id}, {'$set': {'valid': True}})
+    if u'nModified' in result and result[u'nModified'] == 1:
+        return True
     return False
 
 
