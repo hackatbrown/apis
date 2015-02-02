@@ -10,7 +10,7 @@ hours = db.dining_hours
 class Eatery:
 
     #A set of meal names to ignore, because dining services will often put things that aren't meals in the spreadsheets.
-    meal_ignore_list = set("winter 6")
+    meal_ignore_list = set(["winter 6", "For your safety, it is the customer's obligation to inform the server about any food allergies"])
 
     def scrape(self):
         ''' This method is called on each eatery by 'scraper.py'
@@ -207,7 +207,7 @@ class VDub(Eatery):
         parsed_html = soup(html, 'html5lib')
         
         #search for all 'h4's in the page. The VDub staff uses these as headers for the days available
-        available_days = [x.text.split()[0] for x in parsed_html.find_all("h4")]
+        available_days = [x.text.split()[0].lower() for x in parsed_html.find_all("h4")]
         if not available_days:
             print "No days available! Couldn't find any h4s"
         else:
@@ -221,8 +221,65 @@ class VDub(Eatery):
         return (available_days, days_meals)
 
     def scrape_menu(self, menu_date, day, meal):
-        #TODO: Implement VDub scraping
-        return None
+        ''' Scrape a single menu for a given day and meal (menu_date is provided because
+            it is a field in the menu's database document)
+            Return None, just add menu to database (db.dining_menus)
+
+            Precondition: Day must be available as defined by find_available_days_and_meals
+        '''
+        # start at the main page for the Ratty 
+        main_html = get_html(self.site_url)
+        main_parsed = soup(main_html, 'html5lib')  # the Ratty website has errors, so the default parser fails -> use html5lib instead
+        
+        #depending on which day we want, call up the n-th iframe and get its source. then parse THAT into a meal.
+        (days, meals) = self.find_available_days_and_meals()
+        if day in days:
+            n = days.index(day)
+        else:
+            #this day isn't available
+            print "Tried to get a day '" + str(day) + "' for which data didn't exist!\n"
+            print "Available days: " + str(days)
+            return
+
+        if not meal in meals[day]:
+            #this meal isn't available!
+            print "Tried to get a meal \'" + str(meal) + "\' that didn't exist!\n"
+            print "Available meals for \'" + str(day) + "\' - " + str(meals[day]) + "."
+            return
+
+        #get the n-th iframe
+        iframes = main_parsed.find_all('iframe')
+        today = iframes[n]
+
+        #load our iframe's HTML content
+        today_menu_html = get_html(today['src'])
+        meal_parsed = soup(today_menu_html, 'html5lib')
+
+        #perform some normalization, because of course the data on the spreadsheet doesn't represent the whole continental breakfast thing.
+        if meal == "continental breakfast":
+            meal = "breakfast"
+
+        # Scrape the table into a dict of sections (Chef's Corner, Bistro, etc)
+        table = meal_parsed.find('table', {'id':'tblMain'})
+        rows = table.find_all('tr')[1:]
+        cols = [unquote(col.text) for col in rows[0].find_all('td')[1:]]
+        data = {col:[] for col in cols}
+        for row in rows[1:-1]:
+            row_cols = row.find_all('td')[1:]
+            for ix, c in enumerate(row_cols):
+                if c.text:
+                    data[cols[ix]].append(c.text.lower())
+        data['Other'] = [col.text.lower() for col in rows[-1].findAll('td') if col.text and col.text != '.']
+
+        # For now, convert the dict into a single list of food items before adding to the DB
+        flat_data = [d.lower().strip() for d in flatten(data) if not d in self.meal_ignore_list]
+        
+        print str(flat_data)
+
+
+        return
+        #return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, flat_data, data)
+
 
     def scrape_hours(self):
         #TODO: Implement VDub Hour Scraping

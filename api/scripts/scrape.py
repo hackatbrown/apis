@@ -1,7 +1,7 @@
 from eateries import Ratty, VDub
 
 #As you add eateries, simply instantiate their class in this list for them to be scraped.
-eatery_list = [VDub(), Ratty()]
+eatery_list = [VDub()]
 
 
 ##########################################################################
