@@ -1,5 +1,5 @@
 from flask import jsonify
-from api import app, db, limiter
+from api import app, db, limiter, RATE_LIMIT
 
 '''
 db.clients contains documents of the form:
@@ -23,6 +23,7 @@ db.clients contains documents of the form:
 clients = db.clients
 
 @app.route('/')
+@limiter.limit(RATE_LIMIT)
 def root():
     return jsonify(hello='world')
 
