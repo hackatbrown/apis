@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from api import app, db, make_json_error
-from meta import is_valid_client, log_client, INVALID_CLIENT
+from meta import is_valid_client, log_client
 
 from datetime import datetime, date
 from difflib import get_close_matches

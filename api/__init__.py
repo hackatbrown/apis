@@ -1,11 +1,12 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+from flask_limiter import Limiter
 from werkzeug.exceptions import default_exceptions
 from werkzeug.exceptions import HTTPException
 import pymongo
 import os
 
 '''
-	make_json_error - a wrapper for all exceptions
+    make_json_error - a wrapper for all exceptions
 
     All error responses that you don't specifically
     manage yourself will have application/json content
@@ -29,7 +30,9 @@ for code in default_exceptions.iterkeys():
 if 'MONGO_URI' in os.environ:
     db = pymongo.MongoClient(os.environ['MONGO_URI']).brown
 else:
-	print "The database URI's environment variable was not found."
+    print "The database URI's environment variable was not found."
+
+limiter = Limiter(app, global_limits=["4/second", "100/minute"], key_func=lambda : request.args.get('client_id', 'missing_client'))
 
 import meta
 import dining
