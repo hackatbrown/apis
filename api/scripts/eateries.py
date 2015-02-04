@@ -10,8 +10,10 @@ hours = db.dining_hours
 
 class Eatery:
 
-    #A set of meal names to ignore, because dining services will often put things that aren't meals in the spreadsheets.
-    food_ignore_list = set(["winter 6", "For your safety, it is the customer's obligation to inform the server about any food allergies"])
+    # a set of meal names to ignore, because dining services will often put items that aren't meals in the spreadsheets
+    food_ignore_list = set(["winter 6", 
+                            "for your safety, it is the customers obligation to inform the server about any food allergies.",
+                            "for your safety, it is the customer's obligation to inform the server about any food allergies"])
     base_url = "https://www.brown.edu/Student_Services/Food_Services/eateries/"
 
     def scrape(self, get_menus=True, get_hours=True):
@@ -163,17 +165,18 @@ class Ratty(Eatery):
         # Scrape the table into a dict of sections (Chef's Corner, Bistro, etc)
         table = meal_parsed.find('table', {'id':'tblMain'})
         rows = table.find_all('tr')[1:]
-        cols = [unquote(col.text) for col in rows[0].find_all('td')[1:]]
+        cols = [unquote(col.text).lower() for col in rows[0].find_all('td')[1:]]
         data = {col:[] for col in cols}
         for row in rows[1:-1]:
             row_cols = row.find_all('td')[1:]
             for ix, c in enumerate(row_cols):
-                if c.text:
-                    data[cols[ix]].append(c.text.lower())
-        data['Other'] = [col.text.lower() for col in rows[-1].findAll('td') if col.text and col.text != '.']
+                if c.text and not c.text.lower().strip() in self.food_ignore_list:
+                        data[cols[ix]].append(c.text.lower().strip())
+        data['daily sidebars'] = [col.text.lower().strip() for col in rows[-1].findAll('td') \
+                        if col.text and col.text != '.' and not col.text.lower().strip() in self.food_ignore_list]
 
         # For now, convert the dict into a single list of food items before adding to the DB
-        flat_data = [d.lower() for d in flatten(data)]
+        flat_data = [d for d in flatten(data) if not d in self.food_ignore_list]
         return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, flat_data, data)
 
     def scrape_hours(self):
@@ -252,7 +255,7 @@ class VDub(Eatery):
                 for menu_id in menu_ids:
                     print menu_id[0], "for", day, menu_date, "->", menu_id[1]
                     num_menus += 1
-            menu_date += timedelta(1)
+                menu_date += timedelta(1)
         return num_menus
 
     def scrape_menu(self, menu_date, day, meals, nth_day):
@@ -293,7 +296,7 @@ class VDub(Eatery):
         # add each meal's menu to DB
         for meal in meals:
             section_dict = {}
-            section_dict['food'] = [d for d in data[meal] if not d in self.food_ignore_list]
+            section_dict['main menu'] = [d for d in data[meal] if not d in self.food_ignore_list]
             section_dict['daily sidebars'] = [d for d in data['daily sidebars'] if not d in self.food_ignore_list]
             flat_data = [d.lower().strip() for d in section_dict if not d in self.food_ignore_list]
             res = self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, flat_data, section_dict)
