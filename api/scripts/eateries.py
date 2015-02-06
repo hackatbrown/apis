@@ -335,15 +335,15 @@ class VDub(Eatery):
 class Jos(Eatery):
 
     def __init__(self):
-        #TODO: Setup Jos local variables
-        pass
+        self.name = "jos"
+        self.eatery_page = "josiahs.php"
+        self.mealtimes = {'dinner':   {'start': {'hour':18, 'minute':00},
+                                       'end': {'hour':26, 'minute':00}}}
 
     def find_available_days_and_meals(self):
-        #TODO: Implement Jos scraping
         return None
 
     def scrape_menu(self, menu_date, day, meal):
-        #TODO: Implement Jos scraping
         return None
 
     def scrape_hours(self):
