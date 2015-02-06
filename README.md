@@ -7,7 +7,7 @@ These APIs are currently a work-in-progress.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-BASE_PATH = "https://api.brown.edu"
+BASE_PATH = "https://api.students.brown.edu"
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
