@@ -71,7 +71,7 @@ Dining constants:
 ### Request Dining Hours 
 **Suffix**: "*/dining/hours*"  
 **Format**: {'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY}  
-**Returns**: {'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'open_hour':OPEN_HOUR, 'open_minute':OPEN_MINUTE, 'close_hour':CLOSE_HOUR, 'close_minute':CLOSE_MINUTE}  
+**Returns**: {'num_results': INT, [{'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'open_hour':OPEN_HOUR, 'open_minute':OPEN_MINUTE, 'close_hour':CLOSE_HOUR, 'close_minute':CLOSE_MINUTE}, ...]}  
 
 ### Find Eatery Serving Specific Food 
 **Suffix**: "*/dining/find*"  
