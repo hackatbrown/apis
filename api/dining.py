@@ -161,17 +161,20 @@ def req_dining_hours():
 		month = now.month
 		day   = now.day
 
-	# find the hours document for this eatery on this date, exclude the ObjectID from the result
-	result = hours.find_one(
+	# find the hours document(s) for this eatery on this date, exclude the ObjectID from the result
+	# NOTE: some eateries open/close multiple times a day -> thus, multiple hours documents per day
+	results = hours.find(
 		{'eatery': eatery, 
 		 'year': year, 
 		 'month': month, 
 		 'day': day
 		}, {'_id': 0})
 
-	if not result:
+	result_list = [r for r in results]
+
+	if len(result_list) == 0:
 		return make_json_error("No hours found for {0} on {1}/{2}/{3}.".format(eatery, month, day, year))
-	return jsonify(**result)
+	return jsonify(num_results=len(result_list), results=result_list)
 
 
 
