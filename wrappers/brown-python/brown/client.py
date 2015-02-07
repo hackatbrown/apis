@@ -37,7 +37,7 @@ class Client:
 
         url = self.scheme + self.host + endpoint
 
-        return convert(json.loads(requests.get(url, params=options, verify=True).text))
+        return convert(json.loads(requests.get(url, params=options).text))
 
 def convert(data):
     if isinstance(data, basestring):
@@ -51,12 +51,10 @@ def convert(data):
 
 if __name__ == '__main__':
     c = Client(client_id='test_client')
+    print "Welcome to the demo! This uses the /dining/menu endpoint to find current menus."
     while True:
-        endpoint = raw_input("Endpoint: ")
-        if endpoint == 'exit':
-            break
-        eatery = raw_input("Eatery: ")
-        print c.get(endpoint, eatery=eatery)
+        eatery = raw_input("Eatery (or 'exit'): ")
+        print c.get('/dining/menu', eatery=eatery)
 
 
 
