@@ -50,7 +50,7 @@ BLUE  = 'blueroom'
 <p><strong>Suffix</strong>: "<em>/dining/menu</em>" <br />
 <strong>Format</strong>: {'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'hour':HOUR, 'minute':MINUTE} <br />
 <strong>Returns</strong>: the number of menus found and a list of those menus in the form: 
-    {num<em>results:NUM</em>RESULTS, menus:{'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'start<em>hour':START</em>HOUR, 'start<em>minute':START</em>MINUTE, 'end<em>hour':END</em>HOUR, 'end<em>minute':END</em>MINUTE, 'food':[item1, item2, ...]} where each food item is a string
+    {num_results:NUM_RESULTS, menus:{'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'start_hour':START_HOUR, 'start_minute':START_MINUTE, 'end_hour':END_HOUR, 'end_minute':END_MINUTE, 'food':[item1, item2, ...]} where each food item is a string
     <em>NOTE</em>: all arguments are optional <em>except</em> 'day' 
     <em>NOTE</em>: if the eatery is closed, num_results will equal zero</p>
 
@@ -66,7 +66,7 @@ BLUE  = 'blueroom'
 
 <p><strong>Suffix</strong>: "<em>/dining/hours</em>" <br />
 <strong>Format</strong>: {'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY} <br />
-<strong>Returns</strong>: {'num<em>results': INT, [{'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'open</em>hour':OPEN<em>HOUR, 'open</em>minute':OPEN<em>MINUTE, 'close</em>hour':CLOSE<em>HOUR, 'close</em>minute':CLOSE_MINUTE}, ...]}  </p>
+<strong>Returns</strong>: {'num_results': INT, [{'eatery':RATTY/VDUB/..., 'year':YEAR, 'month':MONTH, 'day':DAY, 'open_hour':OPEN_HOUR, 'open_minute':OPEN_MINUTE, 'close_hour':CLOSE_HOUR, 'close_minute':CLOSE_MINUTE}, ...]}  </p>
 	<h3 style="padding-left: 10px; font-style: italic;">Example</h3>
     <code>
 		Get the current hours for the ratty
@@ -80,9 +80,9 @@ BLUE  = 'blueroom'
 
 <p><strong>Suffix</strong>: "<em>/dining/find</em>" <br />
 <strong>Format</strong>: {'food':NAME<em>OF</em>FOOD} <br />
-<strong>Returns</strong>: where NAME<em>OF</em>FOOD is served and when it's served in the form <br />
-    {'food':NAME<em>OF</em>FOOD, 'results':[meal<em>info1, meal</em>info2, ...]} where meal<em>info is similar to the response for dining/menu, except without the 'food' field
-    *NOTE*: NAME</em>OF_FOOD may be autocorrected to another string if it does not match any foods in the database</p>
+<strong>Returns</strong>: where NAME_OF_FOOD is served and when it's served in the form <br />
+    {'food':NAME_OF_FOOD, 'results':[meal_info1, meal_info2, ...]} where meal_info is similar to the response for dining/menu, except without the 'food' field
+    *NOTE*: NAME_OF_FOOD may be autocorrected to another string if it does not match any foods in the database</p>
     <h3 style="padding-left: 10px; font-style: italic;">Example</h3>
     <code>
 		Find out where Pulled Pork Sandwich is being served
@@ -96,7 +96,7 @@ BLUE  = 'blueroom'
 <strong>Format</strong>: {'year':YEAR, 'month':MONTH, 'day':DAY, 'hour':HOUR, 'minute':MINUTE} <br />
     <em>NOTE</em>: the current time will be used as a default <br />
 <strong>Returns</strong>: a list of information for open eateries at requested time in the form
-    {'open<em>eateries':[eatery</em>hours1, eatery<em>hours2, ...]} and where each eatery</em>hours is of the same form as the response to a dining/hours request</p>
+    {'open_eateries':[eatery_hours1, eatery_hours2, ...]} and where each eatery_hours is of the same form as the response to a dining/hours request</p>
     <h3 style="padding-left: 10px; font-style: italic;">Example</h3>
     <code>
 		Find out which places are open during the hackathon
