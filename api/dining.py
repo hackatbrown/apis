@@ -1,21 +1,10 @@
 from flask import request, jsonify
-from api import app, db, make_json_error, limiter, RATE_LIMIT
+from api import app, db, make_json_error, limiter, RATE_LIMIT, support_jsonp
 from meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 
 from datetime import datetime, date
 from difflib import get_close_matches
 
-#TODO: Db model may need restructuring as meal names / details may change.
-#		Would recommend making a primary key for each food item (some unique ID number).
-#		In the current model, updating a food name would require parsing every single
-#		food item, which could lead to inconsistencies. 
-#
-#		Suggested Change(s):
-#			- Update DB model to reflect above statement
-#			- change 'food' to be an array of integers.
-#			- change db.dining_nutritional_info's primary key to be an int
-#				- food <str> -> food <int>
-#
 '''
 db.dining_menus contains documents of the form:
 { 'eatery': str, 
@@ -64,6 +53,7 @@ db.dining_nutritional_info contains documents of the form:
 menus = db.dining_menus
 hours = db.dining_hours
 nutritional_info = db.dining_nutritional_info
+all_foods = db.dining_all_foods
 
 # TODO these should be updated with the database
 # create list of valid eatery names and valid food names
@@ -73,6 +63,7 @@ valid_food_names = []
 
 @app.route('/dining')
 @limiter.shared_limit(RATE_LIMIT, 'dining')
+@support_jsonp
 def dining_index():
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
@@ -84,6 +75,7 @@ def dining_index():
 
 @app.route('/dining/menu')
 @limiter.shared_limit(RATE_LIMIT, 'dining')
+@support_jsonp
 def req_dining_menu():
 	''' Endpoint for all menu requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
@@ -141,6 +133,7 @@ def req_dining_menu():
 
 @app.route('/dining/hours')
 @limiter.shared_limit(RATE_LIMIT, 'dining')
+@support_jsonp
 def req_dining_hours():
 	''' Endpoint for all hours requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
@@ -180,6 +173,7 @@ def req_dining_hours():
 
 @app.route('/dining/find')
 @limiter.shared_limit(RATE_LIMIT, 'dining')
+@support_jsonp
 def req_dining_find():
 	''' Endpoint for requests to find food (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
@@ -203,6 +197,7 @@ def req_dining_find():
 
 @app.route('/dining/nutrition')
 @limiter.shared_limit(RATE_LIMIT, 'dining')
+@support_jsonp
 def req_dining_nutrition():
 	''' Endpoint for nutrtitional requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
@@ -223,6 +218,7 @@ def req_dining_nutrition():
 
 @app.route('/dining/open')
 @limiter.shared_limit(RATE_LIMIT, 'dining')
+@support_jsonp
 def req_dining_open():
 	''' Endpoint for open eatery requests (see README for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
@@ -276,6 +272,24 @@ def req_dining_open():
 		return make_json_error("No open eateries at {0:02d}:{1:02d} on {2}/{3}/{4}.".format(int(hour), int(minute), month, day, year))
 	return jsonify(open_eateries=open_eateries)
 
+@app.route('/dining/all_food')
+@limiter.shared_limit(RATE_LIMIT, 'dining')
+@support_jsonp
+def req_dining_all_food():
+	''' Endpoint for all food requests (see README for documentation) '''
+	client_id = request.args.get('client_id', 'missing_client')
+	if is_valid_client(client_id):
+		log_client(client_id, '/dining/all_food', str(datetime.now()))
+	else:
+		return make_json_error(INVALID_CLIENT_MSG)
+
+	eatery = verify_eatery(request.args.get('eatery', ''))
+
+	result = all_foods.find_one({'eatery': eatery}, {'_id': 0})
+
+	if not result:
+		return make_json_error("No food information available for {0}.".format(food))
+	return jsonify(**result)
 
 
 # Helper methods

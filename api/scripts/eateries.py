@@ -56,7 +56,7 @@ class Eatery:
 
     def add_menu_to_db(self, year, month, day, meal, food, section_dict={}):
         ''' Add a single menu to the database
-            Return the ObjectID of the menu in the database
+            Return True if successful, otherwise False
         '''
         # create separate menu docs to query and update the DB
         menu_query = {'eatery': self.name, 
@@ -73,6 +73,12 @@ class Eatery:
         menu_full.update(section_dict)
         menu_full.update(menu_query)
         return True if menus.update(menu_query, menu_full, upsert=True) else False
+
+    def update_all_foods_in_db(self, food):
+        ''' Update the eatery's food list in the all_foods collection
+            Return True if successful, otherwise False
+        '''
+        return True if all_foods.update({'eatery':'ratty'})
 
     def scrape_hours(self):
         ''' Scrape hours for this eatery
