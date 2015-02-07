@@ -25,6 +25,13 @@
 <h1>Introduction</h1>
 <p>Hey there! Brown APIs is a set of RESTful APIs for getting useful information about Brown. In general, to form a query, pick a method from below
 and look at some of the sample queries to get a feel for how the API works.</p>
+
+<p>To make requests, you need a client id. While hack@brown is running, you may use the client id 'hackathon'.</p>
+<p>This is used in the GET parameter 'client_id' in your requests.</p>
+<p>For instance:</p>
+<code>
+	https://api.students.brown.edu/dining/menu?client_id=hackathon&amp;...
+</code>
 <p>Currently, all requests are specified as GET requests with URL encoded parameters.</p>
 
 <p>Example of a generic request which gets the method 'method' with param1='something here' and param2='somethingelse'</p>
