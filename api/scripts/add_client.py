@@ -26,6 +26,7 @@ if __name__ == '__main__':
         print "Usage:  python -m api.scripts.add_client <client_name> [client_id]"
         print "\tclient_name - Required. A string nickname for this client. (Wrap in quotes if spaces.)"
         print "\tclient_id - Optional. Provide a string representation of a UUID4 client ID."
+        exit()
         
     if len(argv) == 2:
         client_id = add_client_id(argv[1])
