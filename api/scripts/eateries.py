@@ -11,7 +11,14 @@ hours = db.dining_hours
 class Eatery:
 
     # a set of meal names to ignore, because dining services will often put items that aren't meals in the spreadsheets
-    food_ignore_list = set(["winter 6", 
+    food_ignore_list = set(["winter 6",
+			    "winter 7",
+			    "winter 8",
+			    "winter 9",
+			    "winter 10",
+			    "winter 11",
+			    "winter 12",
+			    "winter 13", 
                             "for your safety, it is the customers obligation to inform the server about any food allergies.",
                             "for your safety, it is the customer's obligation to inform the server about any food allergies"])
     base_url = "https://www.brown.edu/Student_Services/Food_Services/eateries/"
