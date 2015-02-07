@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, render_template
 from api import app, db, limiter, RATE_LIMIT
 
 '''
@@ -25,7 +25,7 @@ clients = db.clients
 @app.route('/')
 @limiter.limit(RATE_LIMIT)
 def root():
-    return jsonify(hello='world')
+    return render_template('documentation.html')
 
 
 
