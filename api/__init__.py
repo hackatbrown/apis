@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, current_app
 from flask_limiter import Limiter
 from werkzeug.exceptions import default_exceptions
 from werkzeug.exceptions import HTTPException
