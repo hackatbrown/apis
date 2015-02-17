@@ -45,8 +45,8 @@ else:
     print "The database URI's environment variable was not found."
 
 # setup rate limiting
-RATE_LIMIT = "3/second;30/minute;1000/hour"
-limiter = Limiter(app, global_limits=["5/second", "60/minute", "3000/hour"], key_func=lambda : request.args.get('client_id', 'missing_client'))
+RATE_LIMIT = "10/second;100/minute"
+limiter = Limiter(app, global_limits=["10/second", "100/minute", key_func=lambda : request.args.get('client_id', 'missing_client'))
 
 import meta
 import dining
