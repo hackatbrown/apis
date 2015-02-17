@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>583553C8-6E05-4A2C-8401-CD6B3674081A</string>
+	<key>IDESourceControlProjectName</key>
+	<string>BrownMenu</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>547900DF7AF31D8DDDA2843D6254316C0889339E</key>
+		<string>github.com:hackatbrown/api.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>BrownMenu iOS/BrownMenu/BrownMenu.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>547900DF7AF31D8DDDA2843D6254316C0889339E</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:hackatbrown/api.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>547900DF7AF31D8DDDA2843D6254316C0889339E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>547900DF7AF31D8DDDA2843D6254316C0889339E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>api</string>
+		</dict>
+	</array>
+</dict>
+</plist>
