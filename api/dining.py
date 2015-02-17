@@ -336,8 +336,7 @@ def get_dining_datetime():
 	now = datetime.now()
 	if now.hour < 2:
 		now = (now - timedelta(1))
-		now.hour = 23
-		now.minute = 59
+		now.replace(hour=23, minute=59)
 		return now
 	else:
 		return now
