@@ -2,7 +2,7 @@ from flask import request, jsonify
 from api import app, db, make_json_error, limiter, RATE_LIMIT, support_jsonp
 from meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from difflib import get_close_matches
 
 '''
