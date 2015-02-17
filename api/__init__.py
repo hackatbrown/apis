@@ -46,7 +46,7 @@ else:
 
 # setup rate limiting
 RATE_LIMIT = "10/second;100/minute"
-limiter = Limiter(app, global_limits=["10/second", "100/minute", key_func=lambda : request.args.get('client_id', 'missing_client'))
+limiter = Limiter(app, global_limits=["10/second", "100/minute"], key_func=lambda : request.args.get('client_id', 'missing_client'))
 
 import meta
 import dining
