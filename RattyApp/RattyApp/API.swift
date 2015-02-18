@@ -22,6 +22,16 @@ extension NSDate {
         fmt.dateFormat = "EEE"
         return fmt.stringFromDate(self)
     }
+    func dateByRemovingTime() -> NSDate {
+        let comps = NSDateComponents()
+        (comps.day, comps.month, comps.year) = getDateComponents()
+        comps.hour = 0
+        comps.minute = 0
+        return NSCalendar.currentCalendar().dateFromComponents(comps)!
+    }
+    func daysAfterToday() -> Int {
+        return Int((dateByRemovingTime().timeIntervalSinceReferenceDate - NSDate().dateByRemovingTime().timeIntervalSinceReferenceDate) / (24 * 60 * 60))
+    }
 }
 
 private var _SharedAPI: DiningAPI?

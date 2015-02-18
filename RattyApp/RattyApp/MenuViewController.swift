@@ -123,6 +123,13 @@ class MenuViewController: UIViewController, UIPageViewControllerDataSource, UIPa
     func pageViewController(pageViewController: UIPageViewController, willTransitionToViewControllers pendingViewControllers: [AnyObject]) {
         updateCurrentPage()
         pageTransitionTracker.startTracking()
+        
+        if let tableVC = pendingViewControllers.first as MenuTableViewController? {
+            tableVC.shouldReturnToToday = {
+                [weak self] in
+                self!.showDateAndMeal(NSDate(), meal: self!.getShownMeal(), animated: true)
+            }
+        }
     }
     
     func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [AnyObject], transitionCompleted completed: Bool) {
@@ -193,7 +200,7 @@ class MenuViewController: UIViewController, UIPageViewControllerDataSource, UIPa
         if meal < 0 {
             meal += 3
         }
-        let i1 = Int(floor(meal))
+        let i1 = Int(floor(meal)) % 3
         let i2 = Int(ceil(meal)) % 3
         let mix = meal - floor(meal)
         let pair1 = colorPairs[i1]
