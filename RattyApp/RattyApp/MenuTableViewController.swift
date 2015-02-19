@@ -10,11 +10,19 @@ import UIKit
 
 let MenuSectionInset: CGFloat = 10
 
-class MenuTableViewController: UITableViewController {
+class MenuTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    
+    var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.registerClass(SectionCell.self, forCellReuseIdentifier: "SectionCell")
+        
+        tableView = UITableView(frame: view.bounds, style: .Plain)
+        view.addSubview(tableView)
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        tableView.registerClass(MenuItemCell.self, forCellReuseIdentifier: "MenuItemCell")
         tableView.backgroundColor = UIColor.clearColor()
         tableView.separatorStyle = .None
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 50 + MenuSectionInset, 0)
@@ -23,6 +31,11 @@ class MenuTableViewController: UITableViewController {
         tableView.showsVerticalScrollIndicator = false
         
         updateHeader()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.frame = UIEdgeInsetsInsetRect(view.bounds, UIEdgeInsetsMake(0, MenuSectionInset, 0, MenuSectionInset))
     }
     
     func updateHeader() {
@@ -108,23 +121,35 @@ class MenuTableViewController: UITableViewController {
 
     // MARK: - Table view data source
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return countElements(menu?.sections ?? [])
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let size = CGSizeMake(tableView.bounds.size.width - MenuSectionInset * 2, CGFloat(MAXFLOAT))
-        return SectionCell.createStackViewForSection(menu!.sections[indexPath.row]).sizeThatFits(size).height + MenuSectionInset
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let section = menu!.sections[section]
+        return countElements(section.items) + 1
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SectionCell")! as SectionCell
-        cell.backgroundColor = UIColor.clearColor()
-        cell.insets = UIEdgeInsetsMake(MenuSectionInset / 2, MenuSectionInset, MenuSectionInset / 2, MenuSectionInset)
-        cell.section = menu!.sections[indexPath.row]
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let section = menu!.sections[indexPath.section]
+        let cell = tableView.dequeueReusableCellWithIdentifier("MenuItemCell", forIndexPath: indexPath) as MenuItemCell
+        cell.textLabel.textAlignment = indexPath.row == 0 ? .Center : .Left
+        if indexPath.row == 0 {
+            cell.textLabel.text = section.name.uppercaseString
+        } else {
+            cell.textLabel.text = section.items[indexPath.row - 1]
+        }
+        let alpha: CGFloat = (indexPath.row == 0) ? 0.5 : (indexPath.row % 2 == 0 ? 0.25 : 0.1)
+        cell.backgroundColor = UIColor(white: 1, alpha: alpha)
+        // cell.insets = UIEdgeInsetsMake(MenuSectionInset / 2, MenuSectionInset, MenuSectionInset / 2, MenuSectionInset)
         cell.selectionStyle = .None
         return cell
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return MenuSectionInset
+    }
+    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
     }
 }

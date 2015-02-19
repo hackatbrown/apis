@@ -19,6 +19,7 @@
 		5F56AD8C1A9566320045681E /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD8B1A9566320045681E /* StackView.swift */; };
 		5F56AD8F1A9575970045681E /* MealPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD8E1A9575970045681E /* MealPicker.swift */; };
 		5F56AD911A9583800045681E /* MenuLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD901A9583800045681E /* MenuLoader.swift */; };
+		5F63053F1A966B8A007B96C0 /* MenuItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F63053E1A966B8A007B96C0 /* MenuItemCell.swift */; };
 		5FCC4A181A93DBED00EEA504 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC4A171A93DBED00EEA504 /* UIColor+Extensions.swift */; };
 		5FDECE2C1A92C8DD00E5BD24 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE2B1A92C8DD00E5BD24 /* AppDelegate.swift */; };
 		5FDECE2E1A92C8DD00E5BD24 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE2D1A92C8DD00E5BD24 /* ViewController.swift */; };
@@ -82,6 +83,7 @@
 		5F56AD8B1A9566320045681E /* StackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StackView.swift; path = RattyApp/StackView.swift; sourceTree = SOURCE_ROOT; };
 		5F56AD8E1A9575970045681E /* MealPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealPicker.swift; sourceTree = "<group>"; };
 		5F56AD901A9583800045681E /* MenuLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuLoader.swift; sourceTree = "<group>"; };
+		5F63053E1A966B8A007B96C0 /* MenuItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuItemCell.swift; sourceTree = "<group>"; };
 		5FCC4A171A93DBED00EEA504 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		5FDECE261A92C8DD00E5BD24 /* RattyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RattyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FDECE2A1A92C8DD00E5BD24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				5FCC4A171A93DBED00EEA504 /* UIColor+Extensions.swift */,
 				5FDECE4F1A92D66500E5BD24 /* MenuTableViewController.swift */,
 				5FDECE531A92D92800E5BD24 /* SectionCell.swift */,
+				5F63053E1A966B8A007B96C0 /* MenuItemCell.swift */,
 				5FDECE5D1A9300E600E5BD24 /* PageTransitionTracker.swift */,
 				5FDECE551A92D9BB00E5BD24 /* MenuRow.swift */,
 				5FDECE561A92D9BB00E5BD24 /* StackView.swift */,
@@ -400,6 +403,7 @@
 				5FDECE501A92D66500E5BD24 /* MenuTableViewController.swift in Sources */,
 				5FDECE541A92D92800E5BD24 /* SectionCell.swift in Sources */,
 				5FCC4A181A93DBED00EEA504 /* UIColor+Extensions.swift in Sources */,
+				5F63053F1A966B8A007B96C0 /* MenuItemCell.swift in Sources */,
 				5FDECE2C1A92C8DD00E5BD24 /* AppDelegate.swift in Sources */,
 				5FDECE4E1A92D61500E5BD24 /* MenuViewController.swift in Sources */,
 			);
@@ -621,6 +625,7 @@
 				5F56AD7C1A9518D20045681E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5FDECE211A92C8DD00E5BD24 /* Build configuration list for PBXProject "RattyApp" */ = {
 			isa = XCConfigurationList;

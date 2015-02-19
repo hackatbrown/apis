@@ -24,7 +24,7 @@ class MenuSectionView: UIView {
         icon.contentMode = .ScaleAspectFit
         label.text = ", ".join(section.items)
         label.textColor = UIColor.whiteColor()
-        label.numberOfLines = 0
+        label.numberOfLines = 2
     }
     
     override func layoutSubviews() {
