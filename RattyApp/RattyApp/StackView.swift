@@ -28,8 +28,13 @@ class StackView: UIView {
             let height = view.sizeThatFits(self.bounds.size).height
             view.frame = CGRectMake(0, y, self.bounds.size.width, height)
             y += height
+            if hideOverflowViews {
+                view.hidden = y > bounds.size.height
+            }
         }
     }
+    
+    var hideOverflowViews: Bool = false
     
     override func sizeThatFits(size: CGSize) -> CGSize {
         var y: CGFloat = 0

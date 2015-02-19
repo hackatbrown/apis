@@ -10,6 +10,14 @@ import UIKit
 
 let ShouldJumpToCurrentMealNotification = "ShouldJumpToCurrentMealNotification"
 
+func IncrementNetworkActivityCount() {
+    AppDelegate.Shared().incrementNetworkActivityCount()
+}
+
+func DecrementNetworkActivityCount() {
+    AppDelegate.Shared().decrementNetworkActivityCount()
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

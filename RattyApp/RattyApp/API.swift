@@ -117,10 +117,10 @@ class DiningAPI: NSObject {
                 callback(response: nil, error: nil)
             }
         } else {
-            AppDelegate.Shared().incrementNetworkActivityCount()
+            IncrementNetworkActivityCount()
             NSURLSession.sharedSession().dataTaskWithRequest(req, completionHandler: { (let dataOpt: NSData?, let response: NSURLResponse?, let errorOpt: NSError?) -> Void in
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    AppDelegate.Shared().decrementNetworkActivityCount()
+                    DecrementNetworkActivityCount()
                     if let data = dataOpt {
                         if let responseDict = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil) as? [String: AnyObject] {
                             NSURLCache.sharedURLCache().storeCachedResponse(NSCachedURLResponse(response: response!, data: data), forRequest: req)
@@ -139,7 +139,7 @@ class DiningAPI: NSObject {
         }
     }
     
-    func getMenu(eatery: String, date: NSDate, callback: ([MealMenu]?, NSError?) -> ()) {
+    func getJsonForMenu(eatery: String, date: NSDate, callback: (response: [String: AnyObject]?, error: NSError?) -> ()) {
         let (day, month, year) = date.getDateComponents()
         let params: [String: String] = [
             "eatery": "ratty",
@@ -148,6 +148,13 @@ class DiningAPI: NSObject {
             "year": "\(year)"
         ]
         get("/dining/menu", params: params, allowCached: true) { (responseOpt, errorOpt) -> () in
+            callback(response: responseOpt, error: errorOpt)
+        }
+    }
+    
+    func getMenu(eatery: String, date: NSDate, callback: ([MealMenu]?, NSError?) -> ()) {
+        getJsonForMenu(eatery, date: date) {
+            (responseOpt, errorOpt) -> () in
             if let response = responseOpt {
                 if let menusJson = response["menus"] as? [[String: AnyObject]] {
                     let menus = menusJson.map({ MealMenu(json: $0) })

@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F56AD701A9518D20045681E /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F56AD6F1A9518D20045681E /* NotificationCenter.framework */; };
+		5F56AD751A9518D20045681E /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD741A9518D20045681E /* TodayViewController.swift */; };
+		5F56AD771A9518D20045681E /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F56AD761A9518D20045681E /* MainInterface.storyboard */; };
+		5F56AD7A1A9518D20045681E /* Ratty Menu.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5F56AD6D1A9518D20045681E /* Ratty Menu.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5F56AD821A951F8D0045681E /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD811A951F8D0045681E /* WordCloudView.swift */; };
+		5F56AD841A9530460045681E /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD831A9530460045681E /* API.swift */; };
+		5F56AD861A9563560045681E /* Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F56AD851A9563560045681E /* Icons.xcassets */; };
+		5F56AD881A9564660045681E /* MenuSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD871A9564660045681E /* MenuSectionView.swift */; };
+		5F56AD8A1A95660F0045681E /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD891A95660F0045681E /* MenuView.swift */; };
+		5F56AD8C1A9566320045681E /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD8B1A9566320045681E /* StackView.swift */; };
+		5F56AD8F1A9575970045681E /* MealPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD8E1A9575970045681E /* MealPicker.swift */; };
+		5F56AD911A9583800045681E /* MenuLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD901A9583800045681E /* MenuLoader.swift */; };
 		5FCC4A181A93DBED00EEA504 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC4A171A93DBED00EEA504 /* UIColor+Extensions.swift */; };
 		5FDECE2C1A92C8DD00E5BD24 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE2B1A92C8DD00E5BD24 /* AppDelegate.swift */; };
 		5FDECE2E1A92C8DD00E5BD24 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE2D1A92C8DD00E5BD24 /* ViewController.swift */; };
@@ -26,6 +38,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		5F56AD781A9518D20045681E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5FDECE1E1A92C8DD00E5BD24 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5F56AD6C1A9518D20045681E;
+			remoteInfo = "Ratty Menu";
+		};
 		5FDECE3C1A92C8DD00E5BD24 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5FDECE1E1A92C8DD00E5BD24 /* Project object */;
@@ -35,7 +54,34 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		5F56AD7E1A9518D20045681E /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5F56AD7A1A9518D20045681E /* Ratty Menu.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		5F56AD6D1A9518D20045681E /* Ratty Menu.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Ratty Menu.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F56AD6F1A9518D20045681E /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		5F56AD731A9518D20045681E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5F56AD741A9518D20045681E /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
+		5F56AD761A9518D20045681E /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		5F56AD811A951F8D0045681E /* WordCloudView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordCloudView.swift; sourceTree = "<group>"; };
+		5F56AD831A9530460045681E /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = API.swift; path = RattyApp/API.swift; sourceTree = SOURCE_ROOT; };
+		5F56AD851A9563560045681E /* Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icons.xcassets; sourceTree = "<group>"; };
+		5F56AD871A9564660045681E /* MenuSectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuSectionView.swift; sourceTree = "<group>"; };
+		5F56AD891A95660F0045681E /* MenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		5F56AD8B1A9566320045681E /* StackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StackView.swift; path = RattyApp/StackView.swift; sourceTree = SOURCE_ROOT; };
+		5F56AD8E1A9575970045681E /* MealPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealPicker.swift; sourceTree = "<group>"; };
+		5F56AD901A9583800045681E /* MenuLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuLoader.swift; sourceTree = "<group>"; };
 		5FCC4A171A93DBED00EEA504 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		5FDECE261A92C8DD00E5BD24 /* RattyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RattyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FDECE2A1A92C8DD00E5BD24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -59,6 +105,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5F56AD6A1A9518D20045681E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5F56AD701A9518D20045681E /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5FDECE231A92C8DD00E5BD24 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -76,11 +130,55 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F56AD6E1A9518D20045681E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5F56AD6F1A9518D20045681E /* NotificationCenter.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5F56AD711A9518D20045681E /* Ratty Menu */ = {
+			isa = PBXGroup;
+			children = (
+				5F56AD741A9518D20045681E /* TodayViewController.swift */,
+				5F56AD8E1A9575970045681E /* MealPicker.swift */,
+				5F56AD901A9583800045681E /* MenuLoader.swift */,
+				5F56AD8D1A95673B0045681E /* Shared */,
+				5F56AD891A95660F0045681E /* MenuView.swift */,
+				5F56AD871A9564660045681E /* MenuSectionView.swift */,
+				5F56AD851A9563560045681E /* Icons.xcassets */,
+				5F56AD811A951F8D0045681E /* WordCloudView.swift */,
+				5F56AD761A9518D20045681E /* MainInterface.storyboard */,
+				5F56AD721A9518D20045681E /* Supporting Files */,
+			);
+			path = "Ratty Menu";
+			sourceTree = "<group>";
+		};
+		5F56AD721A9518D20045681E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5F56AD731A9518D20045681E /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5F56AD8D1A95673B0045681E /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				5F56AD831A9530460045681E /* API.swift */,
+				5F56AD8B1A9566320045681E /* StackView.swift */,
+			);
+			name = Shared;
+			sourceTree = "<group>";
+		};
 		5FDECE1D1A92C8DD00E5BD24 = {
 			isa = PBXGroup;
 			children = (
 				5FDECE281A92C8DD00E5BD24 /* RattyApp */,
 				5FDECE3E1A92C8DD00E5BD24 /* RattyAppTests */,
+				5F56AD711A9518D20045681E /* Ratty Menu */,
+				5F56AD6E1A9518D20045681E /* Frameworks */,
 				5FDECE271A92C8DD00E5BD24 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +188,7 @@
 			children = (
 				5FDECE261A92C8DD00E5BD24 /* RattyApp.app */,
 				5FDECE3B1A92C8DD00E5BD24 /* RattyAppTests.xctest */,
+				5F56AD6D1A9518D20045681E /* Ratty Menu.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -145,6 +244,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5F56AD6C1A9518D20045681E /* Ratty Menu */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5F56AD7D1A9518D20045681E /* Build configuration list for PBXNativeTarget "Ratty Menu" */;
+			buildPhases = (
+				5F56AD691A9518D20045681E /* Sources */,
+				5F56AD6A1A9518D20045681E /* Frameworks */,
+				5F56AD6B1A9518D20045681E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Ratty Menu";
+			productName = "Ratty Menu";
+			productReference = 5F56AD6D1A9518D20045681E /* Ratty Menu.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		5FDECE251A92C8DD00E5BD24 /* RattyApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5FDECE451A92C8DD00E5BD24 /* Build configuration list for PBXNativeTarget "RattyApp" */;
@@ -152,10 +268,12 @@
 				5FDECE221A92C8DD00E5BD24 /* Sources */,
 				5FDECE231A92C8DD00E5BD24 /* Frameworks */,
 				5FDECE241A92C8DD00E5BD24 /* Resources */,
+				5F56AD7E1A9518D20045681E /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				5F56AD791A9518D20045681E /* PBXTargetDependency */,
 			);
 			name = RattyApp;
 			productName = RattyApp;
@@ -189,6 +307,10 @@
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "Nate Parrott";
 				TargetAttributes = {
+					5F56AD6C1A9518D20045681E = {
+						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = VPN8ZW6EAC;
+					};
 					5FDECE251A92C8DD00E5BD24 = {
 						CreatedOnToolsVersion = 6.1;
 						DevelopmentTeam = VPN8ZW6EAC;
@@ -214,11 +336,21 @@
 			targets = (
 				5FDECE251A92C8DD00E5BD24 /* RattyApp */,
 				5FDECE3A1A92C8DD00E5BD24 /* RattyAppTests */,
+				5F56AD6C1A9518D20045681E /* Ratty Menu */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5F56AD6B1A9518D20045681E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5F56AD861A9563560045681E /* Icons.xcassets in Resources */,
+				5F56AD771A9518D20045681E /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5FDECE241A92C8DD00E5BD24 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -240,6 +372,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5F56AD691A9518D20045681E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5F56AD8A1A95660F0045681E /* MenuView.swift in Sources */,
+				5F56AD751A9518D20045681E /* TodayViewController.swift in Sources */,
+				5F56AD881A9564660045681E /* MenuSectionView.swift in Sources */,
+				5F56AD8F1A9575970045681E /* MealPicker.swift in Sources */,
+				5F56AD821A951F8D0045681E /* WordCloudView.swift in Sources */,
+				5F56AD841A9530460045681E /* API.swift in Sources */,
+				5F56AD8C1A9566320045681E /* StackView.swift in Sources */,
+				5F56AD911A9583800045681E /* MenuLoader.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5FDECE221A92C8DD00E5BD24 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -269,6 +416,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		5F56AD791A9518D20045681E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5F56AD6C1A9518D20045681E /* Ratty Menu */;
+			targetProxy = 5F56AD781A9518D20045681E /* PBXContainerItemProxy */;
+		};
 		5FDECE3D1A92C8DD00E5BD24 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5FDECE251A92C8DD00E5BD24 /* RattyApp */;
@@ -296,6 +448,36 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		5F56AD7B1A9518D20045681E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Ratty Menu/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		5F56AD7C1A9518D20045681E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = "Ratty Menu/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		5FDECE431A92C8DD00E5BD24 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -377,6 +559,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = RattyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -387,6 +570,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = RattyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -430,6 +614,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5F56AD7D1A9518D20045681E /* Build configuration list for PBXNativeTarget "Ratty Menu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5F56AD7B1A9518D20045681E /* Debug */,
+				5F56AD7C1A9518D20045681E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		5FDECE211A92C8DD00E5BD24 /* Build configuration list for PBXProject "RattyApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
