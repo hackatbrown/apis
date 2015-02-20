@@ -44,17 +44,17 @@ class MenuViewController: UIViewController, UIPageViewControllerDataSource, UIPa
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let x = currentPosition
-        self.currentPosition = x // trigger load
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "jumpToCurrentMeal", name: ShouldJumpToCurrentMealNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "jumpToMeal:", name: JumpToMealAndDateNotification, object: nil)
-        
         pageTransitionTracker = PageTransitionTracker(pageViewController: pageViewController)
         pageTransitionTracker.trackingCallback = {
             [weak self] in
             self!.updateCurrentPage()
         }
+        
+        let x = currentPosition
+        self.currentPosition = x // trigger load
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "jumpToCurrentMeal", name: ShouldJumpToCurrentMealNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "jumpToMeal:", name: JumpToMealAndDateNotification, object: nil)
         
         // index 0 is the splash image view
         view.layer.insertSublayer(gradientLayer, atIndex: 1)
@@ -209,11 +209,11 @@ class MenuViewController: UIViewController, UIPageViewControllerDataSource, UIPa
     }
     
     private func _showingDate() -> NSDate {
-        return (pageViewController.viewControllers.first? as MenuTableViewController).time?.date ?? NSDate()
+        return (pageViewController.viewControllers.first as MenuTableViewController?)?.time?.date ?? NSDate()
     }
     
     private func _showingMealIndex() -> Int {
-        return (pageViewController.viewControllers.first? as MenuTableViewController).time?.meal ?? 0
+        return (pageViewController.viewControllers.first as MenuTableViewController?)?.time?.meal ?? 0
     }
     
     // MARK: Page transitions

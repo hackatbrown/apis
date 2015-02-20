@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Crashlytics
 
 let ShouldJumpToCurrentMealNotification = "ShouldJumpToCurrentMealNotification"
 let JumpToMealAndDateNotification = "JumpToMealAndDateNotification"
@@ -26,6 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+        Crashlytics.startWithAPIKey("c00a274f2c47ad5ee89b17ccb2fdb86e8d1fece8")
+        
+        Mixpanel.sharedInstanceWithToken("fc6b1ee9e60ac9665e2144e0045aabde")
+        Mixpanel.sharedInstance().track("Launch")
         
         let URLCache = NSURLCache(memoryCapacity: 4 * 1024 * 1024, diskCapacity: 0, diskPath: nil)
         NSURLCache.setSharedURLCache(URLCache)
@@ -63,6 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
+        Mixpanel.sharedInstance().track("Foreground")
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         let lastOpenedTime = NSUserDefaults.standardUserDefaults().doubleForKey("LastOpened")
         if NSDate.timeIntervalSinceReferenceDate() - lastOpenedTime > 30 * 60 {
@@ -80,6 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, handleOpenURL url: NSURL) -> Bool {
+        Mixpanel.sharedInstance().track("OpenFromURL")
         let urlComps = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)!
         if let host = urlComps.host {
             switch host {

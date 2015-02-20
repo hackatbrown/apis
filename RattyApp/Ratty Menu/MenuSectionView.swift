@@ -43,7 +43,7 @@ class MenuSectionView: UIView {
         if let size = icon.image?.size {
             let width: CGFloat = 16
             let height = label.label.font.pointSize
-            iconVibrancy.frame = CGRectMake(-WidgetLeftMargin, 7, width, height)
+            iconVibrancy.frame = CGRectMake(-WidgetLeftMargin, 2, width, height)
             icon.frame = iconVibrancy.bounds
         }
         label.frame = CGRectMake(0, 0, bounds.size.width, bounds.size.height)

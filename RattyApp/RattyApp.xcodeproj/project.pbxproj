@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5AD4BB8B04296CC802069ECF /* libPods-RattyApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BE8168F1E066972F8CEEB7 /* libPods-RattyApp.a */; };
 		5F56AD701A9518D20045681E /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F56AD6F1A9518D20045681E /* NotificationCenter.framework */; };
 		5F56AD751A9518D20045681E /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD741A9518D20045681E /* TodayViewController.swift */; };
 		5F56AD771A9518D20045681E /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F56AD761A9518D20045681E /* MainInterface.storyboard */; };
@@ -34,6 +35,7 @@
 		5FDECE5A1A92E58700E5BD24 /* Navigation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5FDECE591A92E58700E5BD24 /* Navigation.xib */; };
 		5FDECE5C1A92E6A700E5BD24 /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE5B1A92E6A700E5BD24 /* NavigationView.swift */; };
 		5FDECE5E1A9300E600E5BD24 /* PageTransitionTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE5D1A9300E600E5BD24 /* PageTransitionTracker.swift */; };
+		5FE1F7B41A97F88F00394947 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FE1F7B31A97F88F00394947 /* Crashlytics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +70,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1ED77A2D096E73BC1363BBB7 /* Pods-RattyApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RattyApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-RattyApp/Pods-RattyApp.release.xcconfig"; sourceTree = "<group>"; };
+		33BE8168F1E066972F8CEEB7 /* libPods-RattyApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RattyApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F56AD6D1A9518D20045681E /* Ratty Menu.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Ratty Menu.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F56AD6F1A9518D20045681E /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		5F56AD731A9518D20045681E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -100,6 +104,10 @@
 		5FDECE591A92E58700E5BD24 /* Navigation.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Navigation.xib; sourceTree = "<group>"; };
 		5FDECE5B1A92E6A700E5BD24 /* NavigationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
 		5FDECE5D1A9300E600E5BD24 /* PageTransitionTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageTransitionTracker.swift; sourceTree = "<group>"; };
+		5FE1F7AA1A97F64500394947 /* RattyApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RattyApp-Bridging-Header.h"; sourceTree = "<group>"; };
+		5FE1F7AE1A97F74100394947 /* Ratty Menu-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ratty Menu-Bridging-Header.h"; sourceTree = "<group>"; };
+		5FE1F7B31A97F88F00394947 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		CA58720026879C48275DE640 /* Pods-RattyApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RattyApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RattyApp/Pods-RattyApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +123,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FE1F7B41A97F88F00394947 /* Crashlytics.framework in Frameworks */,
+				5AD4BB8B04296CC802069ECF /* libPods-RattyApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,10 +138,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3145E3BA44B1C396E66B6E0B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CA58720026879C48275DE640 /* Pods-RattyApp.debug.xcconfig */,
+				1ED77A2D096E73BC1363BBB7 /* Pods-RattyApp.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		5F56AD6E1A9518D20045681E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				5F56AD6F1A9518D20045681E /* NotificationCenter.framework */,
+				33BE8168F1E066972F8CEEB7 /* libPods-RattyApp.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -149,6 +169,7 @@
 				5F56AD851A9563560045681E /* Icons.xcassets */,
 				5F56AD761A9518D20045681E /* MainInterface.storyboard */,
 				5F56AD721A9518D20045681E /* Supporting Files */,
+				5FE1F7AE1A97F74100394947 /* Ratty Menu-Bridging-Header.h */,
 			);
 			path = "Ratty Menu";
 			sourceTree = "<group>";
@@ -178,6 +199,7 @@
 				5F56AD711A9518D20045681E /* Ratty Menu */,
 				5F56AD6E1A9518D20045681E /* Frameworks */,
 				5FDECE271A92C8DD00E5BD24 /* Products */,
+				3145E3BA44B1C396E66B6E0B /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -206,9 +228,11 @@
 				5FDECE5B1A92E6A700E5BD24 /* NavigationView.swift */,
 				5FDECE2F1A92C8DD00E5BD24 /* Main.storyboard */,
 				5FDECE591A92E58700E5BD24 /* Navigation.xib */,
+				5FE1F7B31A97F88F00394947 /* Crashlytics.framework */,
 				5FDECE321A92C8DD00E5BD24 /* Images.xcassets */,
 				5FDECE341A92C8DD00E5BD24 /* LaunchScreen.xib */,
 				5FDECE291A92C8DD00E5BD24 /* Supporting Files */,
+				5FE1F7AA1A97F64500394947 /* RattyApp-Bridging-Header.h */,
 			);
 			path = RattyApp;
 			sourceTree = "<group>";
@@ -262,10 +286,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5FDECE451A92C8DD00E5BD24 /* Build configuration list for PBXNativeTarget "RattyApp" */;
 			buildPhases = (
+				37BD8780087A2112C6828509 /* Check Pods Manifest.lock */,
 				5FDECE221A92C8DD00E5BD24 /* Sources */,
 				5FDECE231A92C8DD00E5BD24 /* Frameworks */,
 				5FDECE241A92C8DD00E5BD24 /* Resources */,
 				5F56AD7E1A9518D20045681E /* Embed App Extensions */,
+				15833638F1FB7F88F079B4A9 /* Copy Pods Resources */,
+				5FE1F7B21A97F87100394947 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -368,6 +395,52 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		15833638F1FB7F88F079B4A9 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RattyApp/Pods-RattyApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		37BD8780087A2112C6828509 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		5FE1F7B21A97F87100394947 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run c00a274f2c47ad5ee89b17ccb2fdb86e8d1fece8 cf3ca8aefff328c68d183c05c288062a57dcbbf7f5bbd8f43418c90e18fca3bf";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5F56AD691A9518D20045681E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -447,6 +520,7 @@
 		5F56AD7B1A9518D20045681E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -458,12 +532,15 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Ratty Menu/Ratty Menu-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		5F56AD7C1A9518D20045681E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Ratty Menu/Info.plist";
@@ -471,6 +548,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Ratty Menu/Ratty Menu-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -553,24 +631,39 @@
 		};
 		5FDECE461A92C8DD00E5BD24 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA58720026879C48275DE640 /* Pods-RattyApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/RattyApp",
+				);
 				INFOPLIST_FILE = RattyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RattyApp/RattyApp-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		5FDECE471A92C8DD00E5BD24 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1ED77A2D096E73BC1363BBB7 /* Pods-RattyApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/RattyApp",
+				);
 				INFOPLIST_FILE = RattyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RattyApp/RattyApp-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

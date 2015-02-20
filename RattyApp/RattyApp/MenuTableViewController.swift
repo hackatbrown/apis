@@ -33,6 +33,11 @@ class MenuTableViewController: UIViewController, UITableViewDataSource, UITableV
         updateHeader()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        Mixpanel.sharedInstance().track("ShowMenu")
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = UIEdgeInsetsInsetRect(view.bounds, UIEdgeInsetsMake(0, MenuSectionInset, 0, MenuSectionInset))
