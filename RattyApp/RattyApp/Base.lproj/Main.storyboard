@@ -16,9 +16,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SplashGradient" translatesAutoresizingMaskIntoConstraints="NO" id="fdB-4t-bJa">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                            </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8GM-y0-jHz">
                                 <rect key="frame" x="0.0" y="430" width="320" height="50"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="fAf-Re-cf0"/>
                                 </constraints>
@@ -28,7 +31,11 @@
                         <constraints>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="8GM-y0-jHz" secondAttribute="bottom" id="3Ud-BH-ZqB"/>
                             <constraint firstAttribute="trailing" secondItem="8GM-y0-jHz" secondAttribute="trailing" id="81w-pO-FEW"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="fdB-4t-bJa" secondAttribute="bottom" id="B6U-sk-fPv"/>
+                            <constraint firstItem="fdB-4t-bJa" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="FTW-jK-bu4"/>
                             <constraint firstItem="8GM-y0-jHz" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="Gcc-T6-UOM"/>
+                            <constraint firstItem="fdB-4t-bJa" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="OCw-1z-Mv5"/>
+                            <constraint firstAttribute="trailing" secondItem="fdB-4t-bJa" secondAttribute="trailing" id="cI4-ij-S2D"/>
                         </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
@@ -40,4 +47,7 @@
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="SplashGradient" width="26" height="920"/>
+    </resources>
 </document>

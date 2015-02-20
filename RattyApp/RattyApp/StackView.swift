@@ -40,9 +40,11 @@ class StackView: UIView {
         var y: CGFloat = 0
         var maxW: CGFloat = 0
         for view in views {
-            let viewSize = view.sizeThatFits(size)
-            y += viewSize.height
-            maxW = max(viewSize.width, maxW)
+            let viewSize = view.sizeThatFits(CGSizeMake(size.width, size.height - y))
+            if y + viewSize.height <= size.height {
+                y += viewSize.height
+                maxW = max(viewSize.width, maxW)
+            }
         }
         return CGSizeMake(maxW, y)
     }

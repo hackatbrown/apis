@@ -139,7 +139,7 @@ class MenuTableViewController: UIViewController, UITableViewDataSource, UITableV
         } else {
             cell.textLabel.text = section.items[indexPath.row - 1]
         }
-        let alpha: CGFloat = (indexPath.row == 0) ? 0.5 : (indexPath.row % 2 == 0 ? 0.25 : 0.1)
+        let alpha: CGFloat = (indexPath.row == 0) ? 0.5 : (indexPath.row % 2 == 0 ? 0.25 : 0.125)
         cell.backgroundColor = UIColor(white: 1, alpha: alpha)
         // cell.insets = UIEdgeInsetsMake(MenuSectionInset / 2, MenuSectionInset, MenuSectionInset / 2, MenuSectionInset)
         cell.selectionStyle = .None

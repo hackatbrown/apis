@@ -11,7 +11,7 @@ import UIKit
 class MenuSectionView: UIView {
     init(section: DiningAPI.MenuSection) {
         icon = UIImageView()
-        label = UILabel()
+        label = TextLabelWithAlternateContent()
         iconVibrancy = UIVisualEffectView(effect: UIVibrancyEffect.notificationCenterVibrancyEffect())
         super.init(frame: CGRectZero)
         addSubview(icon)
@@ -22,16 +22,27 @@ class MenuSectionView: UIView {
         icon.image = iconForMenuName(section.name)
         icon.tintColor = UIColor.whiteColor()
         icon.contentMode = .ScaleAspectFit
-        label.text = ", ".join(section.items)
-        label.textColor = UIColor.whiteColor()
-        label.numberOfLines = 2
+        label.label.textColor = UIColor.whiteColor()
+        
+        var strings: [String] = []
+        for i in 0..<(countElements(section.items)+1) {
+            var itemsToShow = Array(section.items[0..<i])
+            let leftoverCount = countElements(section.items) - i
+            if leftoverCount > 0 {
+                itemsToShow.append("\(leftoverCount) more")
+            }
+            strings.append(", ".join(itemsToShow))
+        }
+        label.strings = strings
+        label.maxHeight = label.label.font.pointSize * 2 + 5
+        
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         if let size = icon.image?.size {
             let width: CGFloat = 16
-            let height = label.font.pointSize
+            let height = label.label.font.pointSize
             iconVibrancy.frame = CGRectMake(-WidgetLeftMargin, 7, width, height)
             icon.frame = iconVibrancy.bounds
         }
@@ -55,7 +66,7 @@ class MenuSectionView: UIView {
     
     var icon: UIImageView
     var iconVibrancy: UIVisualEffectView
-    var label: UILabel
+    var label: TextLabelWithAlternateContent
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

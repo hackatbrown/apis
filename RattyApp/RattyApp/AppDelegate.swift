@@ -9,6 +9,7 @@
 import UIKit
 
 let ShouldJumpToCurrentMealNotification = "ShouldJumpToCurrentMealNotification"
+let JumpToMealAndDateNotification = "JumpToMealAndDateNotification"
 
 func IncrementNetworkActivityCount() {
     AppDelegate.Shared().incrementNetworkActivityCount()
@@ -77,7 +78,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    func application(application: UIApplication, handleOpenURL url: NSURL) -> Bool {
+        let urlComps = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)!
+        if let host = urlComps.host {
+            switch host {
+            case "menu":
+                if let meal = urlComps.valueForQueryKey("meal") {
+                    if let timestamp = urlComps.valueForQueryKey("date") {
+                        let dateObj = NSDate(timeIntervalSince1970: (timestamp as NSString).doubleValue)
+                        let userInfo: [NSObject: AnyObject] = ["date": dateObj, "meal": meal.toInt()!]
+                        NSNotificationCenter.defaultCenter().postNotificationName(JumpToMealAndDateNotification, object: nil, userInfo: userInfo)
+                    }
+                }
+                return true
+            default: return false
+            }
+        }
+        return false
+    }
+}
 
-
+extension NSURLComponents {
+    func valueForQueryKey(key: String) -> String? {
+        if let items = (queryItems as? [NSURLQueryItem]) {
+            for item in items {
+                if item.name == key {
+                    return item.value
+                }
+            }
+        }
+        return nil
+    }
 }
 

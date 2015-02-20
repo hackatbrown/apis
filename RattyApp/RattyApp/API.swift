@@ -78,7 +78,11 @@ class DiningAPI: NSObject {
             sections = sectionNames.map({
                 (name: String) -> MenuSection? in
                 if let items = json[name] as? [String] {
-                    return MenuSection(name: name, items: items)
+                    if countElements(items) > 0 {
+                        return MenuSection(name: name, items: items)
+                    } else {
+                        return nil
+                    }
                 } else {
                     return nil
                 }}).filter({ $0 != nil }).map({ $0! })

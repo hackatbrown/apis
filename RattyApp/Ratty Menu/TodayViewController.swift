@@ -55,6 +55,8 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         }
         loader.onReload!()
         
+        stack.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "openApp"))
+        
         updateUI()
         
     }
@@ -89,11 +91,21 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     }
     
     func widgetMarginInsetsForProposedMarginInsets(defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(defaultMarginInsets.top + 8, defaultMarginInsets.left - WidgetLeftMargin, defaultMarginInsets.bottom - 16, defaultMarginInsets.right)
+        return UIEdgeInsetsMake(defaultMarginInsets.top + 8, defaultMarginInsets.left - WidgetLeftMargin, defaultMarginInsets.bottom - 16, defaultMarginInsets.right + 6)
     }
     
     func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)?) {
         loader.completionHandler = completionHandler
         loader.reloadIfNeeded()
+    }
+    
+    func openApp() {
+        var url = "ratty://menu"
+        if let date = loader.mealsLoadedDate {
+            let meal = selectedMeal
+            let date = date.timeIntervalSince1970
+            url = "ratty://menu?date=\(date)&meal=\(meal)"
+        }
+        extensionContext!.openURL(NSURL(string: url)!, completionHandler: nil)
     }
 }

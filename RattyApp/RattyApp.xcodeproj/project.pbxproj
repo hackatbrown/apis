@@ -11,7 +11,6 @@
 		5F56AD751A9518D20045681E /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD741A9518D20045681E /* TodayViewController.swift */; };
 		5F56AD771A9518D20045681E /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F56AD761A9518D20045681E /* MainInterface.storyboard */; };
 		5F56AD7A1A9518D20045681E /* Ratty Menu.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5F56AD6D1A9518D20045681E /* Ratty Menu.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		5F56AD821A951F8D0045681E /* WordCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD811A951F8D0045681E /* WordCloudView.swift */; };
 		5F56AD841A9530460045681E /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD831A9530460045681E /* API.swift */; };
 		5F56AD861A9563560045681E /* Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F56AD851A9563560045681E /* Icons.xcassets */; };
 		5F56AD881A9564660045681E /* MenuSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD871A9564660045681E /* MenuSectionView.swift */; };
@@ -20,6 +19,7 @@
 		5F56AD8F1A9575970045681E /* MealPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD8E1A9575970045681E /* MealPicker.swift */; };
 		5F56AD911A9583800045681E /* MenuLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56AD901A9583800045681E /* MenuLoader.swift */; };
 		5F63053F1A966B8A007B96C0 /* MenuItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F63053E1A966B8A007B96C0 /* MenuItemCell.swift */; };
+		5F6305411A967DC1007B96C0 /* TextLabelWithAlternateContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6305401A967DC1007B96C0 /* TextLabelWithAlternateContent.swift */; };
 		5FCC4A181A93DBED00EEA504 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCC4A171A93DBED00EEA504 /* UIColor+Extensions.swift */; };
 		5FDECE2C1A92C8DD00E5BD24 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE2B1A92C8DD00E5BD24 /* AppDelegate.swift */; };
 		5FDECE2E1A92C8DD00E5BD24 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE2D1A92C8DD00E5BD24 /* ViewController.swift */; };
@@ -30,8 +30,6 @@
 		5FDECE4C1A92C8E800E5BD24 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE4B1A92C8E800E5BD24 /* API.swift */; };
 		5FDECE4E1A92D61500E5BD24 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE4D1A92D61500E5BD24 /* MenuViewController.swift */; };
 		5FDECE501A92D66500E5BD24 /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE4F1A92D66500E5BD24 /* MenuTableViewController.swift */; };
-		5FDECE541A92D92800E5BD24 /* SectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE531A92D92800E5BD24 /* SectionCell.swift */; };
-		5FDECE571A92D9BB00E5BD24 /* MenuRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE551A92D9BB00E5BD24 /* MenuRow.swift */; };
 		5FDECE581A92D9BB00E5BD24 /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE561A92D9BB00E5BD24 /* StackView.swift */; };
 		5FDECE5A1A92E58700E5BD24 /* Navigation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5FDECE591A92E58700E5BD24 /* Navigation.xib */; };
 		5FDECE5C1A92E6A700E5BD24 /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDECE5B1A92E6A700E5BD24 /* NavigationView.swift */; };
@@ -75,7 +73,6 @@
 		5F56AD731A9518D20045681E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5F56AD741A9518D20045681E /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
 		5F56AD761A9518D20045681E /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
-		5F56AD811A951F8D0045681E /* WordCloudView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordCloudView.swift; sourceTree = "<group>"; };
 		5F56AD831A9530460045681E /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = API.swift; path = RattyApp/API.swift; sourceTree = SOURCE_ROOT; };
 		5F56AD851A9563560045681E /* Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icons.xcassets; sourceTree = "<group>"; };
 		5F56AD871A9564660045681E /* MenuSectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuSectionView.swift; sourceTree = "<group>"; };
@@ -84,6 +81,7 @@
 		5F56AD8E1A9575970045681E /* MealPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealPicker.swift; sourceTree = "<group>"; };
 		5F56AD901A9583800045681E /* MenuLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuLoader.swift; sourceTree = "<group>"; };
 		5F63053E1A966B8A007B96C0 /* MenuItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuItemCell.swift; sourceTree = "<group>"; };
+		5F6305401A967DC1007B96C0 /* TextLabelWithAlternateContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextLabelWithAlternateContent.swift; sourceTree = "<group>"; };
 		5FCC4A171A93DBED00EEA504 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		5FDECE261A92C8DD00E5BD24 /* RattyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RattyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FDECE2A1A92C8DD00E5BD24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -98,8 +96,6 @@
 		5FDECE4B1A92C8E800E5BD24 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		5FDECE4D1A92D61500E5BD24 /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		5FDECE4F1A92D66500E5BD24 /* MenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
-		5FDECE531A92D92800E5BD24 /* SectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionCell.swift; sourceTree = "<group>"; };
-		5FDECE551A92D9BB00E5BD24 /* MenuRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuRow.swift; sourceTree = "<group>"; };
 		5FDECE561A92D9BB00E5BD24 /* StackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
 		5FDECE591A92E58700E5BD24 /* Navigation.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Navigation.xib; sourceTree = "<group>"; };
 		5FDECE5B1A92E6A700E5BD24 /* NavigationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
@@ -149,8 +145,8 @@
 				5F56AD8D1A95673B0045681E /* Shared */,
 				5F56AD891A95660F0045681E /* MenuView.swift */,
 				5F56AD871A9564660045681E /* MenuSectionView.swift */,
+				5F6305401A967DC1007B96C0 /* TextLabelWithAlternateContent.swift */,
 				5F56AD851A9563560045681E /* Icons.xcassets */,
-				5F56AD811A951F8D0045681E /* WordCloudView.swift */,
 				5F56AD761A9518D20045681E /* MainInterface.storyboard */,
 				5F56AD721A9518D20045681E /* Supporting Files */,
 			);
@@ -204,10 +200,8 @@
 				5FDECE4D1A92D61500E5BD24 /* MenuViewController.swift */,
 				5FCC4A171A93DBED00EEA504 /* UIColor+Extensions.swift */,
 				5FDECE4F1A92D66500E5BD24 /* MenuTableViewController.swift */,
-				5FDECE531A92D92800E5BD24 /* SectionCell.swift */,
 				5F63053E1A966B8A007B96C0 /* MenuItemCell.swift */,
 				5FDECE5D1A9300E600E5BD24 /* PageTransitionTracker.swift */,
-				5FDECE551A92D9BB00E5BD24 /* MenuRow.swift */,
 				5FDECE561A92D9BB00E5BD24 /* StackView.swift */,
 				5FDECE5B1A92E6A700E5BD24 /* NavigationView.swift */,
 				5FDECE2F1A92C8DD00E5BD24 /* Main.storyboard */,
@@ -383,10 +377,10 @@
 				5F56AD751A9518D20045681E /* TodayViewController.swift in Sources */,
 				5F56AD881A9564660045681E /* MenuSectionView.swift in Sources */,
 				5F56AD8F1A9575970045681E /* MealPicker.swift in Sources */,
-				5F56AD821A951F8D0045681E /* WordCloudView.swift in Sources */,
 				5F56AD841A9530460045681E /* API.swift in Sources */,
 				5F56AD8C1A9566320045681E /* StackView.swift in Sources */,
 				5F56AD911A9583800045681E /* MenuLoader.swift in Sources */,
+				5F6305411A967DC1007B96C0 /* TextLabelWithAlternateContent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,11 +391,9 @@
 				5FDECE5E1A9300E600E5BD24 /* PageTransitionTracker.swift in Sources */,
 				5FDECE2E1A92C8DD00E5BD24 /* ViewController.swift in Sources */,
 				5FDECE5C1A92E6A700E5BD24 /* NavigationView.swift in Sources */,
-				5FDECE571A92D9BB00E5BD24 /* MenuRow.swift in Sources */,
 				5FDECE4C1A92C8E800E5BD24 /* API.swift in Sources */,
 				5FDECE581A92D9BB00E5BD24 /* StackView.swift in Sources */,
 				5FDECE501A92D66500E5BD24 /* MenuTableViewController.swift in Sources */,
-				5FDECE541A92D92800E5BD24 /* SectionCell.swift in Sources */,
 				5FCC4A181A93DBED00EEA504 /* UIColor+Extensions.swift in Sources */,
 				5F63053F1A966B8A007B96C0 /* MenuItemCell.swift in Sources */,
 				5FDECE2C1A92C8DD00E5BD24 /* AppDelegate.swift in Sources */,
@@ -567,6 +559,7 @@
 				INFOPLIST_FILE = RattyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -578,6 +571,7 @@
 				INFOPLIST_FILE = RattyApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
