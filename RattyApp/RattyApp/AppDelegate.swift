@@ -11,6 +11,7 @@ import Crashlytics
 
 let ShouldJumpToCurrentMealNotification = "ShouldJumpToCurrentMealNotification"
 let JumpToMealAndDateNotification = "JumpToMealAndDateNotification"
+let ReloadMenuNotification = "ReloadMenuNotification"
 
 func IncrementNetworkActivityCount() {
     AppDelegate.Shared().incrementNetworkActivityCount()
@@ -74,6 +75,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let lastOpenedTime = NSUserDefaults.standardUserDefaults().doubleForKey("LastOpened")
         if NSDate.timeIntervalSinceReferenceDate() - lastOpenedTime > 30 * 60 {
             NSNotificationCenter.defaultCenter().postNotificationName(ShouldJumpToCurrentMealNotification, object: nil)
+        } else {
+            NSNotificationCenter.defaultCenter().postNotificationName(ReloadMenuNotification, object: nil)
         }
         NSUserDefaults.standardUserDefaults().setDouble(NSDate.timeIntervalSinceReferenceDate(), forKey: "LastOpened")
     }

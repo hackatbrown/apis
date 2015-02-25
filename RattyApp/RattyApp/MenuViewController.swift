@@ -50,11 +50,9 @@ class MenuViewController: UIViewController, UIPageViewControllerDataSource, UIPa
             self!.updateCurrentPage()
         }
         
-        let x = currentPosition
-        self.currentPosition = x // trigger load
-        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "jumpToCurrentMeal", name: ShouldJumpToCurrentMealNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "jumpToMeal:", name: JumpToMealAndDateNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reload", name: ReloadMenuNotification, object: nil)
         
         // index 0 is the splash image view
         view.layer.insertSublayer(gradientLayer, atIndex: 1)
@@ -81,15 +79,15 @@ class MenuViewController: UIViewController, UIPageViewControllerDataSource, UIPa
         
         updateCurrentPage()
         
-        jumpToCurrentMeal()
-        
         pageViewController.view.alpha = 0
         navView.userInteractionEnabled = false
         navView.alpha = 0.5
+        
+        jumpToCurrentMeal()
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: ShouldJumpToCurrentMealNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: nil, object: nil)
     }
     
     var initialLoad: Bool = false {
@@ -100,6 +98,11 @@ class MenuViewController: UIViewController, UIPageViewControllerDataSource, UIPa
             })
             navView.userInteractionEnabled = true
         }
+    }
+    
+    func reload() {
+        let p = currentPosition
+        currentPosition = p
     }
     
     func jumpToCurrentMeal() {
@@ -187,6 +190,10 @@ class MenuViewController: UIViewController, UIPageViewControllerDataSource, UIPa
                     let isInFuture = _showingDate().compare(currentPosition.date) == .OrderedAscending || (_showingDate().compare(currentPosition.date) == .OrderedSame && _showingMealIndex() < mealIndex)
                     let pageVC = MenuTableViewController()
                     pageVC.time = (currentPosition.date, mealIndex)
+                    pageVC.shouldReturnToToday = {
+                        [weak self] in
+                        self!.currentPosition = (date: NSDate(), meal: Meal.Nearest)
+                    }
                     pageViewController.setViewControllers([pageVC], direction: isInFuture ? .Forward : .Reverse, animated: animate, completion: nil)
                     if animate {
                         UIView.animateWithDuration(0.25, animations: { () -> Void in
@@ -243,7 +250,8 @@ class MenuViewController: UIViewController, UIPageViewControllerDataSource, UIPa
         }
         let colorPairs = [
             (UIColor(red: 0.078, green: 0.392, blue: 0.584, alpha: 1), UIColor(red: 0.988, green: 0.698, blue: 0.000, alpha: 1)),
-            (UIColor(red: 1.0, green:0.565297424793, blue:0.550667464733, alpha:1.0), UIColor(red: 1.0, green:0.745570778847, blue:0.0, alpha:1.0)),
+            (UIColor(red: 0.322, green: 0.455, blue: 0.729, alpha: 1), UIColor(red: 0.749, green: 0.863, blue: 0.843, alpha: 1)),
+            //(UIColor(red: 1.0, green:0.565297424793, blue:0.550667464733, alpha:1.0), UIColor(red: 1.0, green:0.745570778847, blue:0.0, alpha:1.0)),
             (UIColor(red: 0.88181167841, green:0.601593911648, blue:0.0619730427861, alpha:1.0), UIColor(red: 0.859640955925, green:0.223587602377, blue:0.290304690599, alpha:1.0))
         ]
         //             (UIColor(red: 0.463, green: 0.624, blue: 0.973, alpha: 1), UIColor(red: 0.674502670765, green:0.312217831612, blue:0.678681373596, alpha:1.0))
