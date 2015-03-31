@@ -1,5 +1,7 @@
 from flask import jsonify, render_template, url_for
 from api import app, db, limiter, RATE_LIMIT
+from scripts.add_client import add_client_id
+from scripts.email import send_id_email
 
 '''
 db.clients contains documents of the form:
@@ -27,7 +29,19 @@ clients = db.clients
 def root():
     return render_template('documentation.html')
 
-
+@app.route('/signup', methods=['GET', 'POST'])
+@limiter.limit(RATE_LIMIT)
+def signup():
+    if request.method == 'GET':
+        return render_template('signup.html')
+    else:
+        firstname = request.form['firstname'].strip()
+        lastname = request.form['lastname'].strip()
+        email = request.form['email'].strip()
+        appname = request.form['appname'].strip()
+        client_id = add_client_id(appname, email, firstname + " " + lastname)
+        if client_id:
+            send_email(email, "Your Brown APIs Client ID", )
 
 # Static responses
 
