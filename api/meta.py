@@ -1,7 +1,7 @@
 from flask import jsonify, render_template, url_for
 from api import app, db, limiter, RATE_LIMIT
 from scripts.add_client import add_client_id
-from scripts.email import send_id_email
+from scripts.email_handler import send_id_email
 
 '''
 db.clients contains documents of the form:

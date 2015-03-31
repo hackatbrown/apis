@@ -38,8 +38,10 @@ def send_id_email(address, client_id):
 	msg.attach(part1)
 	msg.attach(part2)
 
-	# Send the message via local SMTP server.
-	s = smtplib.SMTP(os.environ['POSTMARK_SMTP_SERVER'])
+	s = smtplib.SMTP("smtp.gmail.com", 587)
+	s.starttls()
+	s.login(os.environ['GMAIL_USER'], os.environ['GMAIL_PASS'])
+
 	# sendmail function takes 3 arguments: sender's address, recipient's address
 	# and message to send - here it is sent as one string.
 	s.sendmail(me, address, msg.as_string())
