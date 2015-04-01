@@ -1,7 +1,7 @@
 Brown University APIs
 =====================
 
-This README is for development of the APIs. Public documentation is located at [here](http://api.students.brown.edu).
+_This README is for development of the APIs. Public documentation is located at [here](http://api.students.brown.edu)._
 
 DO NOT PUSH DIRECTLY TO MASTER UNLESS YOU INTEND TO DEPLOY A NEW VERSION OF THE SITE. YOU COULD BREAK EVERYTHING!
 
