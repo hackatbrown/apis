@@ -25,7 +25,7 @@ Getting Started on Development
 9. Commit your changes:
 	- `git add --all`
 	- `git commit -m "Some informative message your changes"`
-	- `git push origin development`
+	- `git push origin development` or just `git push`
 10. If you've _thoroughly tested_ your code, you may merge them into the `master` branch. These changes will be automatically reflected on the server. For now, Joe is the only person with access to the Heroku account (where our server is kept), so you probably shouldn't perform this step:
 	- `git checkout master`
 	- `git merge --no-ff develop`
