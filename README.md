@@ -19,8 +19,8 @@ Getting Started on Development
 	- `source venv/bin/activate`
 6. Install all the required libraries in your virtual environment:
 	- `pip install -r requirements.txt`
-7. Change to the `development` branch with Git:
-	- `git checkout development`
+7. Change to the `develop` branch with Git:
+	- `git checkout develop`
 8. Edit any necessary files with whichever editor you prefer.
 9. Commit your changes:
 	- `git add --all`
@@ -28,7 +28,7 @@ Getting Started on Development
 	- `git push origin development`
 10. If you've _thoroughly tested_ your code, you may merge them into the `master` branch. These changes will be automatically reflected on the server. For now, Joe is the only person with access to the Heroku account (where our server is kept), so you probably shouldn't perform this step:
 	- `git checkout master`
-	- `git merge --no-ff development`
+	- `git merge --no-ff develop`
 11. Deactivate the virtual environment when you're finished developing:
 	- `deactivate`
 
