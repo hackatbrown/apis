@@ -16,6 +16,14 @@
 //-->
 </script>
 
+{% if message %}
+  <br />
+  <div id="messagebox">
+	<p class="center">{{ message }}</p>
+  </div>
+  <br />
+{% endif %}
+
 <h1 class="center">Brown University APIs</h1>
 <p class="center"><em>...a work-in-progress!</em></p>
 
@@ -52,7 +60,7 @@
 <h2 onclick="toggle_vis('dining');"><a href="#">Brown Dining Services</a></h2>
 
 <div id="dining" class="api">
-	<p>The eatery names are always '<em>ratty</em>' or '<em>vdub</em>', '<em>andrews</em>. Currently, only the Ratty and VDub are supported.</p>
+	<p>The eatery names are always '<em>ratty</em>' or '<em>vdub</em>'. Currently, only the Ratty and VDub are supported.</p>
 
 	<h3>Request Dining Menu</h3>
 

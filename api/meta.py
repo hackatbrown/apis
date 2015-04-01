@@ -1,4 +1,4 @@
-from flask import jsonify, render_template, url_for
+from flask import jsonify, render_template, url_for, request, redirect
 from api import app, db, limiter, RATE_LIMIT
 from scripts.add_client import add_client_id
 from scripts.email_handler import send_id_email
@@ -24,10 +24,23 @@ db.clients contains documents of the form:
 # simplify collection names
 clients = db.clients
 
+# Messages for success/failure during Client ID signup
+SUCCESS_MSG = "Your Client ID has been emailed to you!"
+FAILURE_MSG = "Your request could not be processed. Please email 'joseph_engelman@brown.edu' for manual registration."
+
+
 @app.route('/')
 @limiter.limit(RATE_LIMIT)
 def root():
-    return render_template('documentation.html')
+    signed_up = request.args.get('signedup', '')
+    if signed_up == 'true':
+        return render_template('documentation.html', message=SUCCESS_MSG)
+    if signed_up == 'false':
+        return render_template('documentation.html', message=FAILURE_MSG)
+    else:
+        return render_template('documentation.html')
+
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 @limiter.limit(RATE_LIMIT)
@@ -38,10 +51,12 @@ def signup():
         firstname = request.form['firstname'].strip()
         lastname = request.form['lastname'].strip()
         email = request.form['email'].strip()
-        appname = request.form['appname'].strip()
-        client_id = add_client_id(appname, email, firstname + " " + lastname)
+        client_id = add_client_id(email, firstname + " " + lastname)
         if client_id:
-            send_email(email, "Your Brown APIs Client ID", )
+            send_id_email(email, firstname, client_id)
+            return redirect(url_for('root', signedup='true'))
+        else:
+            return redirect(url_for('root', signedup='false'))
 
 # Static responses
 

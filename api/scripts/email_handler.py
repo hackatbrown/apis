@@ -4,10 +4,10 @@ import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def send_id_email(address, client_id):
+def send_id_email(address, firstname, client_id):
 	# me == my email address
 	# you == recipient's email address
-	me = "apis@brown.edu"
+	me = os.environ['GMAIL_USER']
 
 	# Create message container - the correct MIME type is multipart/alternative.
 	msg = MIMEMultipart('alternative')
@@ -16,14 +16,28 @@ def send_id_email(address, client_id):
 	msg['To'] = address
 
 	# Create the body of the message (a plain-text and an HTML version).
-	text = "Welcome to the Brown APIs developer community!\nYour Client ID is: " + client_id + "\nBe sure to include it in every request!\n\nJoin the developer community on Facebook: https://www.facebook.com/groups/brown.apis/"
+	text = "Hi, " + firstname + "! Welcome to the Brown APIs developer community.\nYour Client ID is: " + client_id + ". Be sure to include it in every request!) You can use this Client ID for multiple projects. There is currently a maximum of one Client ID per student, but exceptions can be made on a case-by-case basis.\n\nJoin the developer community on Facebook: https://www.facebook.com/groups/brown.apis/\n\nHappy developing!\nThe Brown APIs Team\n"
 	html = """\
 	<html>
-	  <head></head>
+	  <head>
+	  	<style>
+			p {
+			    font-size: 14px;
+			} 
+			.center {
+				margin: auto;
+				text-align: center;
+			}
+		</style>
+	  </head>
 	  <body>
-	    <p>Welcome to the Brown APIs developer community!</p>
-	    <p>Your Client ID is: <em>""" + client_id + """</em>. Be sure to include it in every request you make!</p>
+	    <h2 class="center">Hi, """ + firstname + """! Welcome to the Brown APIs developer community.</h2>
+	    <p>Your Client ID is: <em>""" + client_id + """</em>.</p>
+	    <p>Be sure to include your Client ID with every request you make! You can use this Client ID for multiple projects. Currently, there is a maximum of one Client ID per student, but exceptions can be made on a case-by-case basis.</p>
 	    <p>Also, be sure to join our <a href="https://www.facebook.com/groups/brown.apis/">community of developers</a> on Facebook.</p>
+	    <br />
+	    Happy developing! <br />
+	    The Brown APIs Team
 	  </body>
 	</html>
 	"""
@@ -44,7 +58,7 @@ def send_id_email(address, client_id):
 
 	# sendmail function takes 3 arguments: sender's address, recipient's address
 	# and message to send - here it is sent as one string.
-	s.sendmail(me, address, msg.as_string())
+	print s.sendmail(me, address, msg.as_string())
 	s.quit()
 
-send_id_email('joseph_engelman@brown.edu', 'your-client-id-here')
+#send_id_email('joseph_engelman@brown.edu', 'your-client-id-here')

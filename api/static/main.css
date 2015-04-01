@@ -7,6 +7,17 @@ body {
 	margin-right: 7%;
 }
 
+#messagebox {
+	background-color: gainsboro;
+	outline-color: black;
+	outline-width: 2px;
+	outline-style: solid;
+	margin: auto;
+	height: 50px;
+	line-height: 50px;
+	font-size: 16px;
+}
+
 h1 {
 	font-size: 36px;
 	font-weight: bold;
