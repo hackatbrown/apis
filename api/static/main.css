@@ -56,3 +56,17 @@ a {
 .api {
 	display: none;
 }
+
+input {
+	font-size: 14px;
+}
+
+input[type="submit"] {
+	background-color: gainsboro;
+	border-radius: 1px;
+	border-color: black;
+	width: 210px;
+	height: 30px;
+	font-size: 16px;
+	font-weight: bold;
+}
