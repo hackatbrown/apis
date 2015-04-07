@@ -18,7 +18,7 @@ all_foods = db.dining_all_foods
 
 # TODO these should be updated with the database
 # create list of valid eatery names and valid food names
-valid_eatery_names = ['ratty', 'vdub', 'jos', 'ivy', 'andrews', 'blueroom']
+valid_eatery_names = ['ratty', 'vdub']
 valid_food_names = []
 
 
