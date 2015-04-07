@@ -11,6 +11,10 @@
 venv
 .Python
 
+# Private Statistics #
+######################
+stats/
+
 # Compiled Source #
 ###################
 *.pyc

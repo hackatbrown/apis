@@ -29,6 +29,8 @@ Getting Started on Development
 10. If you've _thoroughly tested_ your code, you may merge them into the `master` branch. These changes will be automatically reflected on the server. For now, Joe is the only person with access to the Heroku account (where our server is kept), so you probably shouldn't perform this step:
 	- `git checkout master`
 	- `git merge --no-ff develop`
+	- Type a very brief explanation of the merge (if you can't figure out how, lookup 'Vim' online)
+	- `git push`
 11. Deactivate the virtual environment when you're finished developing:
 	- `deactivate`
 
@@ -39,3 +41,52 @@ How to Manually Run Scripts
 2. Run the script from a package environment, allowing it to import the database from the _api_ package:
 	- `python -m api.scripts.<scriptname>` where 'scriptname' does NOT include the '.py' extension.
 3. You can include any script arguments after the command (just like you normally would).
+
+Data Structures
+---------------
+
+We use MongoDB to store various menus and schedules, as well as client information. In MongoDB, all objects are stored as JSON, and there is no schema that forces all objects in a collection to share the same fields. Thus, we keep documentation of the different collections here to encourage an implicit schema. All objects added to the database should follow these templates. If you add a new collection to the database, remember to add a template here, too.
+
+### db.clients ###
+
+- *username*: &lt;STRING&gt;,
+- *client_email*: &lt;STRING&gt;,
+- *client_id*: &lt;STRING&gt;,
+- *valid*: &lt;BOOLEAN&gt;, **<-- can this client make requests?**
+- *joined*: &lt;DATETIME&gt;, **<-- when did this client register?**
+- *requests*: &lt;INTEGER&gt; **<-- total number of requests made by this client (not included until this client makes their first request)**
+- *activity*: **list of activity objects which take the form:**
+	* _timestamp_: &lt;DATETIME&gt;, **<-- time of request**
+	* _endpoint_: &lt;STRING&gt; **<-- endpoint of request**
+- **DEPRECATED:** *client_name*: &lt;STRING&gt; **<-- replaced with _username_**
+
+### db.dining\_menus ###
+
+- *eatery*: &lt;STRING&gt;,
+- *year*: &lt;INTEGER&gt;,
+- *month*: &lt;INTEGER&gt;,
+- *day*: &lt;INTEGER&gt;,
+- *start_hour*: &lt;INTEGER&gt;, 	**<-- these four lines describe a menu's start/end times**
+- *start_minute*: &lt;INTEGER&gt;, 
+- *end_hour*: &lt;INTEGER&gt;, 
+- *end_minute*: &lt;INTEGER&gt;,
+- *meal*: &lt;STRING&gt;,
+- *food*: [ &lt;STRING&gt;, &lt;STRING&gt;, ... ]  **<-- list of all food items on menu**
+- *&lt;section&gt;*: [ &lt;STRING&gt;, &lt;STRING&gt;, ... ],  **<-- category (e.g. "Bistro") mapped to list of food items**
+- ... (there can be multiple sections per menu)
+
+### db.dining\_hours ###
+
+- *eatery*: &lt;STRING&gt;,
+- *year*: &lt;INTEGER&gt;,
+- *month*: &lt;INTEGER&gt;,
+- *day*: &lt;INTEGER&gt;,
+- *open_hour*: &lt;INTEGER&gt;,
+- *open_minute*: &lt;INTEGER&gt;, 
+- *close_hour*: &lt;INTEGER&gt;, 
+- *close_minute*: &lt;INTEGER&gt;
+
+### db.dining\_all\_foods ###
+
+- *eatery*: &lt;STRING&gt;,
+- *food*: [ &lt;STRING&gt;, &lt;STRING&gt;, ... ]

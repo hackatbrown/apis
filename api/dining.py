@@ -6,47 +6,8 @@ from datetime import datetime, date, timedelta
 from difflib import get_close_matches
 
 '''
-db.dining_menus contains documents of the form:
-{ 'eatery': str, 
-  'year': int,
-  'month': int,
-  'day': int,
-  'start_hour': int, 		<-- these four lines describe a menu's start/end
-  'start_minute': int, 			times, not the eatery's open/close times
-  'end_hour': int, 
-  'end_minute': int,
-  'meal': str,
-  'food': [ str list ]		<-- list of all food items on menu
-  '<section>': [ str list ], 	<-- categories (e.g. Chef's Corner, Bistro, ...)
-   ...								mapped to lists of food items
-   ...
-   ...
-}
-
-db.dining_hours contains documents of the form:
-{ 'eatery': str, 
-  'year': int,
-  'month': int,
-  'day': int,
-  'open_hour': int, 
-  'open_minute': int, 
-  'close_hour': int, 
-  'close_minute': int
-}
-
-db.dining_nutritional_info contains documents of the form:
-{ 'food': str,
-  'ingredients': [ str list ],
-  'portion_size': str,
-  'calories': float,
-  'fat': float,
-  'saturated_fat': float,
-  'cholesterol': float,
-  'sodium': float,
-  'carbohydrates': float,
-  'fiber': float,
-  'protein': float
-}
+DATABASE OBJECTS: View templates on the private, repository README.
+Nutritional info is not yet finished. Contact Joe for a preliminary template. 
 '''
 
 # simplify database names
@@ -285,10 +246,13 @@ def req_dining_all_food():
 
 	eatery = verify_eatery(request.args.get('eatery', ''))
 
+	if not eatery:
+		return make_json_error("No eatery name provided or invalid eatery name.")
+
 	result = all_foods.find_one({'eatery': eatery}, {'_id': 0})
 
 	if not result:
-		return make_json_error("No food information available for {0}.".format(food))
+		return make_json_error("No food information available for {0}.".format(eatery))
 	return jsonify(**result)
 
 
