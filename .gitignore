@@ -4,7 +4,6 @@
 *.lock
 *.swp
 *.out
-*.secret
 
 # Virtualenv #
 ##############
@@ -32,7 +31,3 @@ Thumbs.db
 # Foreman Environment #
 #######################
 .env
-
-# Webassets Cache #
-###################
-api/static/.webassets-cache

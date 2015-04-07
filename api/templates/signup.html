@@ -1,31 +1,31 @@
-{% extends "layout.html" %}
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
 
-{% block page_title %}Sign Up{% endblock %}
-
-{% block main %}
-  <h1 class="center">Brown University APIs</h1>
-  <p class="center"><em>...a work-in-progress!</em></p>
+<h1 class="center">Brown University APIs</h1>
+<p class="center"><em>...a work-in-progress!</em></p>
 
 
-  <h2>Sign up for a Client ID!</h1>
+<h2>Sign up for a Client ID!</h1>
 
-  <p>We can't wait for you to join our community of developers! Fill out the form below to get started.</p>
+<p>We can't wait for you to join our community of developers! Fill out the form below to get started.</p>
 
-  <form action="/signup" method="POST">
-  First Name: 
-  <input type="text" name="firstname" value="Josiah" onfocus="if (this.value == 'Josiah') this.value=''"> <br />
-  Last Name: 
-  <input type="text" name="lastname" value="Carberry" onfocus="if (this.value == 'Carberry') this.value=''"> <br />
-  Brown Email Address: 
-  <input type="text" name="email" value="josiah_carberry@brown.edu" onfocus="if (this.value == 'josiah_carberry@brown.edu') this.value=''"> <br />
+<form action="/signup" method="POST">
+First Name: 
+<input type="text" name="firstname" value="Josiah" onfocus="if (this.value == 'Josiah') this.value=''"> <br />
+Last Name: 
+<input type="text" name="lastname" value="Carberry" onfocus="if (this.value == 'Carberry') this.value=''"> <br />
+Brown Email Address: 
+<input type="text" name="email" value="josiah_carberry@brown.edu" onfocus="if (this.value == 'josiah_carberry@brown.edu') this.value=''"> <br />
 
-  <br />
+<br />
 
-  <input type="submit" value="Send me a Client ID!" id="submit">
-  </form>
+<input type="submit" value="Send me a Client ID!" id="submit">
+</form>
 
-  <br />
-  <br />
-  <br />
-  <a href="/">Return to Home</a>
-{% endblock %}
+<br />
+<br />
+<br />
+<a href="/">Return to Home</a>

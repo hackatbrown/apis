@@ -11,4 +11,3 @@ pymongo==2.7.2
 six==1.9.0
 slate==0.3
 Werkzeug==0.9.6
-Flask-Assets==0.10
