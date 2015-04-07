@@ -2,23 +2,10 @@ from flask import jsonify, render_template, url_for, request, redirect
 from api import app, db, limiter, RATE_LIMIT
 from scripts.add_client import add_client_id
 from scripts.email_handler import send_id_email
+from scripts.stats import get_total_requests
 
 '''
-db.clients contains documents of the form:
-{ 
-  'client_id': str,
-  'client_name': str,       <-- user-defined name for client
-  'requests': int,
-  'joined': str,            <-- ISO Format
-  'activity': [ 
-                { 
-                  'endpoint': str, 
-                  'timestamp': str      <-- ISO Format
-                } 
-              ],
-  'valid': boolean
-}
-
+DATABASE OBJECTS: View templates on the private, repository README.
 '''
 
 # simplify collection names
@@ -33,12 +20,13 @@ FAILURE_MSG = "Your request could not be processed. Please email 'joseph_engelma
 @limiter.limit(RATE_LIMIT)
 def root():
     signed_up = request.args.get('signedup', '')
+    num_requests = get_total_requests()
     if signed_up == 'true':
-        return render_template('documentation.html', message=SUCCESS_MSG)
+        return render_template('documentation.html', message=SUCCESS_MSG, num_requests=num_requests)
     if signed_up == 'false':
-        return render_template('documentation.html', message=FAILURE_MSG)
+        return render_template('documentation.html', message=FAILURE_MSG, num_requests=num_requests)
     else:
-        return render_template('documentation.html')
+        return render_template('documentation.html', num_requests=num_requests)
 
 
 
@@ -57,6 +45,7 @@ def signup():
             return redirect(url_for('root', signedup='true'))
         else:
             return redirect(url_for('root', signedup='false'))
+
 
 # Static responses
 

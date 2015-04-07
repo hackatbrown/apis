@@ -23,7 +23,13 @@ def get_request_stats():
         request_stats[c['username']] = client
     return request_stats
 
-
+def get_total_requests():
+    stats = get_request_stats()
+    client_count = {c:0 for c in stats.keys()}
+    for client in stats.keys():
+        req = stats[client].get('count', 0)
+        client_count[client] += req
+    return sum(client_count.values())
 
 if __name__ == '__main__':
     stats = get_request_stats()
