@@ -80,17 +80,18 @@
 		<pre class="parameters">
 		{'num_results': <em>INTEGER</em>, 
 		 'menus': {'eatery': <em>STRING</em>, 
-		 		   'year': <em>INTEGER</em>, 
-		 		   'month': <em>INTEGER</em>, 
-		 		   'day': <em>INTEGER</em>, 
-		 		   'start_hour': <em>INTEGER</em>, 
-		 		   'start_minute': <em>INTEGER</em>, 
-		 		   'end_hour': <em>INTEGER</em>, 
-		 		   'end_minute': <em>INTEGER</em>, 
-		 		   &lt;menu_section1&gt;: [<em>STRING</em>, <em>STRING</em>, ...],
-		 		   &lt;menu_section2&gt;: [<em>STRING</em>, <em>STRING</em>, ...],
-		 		   ...}}
+		 	   'year': <em>INTEGER</em>, 
+		 	   'month': <em>INTEGER</em>, 
+		 	   'day': <em>INTEGER</em>, 
+		 	   'start_hour': <em>INTEGER</em>, 
+		 	   'start_minute': <em>INTEGER</em>, 
+		 	   'end_hour': <em>INTEGER</em>, 
+		 	   'end_minute': <em>INTEGER</em>, 
+		 	   &lt;menu_section1&gt;: [<em>STRING</em>, <em>STRING</em>, ...],
+		 	   &lt;menu_section2&gt;: [<em>STRING</em>, <em>STRING</em>, ...],
+		 	   ...}}
 		</pre>
+
 		<em>NOTE</em>: Each eatery has different menu sections (e.g. "Bistro", "Main Menu", etc).
 		<br />
 		<em>NOTE</em>: If the eatery is closed, num_results will equal zero.
@@ -114,6 +115,15 @@
 			<div class="codeblock">
 				<code>
 					https://api.students.brown.edu/dining/menu?client_id=your-client-id&amp;eatery=ratty&amp;day=16&amp;hour=17
+				</code>
+			</div>
+		</div>
+		<br/>
+		<span class="example">How to get all menus at the Ratty on the 16th of this month...</span>
+		<div class="center">
+			<div class="codeblock">
+				<code>
+					https://api.students.brown.edu/dining/menu?client_id=your-client-id&amp;eatery=ratty&amp;day=16
 				</code>
 			</div>
 		</div>
@@ -144,14 +154,29 @@
 		   'close_minute': <em>INTEGER</em>}, 
 		  ...]}
 		</pre>
+
+		<em>NOTE</em>: Because the VDub opens/closes during the day, it has multiple results per day.
+		<br />
+		<br />
+
 		<strong>Example:</strong>
 	    <br />
-	    <span class="example">How to get todays hours for the Ratty...</span>
+	    <span class="example">How to get today's hours for the Ratty...</span>
 		<br />
 		<div class="center">
 			<div class="codeblock">
 				<code>
 					https://api.students.brown.edu/dining/hours?client_id=your-client-id&amp;eatery=ratty
+				</code>
+			</div>
+		</div>
+		<br />
+	    <span class="example">How to get the hours for the VDub on the 18th of this month...</span>
+		<br />
+		<div class="center">
+			<div class="codeblock">
+				<code>
+					https://api.students.brown.edu/dining/hours?client_id=your-client-id&amp;eatery=vdub&amp;day=18
 				</code>
 			</div>
 		</div>
@@ -197,7 +222,7 @@
 	<div class="endpoint">
 		<strong>Endpoint</strong>: "<em>/dining/open</em>" 
 		<br />
-		<strong>Parameters</strong>: {'year':YEAR, 'month':MONTH, 'day':DAY, 'hour':HOUR, 'minute':MINUTE}
+		<strong>Parameters</strong>:
 		<ul class="parameters">
 			<li>year <em>(optional)</em>: the current year will be inferred <em>(integer)</em></li>
 			<li>month <em>(optional)</em>: the current month will be inferred <em>(integer between 1-12)</em></li>
@@ -224,7 +249,45 @@
 					https://api.students.brown.edu/dining/find?client_id=your-client-id
 				</code>
 			</div>
+		</div>
+		<br />
+	    <span class="example">Find out what eateries are open on the 12th of April...</span>
+		</br>
+		<div class="center">
+			<div class="codeblock">
+				<code>
+					https://api.students.brown.edu/dining/find?client_id=your-client-id&amp;day=12&amp;month=4
+				</code>
+			</div>
 		</div> 
+	</div>
+
+	<h3>Find All Food Ever Served at an Eatery</h3>
+
+	<div class="endpoint">
+		<strong>Endpoint</strong>: "<em>/dining/all_food</em>" 
+		<br />
+		<strong>Parameters</strong>:
+		<ul class="parameters">
+			<li>eatery: the eatery to get all food ever served at <em>(string)</em></li>
+		</ul>
+		<strong>Returns</strong>:
+		<pre class="parameters">
+		 	{'eatery': <em>STRING</em>,
+		 	 'food': [<em>STRING</em>, <em>STRING</em>, ...]}
+		</pre>
+
+	    <strong>Example:</strong>
+	    <br />
+	    <span class="example">Find all the food that's ever been served at the Ratty...</span>
+		</br>
+		<div class="center">
+			<div class="codeblock">
+				<code>
+					https://api.students.brown.edu/dining/all_food?client_id=your-client-id&amp;eatery=ratty
+				</code>
+			</div>
+		</div>
 	</div>
 </div>
 

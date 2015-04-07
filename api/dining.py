@@ -285,10 +285,13 @@ def req_dining_all_food():
 
 	eatery = verify_eatery(request.args.get('eatery', ''))
 
+	if not eatery:
+		return make_json_error("No eatery name provided or invalid eatery name.")
+
 	result = all_foods.find_one({'eatery': eatery}, {'_id': 0})
 
 	if not result:
-		return make_json_error("No food information available for {0}.".format(food))
+		return make_json_error("No food information available for {0}.".format(eatery))
 	return jsonify(**result)
 
 
