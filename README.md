@@ -1,7 +1,7 @@
 Brown University APIs
 =====================
 
-_This README is for development of the APIs. Public documentation is located at [here](http://api.students.brown.edu)._
+_This README is for development of the APIs. Public documentation is located [here](http://api.students.brown.edu)._
 
 **DO NOT PUSH DIRECTLY TO MASTER UNLESS YOU INTEND TO DEPLOY A NEW VERSION OF THE SITE. YOU COULD BREAK EVERYTHING!**
 
@@ -26,8 +26,8 @@ Getting Started on Development
 	- `git add --all`
 	- `git commit -m "Some informative message your changes"`
 	- `git push origin development` or just `git push`
-10. If you've _thoroughly tested_ your code, you may merge them into the `master` branch. These changes will be automatically reflected on the server. For now, Joe is the only person with access to the Heroku account (where our server is kept), so you probably shouldn't perform this step:
-	- `git checkout master`
+10. To test your code, you may merge them into the `stage` branch. These changes will be automatically reflected on our [staging server](http://brown-apis-staging.herokuapp.com/). You can merge changes from the develop branch into the staging branch with:
+	- `git checkout stage`
 	- `git merge --no-ff develop`
 	- Type a very brief explanation of the merge (if you can't figure out how, lookup 'Vim' online)
 	- `git push`
