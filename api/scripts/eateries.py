@@ -314,7 +314,7 @@ class VDub(Eatery):
         cols = [unquote(col.text).lower() for col in rows[0].find_all('td')]
         data = {col:[] for col in cols}
         for row in rows[1:-1]:
-            row_cols = row.find_all('td')[1:]
+            row_cols = row.find_all('td')
             for ix, c in enumerate(row_cols):
                 if c.text:
                     data[cols[ix]].append(c.text.lower().strip())

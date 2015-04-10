@@ -49,12 +49,12 @@ if __name__ == '__main__':
     print
     print "BY CLIENT:"
     for client in stats.keys():
-        print '{0:<20} {1:>6}'.format(client, client_count[client])
+        print '{0:<25} {1:>6}'.format(client, client_count[client])
 
     print
     print "BY ENDPOINT:"
     for endpoint in endpoints:
-        print '{0:<20} {1:>6}'.format(endpoint, endpoint_count[endpoint])
+        print '{0:<25} {1:>6}'.format(endpoint, endpoint_count[endpoint])
 
     print
     print "TOTAL REQUESTS:", total_requests
