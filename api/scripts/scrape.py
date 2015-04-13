@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     # if no eateries specified, scrape all eateries
     if len(eateries) == 0:
-        eateries == [Ratty(), VDub()]
+        eateries = [Ratty(), VDub()]
 
     print "Scraping Brown Dining Services' sites for menus and hours..."
     scrape(eateries, get_menus, get_hours)
