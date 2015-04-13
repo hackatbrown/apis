@@ -4,6 +4,9 @@ import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+ERROR_RECEPIENT = "7172159174@vtext.com"
+ALERT_RECEPIENT = "joseph_engelman@brown.edu"
+
 def send_id_email(address, firstname, client_id):
 	# me == my email address
 	# you == recipient's email address
@@ -61,4 +64,62 @@ def send_id_email(address, firstname, client_id):
 	print s.sendmail(me, address, msg.as_string())
 	s.quit()
 
-#send_id_email('joseph_engelman@brown.edu', 'your-client-id-here')
+# Example usage of the above method:
+# send_id_email('7172159174@vtext.com', 'Joe', 'your-client-id-here')
+
+def send_alert_email(message, urgent=False):
+	# me == my email address
+	me = os.environ['GMAIL_USER']
+	# recepient's email address depends on how urgent the alert is
+	recepient = ERROR_RECEPIENT if urgent else ALERT_RECEPIENT
+
+	# Create message container - the correct MIME type is multipart/alternative.
+	msg = MIMEMultipart('alternative')
+	msg['Subject'] = "Brown APIs Error!" if urgent else "Brown APIs Alert!"
+	msg['From'] = me
+	msg['To'] = recepient
+
+	# Create the body of the message (a plain-text and an HTML version).
+	text = message
+	html = """\
+	<html>
+	  <head>
+	  	<style>
+			p {
+			    font-size: 14px;
+			} 
+			.center {
+				margin: auto;
+				text-align: center;
+			}
+		</style>
+	  </head>
+	  <body>
+	  	<p><em>The following message was generated moments ago on the Brown APIs server:</em></p>
+	    <p>""" + message + """</p>
+	  </body>
+	</html>
+	"""
+
+	# Record the MIME types of both parts - text/plain and text/html.
+	part1 = MIMEText(text, 'plain')
+	part2 = MIMEText(html, 'html')
+
+	# Attach parts into message container.
+	# According to RFC 2046, the last part of a multipart message, in this case
+	# the HTML message, is best and preferred.
+	msg.attach(part1)
+	msg.attach(part2)
+
+	s = smtplib.SMTP("smtp.gmail.com", 587)
+	s.starttls()
+	s.login(os.environ['GMAIL_USER'], os.environ['GMAIL_PASS'])
+
+	# sendmail function takes 3 arguments: sender's address, recipient's address
+	# and message to send - here it is sent as one string.
+	print s.sendmail(me, recepient, msg.as_string())
+	s.quit()
+
+# Example usage of the above method:
+# send_alert_email("Nah, jk. This is just an example alert.")
+# send_alert_email("Oh my! Everything is chaos!", urgent=True)
