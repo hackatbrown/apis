@@ -44,6 +44,8 @@ for code in default_exceptions.iterkeys():
 
 if 'MONGO_URI' in app.config:
     db = pymongo.MongoClient(app.config['MONGO_URI']).brown
+elif 'MONGO_URI' in os.environ:
+	db = pymongo.MongoClient(os.environ['MONGO_URI']).brown
 else:
     print "The database URI's environment variable was not found."
 
