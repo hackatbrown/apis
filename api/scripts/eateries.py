@@ -309,12 +309,12 @@ class VDub(Eatery):
         meal_parsed = soup(menu_html, 'html5lib')
 
         # scrape the table into a dict of sections (Chef's Corner, Bistro, etc)
-        table = meal_parsed.find('table', {'class':'waffle'})
+        table = meal_parsed.find('table', {'id':'tblMain'})
         rows = table.find_all('tr')[1:]
         cols = [unquote(col.text).lower() for col in rows[0].find_all('td')]
         data = {col:[] for col in cols}
         for row in rows[1:-1]:
-            row_cols = row.find_all('td')[1:]
+            row_cols = row.find_all('td')
             for ix, c in enumerate(row_cols):
                 if c.text:
                     data[cols[ix]].append(c.text.lower().strip())

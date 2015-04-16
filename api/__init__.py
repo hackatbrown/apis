@@ -33,14 +33,26 @@ def support_jsonp(f):
             return f(*args, **kwargs)
     return decorated_function
 
-app = Flask(__name__)
+# initialize the app and allow an instance configuration file
+app = Flask(__name__, instance_relative_config=True)
+try:
+	app.config.from_object('config')		# load default config file
+except IOError:
+	print "Could not load default config file!"
+
+try:
+	app.config.from_pyfile('config.py')		# load instance config file
+except IOError:
+	print "Could not load instance config file!"
 
 # override all error handlers to be 'make_json_error'
 for code in default_exceptions.iterkeys():
     app.error_handler_spec[None][code] = make_json_error
 
-if 'MONGO_URI' in os.environ:
-    db = pymongo.MongoClient(os.environ['MONGO_URI']).brown
+if 'MONGO_URI' in app.config:
+    db = pymongo.MongoClient(app.config['MONGO_URI']).brown
+elif 'MONGO_URI' in os.environ:
+	db = pymongo.MongoClient(os.environ['MONGO_URI']).brown
 else:
     print "The database URI's environment variable was not found."
 
