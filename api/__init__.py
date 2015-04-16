@@ -35,8 +35,15 @@ def support_jsonp(f):
 
 # initialize the app and allow an instance configuration file
 app = Flask(__name__, instance_relative_config=True)
-app.config.from_object('config')		# load default config file
-app.config.from_pyfile('config.py')		# load instance config file
+try:
+	app.config.from_object('config')		# load default config file
+except IOError:
+	print "Could not load default config file!"
+
+try:
+	app.config.from_pyfile('config.py')		# load instance config file
+except IOError:
+	print "Could not load instance config file!"
 
 # override all error handlers to be 'make_json_error'
 for code in default_exceptions.iterkeys():
