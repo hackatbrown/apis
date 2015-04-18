@@ -12,10 +12,10 @@ DATABASE OBJECTS: View templates on the private, repository README.
 # simplify collection names
 clients = db.clients
 
-# Compile Sass and JavaScript assets
+# Compile SCSS and JavaScript assets
 bundles = {
     "css_all": Bundle("scss/main.scss", filters=["scss"], output="gen/main.css"),
-    "js_all": Bundle("js/*.js", output="gen/main.js")
+    "js_all": Bundle("js/vendor/jquery-2.1.3.min.js", "js/vendor/bootstrap.min.js", "js/*.js", output="gen/main.js")
 }
 assets = Environment(app)
 assets.register(bundles)
