@@ -1,4 +1,5 @@
 from sys import argv
+from sys import exit
 import time
 
 from eateries import Ratty, VDub
@@ -10,7 +11,7 @@ full_eatery_list = [VDub(), Ratty()]
 
 ##########################################################################
 
-def scrape(eateries, get_menus=True, get_hours=True):
+def scrape(eateries, get_menus=True, get_hours=True, alert=True):
     total_menus, total_hours, total_time = 0, 0, 0
     for eatery in eateries:
         print
@@ -19,8 +20,11 @@ def scrape(eateries, get_menus=True, get_hours=True):
         try:
             num_menus, num_hours = eatery.scrape(get_menus, get_hours)
         except:
+            import traceback
+            traceback.print_exc()
             print "Could not scrape data for", eatery.name
-            send_alert_email("Could not scrape data for " + eatery.name, urgent=True)
+            if alert:
+                send_alert_email("Could not scrape data for " + eatery.name, urgent=True)
             continue
         elapsed = time.time() - start
         print num_menus, "menus and", num_hours, "hours scraped for", eatery.name, "in", str(elapsed), "seconds."
@@ -33,10 +37,12 @@ def scrape(eateries, get_menus=True, get_hours=True):
 ##########################################################################
 
 if __name__ == '__main__':
-    get_menus, get_hours = False, False
+    get_menus, get_hours, alert = False, False, True
     eateries = []
     if len(argv) > 1:
         for arg in argv:
+            if arg == '--silent' or arg == '-s':
+                alert = False
             if arg == '--hours' or arg == '-h':
                 get_hours = True
             if arg == '--menus' or arg == '-m':
@@ -45,6 +51,9 @@ if __name__ == '__main__':
                 eateries.append(Ratty())
             if arg == '--vdub' or arg == '-v':
                 eateries.append(VDub())
+            if arg == '--help':
+                print "Flags: [--silent --hours --menus --ratty --vdub]"
+                exit()
 
     # if neither menus nor hours specified, scrape both
     if not get_menus and not get_hours:
@@ -55,5 +64,5 @@ if __name__ == '__main__':
         eateries = [Ratty(), VDub()]
 
     print "Scraping Brown Dining Services' sites for menus and hours..."
-    scrape(eateries, get_menus, get_hours)
+    scrape(eateries, get_menus, get_hours, alert=alert)
     print "Done scraping."
