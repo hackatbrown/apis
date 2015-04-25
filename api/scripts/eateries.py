@@ -162,17 +162,30 @@ class Ratty(Eatery):
 
         num_menus = 0
 
+        error_did_occur = False
+
         if ordered_days and days_meals:
             for day in ordered_days:
                 for meal in days_meals[day]:
-                    print meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
-                    num_menus += 1
+                    import time
+                    time.sleep(1) # delays for 1 second (BDS rate limits their site)
+                    try:
+                        print meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
+                        num_menus += 1
+                    except:
+                        error_did_occur = True
+                        import traceback
+                        traceback.print_exc()
+                        print "Could not scrape data for", meal, "on", day, menu_date
+                        print "Attempting to continue..."
                 menu_date += timedelta(1)
+        if error_did_occur:
+            raise RuntimeError("Could not scrape data for at least one VDub meal.")
         return num_menus
 
     def scrape_menu(self, menu_date, day, meal):
         ''' see description in superclass (Eatery) '''
-        # start at the main page for the Ratty 
+        # start at the main page for the Ratty
         main_html = get_html(self.base_url + self.eatery_page)
         main_parsed = soup(main_html, 'html5lib')  # the Ratty website has errors, so the default parser fails -> use html5lib instead
         
@@ -191,6 +204,8 @@ class Ratty(Eatery):
 
         # Scrape the table into a dict of sections (Chef's Corner, Bistro, etc)
         table = meal_parsed.find('table', {'id':'tblMain'})
+        if table == None:
+            table = meal_parsed.find('table', {'class':'waffle'})
         rows = table.find_all('tr')[1:]
         cols = [unquote(col.text).lower() for col in rows[0].find_all('td')[1:]]
         data = {col:[] for col in cols}
@@ -281,15 +296,26 @@ class VDub(Eatery):
             menu_date = today
 
         num_menus = 0
-
+        error_did_occur = False
         if ordered_days and days_meals:
             for n, day in enumerate(ordered_days):
                 # menu_ids is a list [('breakfast', _id), ('continental breakfast', _id), ...]
-                menu_ids = self.scrape_menu(menu_date, day, days_meals[day], n)
-                for menu_id in menu_ids:
-                    print menu_id[0], "for", day, menu_date, "->", menu_id[1]
-                    num_menus += 1
-                menu_date += timedelta(1)
+                import time
+                time.sleep(1) # delays for 1 second (BDS rate limits their site)
+                try:
+                    menu_ids = self.scrape_menu(menu_date, day, days_meals[day], n)
+                    for menu_id in menu_ids:
+                        print menu_id[0], "for", day, menu_date, "->", menu_id[1]
+                        num_menus += 1
+                    menu_date += timedelta(1)
+                except:
+                    error_did_occur = True
+                    import traceback
+                    traceback.print_exc()
+                    print "Could not scrape data for", menu_id[0], "on", day, menu_date
+                    print "Attempting to continue..."
+        if error_did_occur:
+            raise RuntimeError("Could not scrape data for at least one VDub meal.")
         return num_menus
 
     def scrape_menu(self, menu_date, day, meals, nth_day):
@@ -310,6 +336,8 @@ class VDub(Eatery):
 
         # scrape the table into a dict of sections (Chef's Corner, Bistro, etc)
         table = meal_parsed.find('table', {'id':'tblMain'})
+        if table == None:
+            table = meal_parsed.find('table', {'class':'waffle'})
         rows = table.find_all('tr')[1:]
         cols = [unquote(col.text).lower() for col in rows[0].find_all('td')]
         data = {col:[] for col in cols}
