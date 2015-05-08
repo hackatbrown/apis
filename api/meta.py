@@ -1,4 +1,5 @@
 from flask import jsonify, render_template, url_for, request, redirect
+from flask.ext.assets import Environment, Bundle
 from api import app, db, limiter, RATE_LIMIT
 from scripts.add_client import add_client_id
 from scripts.email_handler import send_id_email
@@ -11,6 +12,14 @@ DATABASE OBJECTS: View templates on the private, repository README.
 # simplify collection names
 clients = db.clients
 
+# Compile SCSS and JavaScript assets
+bundles = {
+    "css_all": Bundle("scss/main.scss", filters=["scss"], output="gen/main.css"),
+    "js_all": Bundle("js/vendor/jquery-2.1.3.min.js", "js/vendor/bootstrap.min.js", "js/*.js", output="gen/main.js")
+}
+assets = Environment(app)
+assets.register(bundles)
+
 # Messages for success/failure during Client ID signup
 SUCCESS_MSG = "Your Client ID has been emailed to you!"
 FAILURE_MSG = "Your request could not be processed. Please email 'joseph_engelman@brown.edu' for manual registration."
@@ -22,11 +31,11 @@ def root():
     signed_up = request.args.get('signedup', '')
     num_requests = get_total_requests()
     if signed_up == 'true':
-        return render_template('documentation.html', message=SUCCESS_MSG, num_requests=num_requests)
+        return render_template('index.html', message=SUCCESS_MSG, num_requests=num_requests)
     if signed_up == 'false':
-        return render_template('documentation.html', message=FAILURE_MSG, num_requests=num_requests)
+        return render_template('index.html', message=FAILURE_MSG, num_requests=num_requests)
     else:
-        return render_template('documentation.html', num_requests=num_requests)
+        return render_template('index.html', num_requests=num_requests)
 
 
 

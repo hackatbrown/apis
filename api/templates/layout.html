@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<head lang="en">
+  {% block head %}
+    <meta charset="utf-8">
+    <title>{% block page_title %}{% endblock %}{% if self.page_title() %} | {% endif %}APIs@Brown</title>
+    <meta name="viewport" content="initial-scale=1">
+
+    <!-- Social Data -->
+    <meta property="og:title" content="APIs@Brown">
+    <meta property="og:url" content="/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="APIs@Brown">
+    <meta property="og:description" content="APIs@Brown allows developers access to on-campus data in a simple and well-structured manner.">
+    <meta property="og:image" content="{{ url_for('static', filename='img/og.png', _external=True) }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@hackatbrown">
+    <meta name="twitter:creator" content="@hackatbrown">
+    <meta name="twitter:title" content="APIs@Brown">
+    <meta name="twitter:description" content="APIs@Brown allows developers access to on-campus data in a simple and well-structured manner.">
+    <meta name="twitter:image:src" content="{{ url_for('static', filename='img/og.png', _external=True) }}">
+
+    <!-- Platform Icons; add Apple Touch icons, MS Application icons, etc. here -->
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+
+    <!-- CSS -->
+    {% assets "css_all" %}
+      <link rel="stylesheet" href="{{ ASSET_URL }}">
+    {% endassets %}
+  {% endblock %}
+</head>
+
+<body>
+  {% block body %}
+    <header>
+      {% block header %}
+
+      {% endblock %}
+    </header>
+
+    <main>
+      {% block main %}
+
+      {% endblock %}
+    </main>
+
+    <footer>
+      {% block footer %}
+      {% endblock %}
+    </footer>
+
+    <!-- JavaScript -->
+    {% assets "js_all" %}
+      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+  {% endblock %}
+</body>
