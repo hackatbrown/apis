@@ -62,4 +62,3 @@ limiter = Limiter(app, global_limits=["10/second", "100/minute"], key_func=lambd
 
 import meta
 import dining
-import wifi
