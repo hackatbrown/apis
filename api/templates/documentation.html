@@ -26,15 +26,16 @@
 {% endif %}
 
 <h1 class="center">Brown University APIs</h1>
-<p class="center"><em>...a work-in-progress!</em></p>
+<p class="center"><em>...helping you build cool things!</em></p>
 
 
-<h2>Introduction</h1>
+<h2>Introduction</h2>
 
 <p>Hey there! Brown APIs is a set of web APIs for getting useful information about Brown. In general, to form a request, pick a method from below and look at some of the sample queries to get a feel for how the API works. Also, join the <a href="https://www.facebook.com/groups/brown.apis/">Brown APIs group</a> on Facebook for FAQs and community support!</p>
 
-<p>To make requests, you'll need a Client ID. <strong>You can request a Client ID <a href="/signup">here</a>.</strong></p>
-<p>Your Client ID is used as the parameter 'client_id' in your GET requests. For instance:</p>
+<h2>Getting Started</h1>
+
+<p>To make requests, you'll need a Client ID. <strong>You can request a Client ID <a href="/signup">here</a>.</strong> Your Client ID is used as the parameter 'client_id' in your GET requests. For instance:</p>
 <div class="center">
 	<div class="codeblock">
 		<code>
@@ -42,21 +43,14 @@
 		</code>
 	</div>
 </div>
+
+<br />
+
 <p>Currently, all requests are specified as GET requests with URL encoded parameters.</p>
 
 <hr />
 
-<p><strong>Note about errors:</strong> When requests fail for any reason, a list of errors will be returned in the form:  </p>
-
-<div class="center">
-	<div class="codeblock">
-		<code>
-			{'error': ["Some (hopefully) informative error message.", "Possibly another message."]}
-		</code>
-	</div>
-</div>
-
-<hr />
+<br />
 
 <h2 onclick="toggle_vis('dining');"><a href="#">Brown Dining Services</a></h2>
 
@@ -305,6 +299,24 @@
 <div id="criticalreview" class="api">
 	<em>Coming this summer!</em> The Critical Review's staff is working to bring you as much course data as possible.
 </div>
+
+<br />
+
+<hr />
+
+<p><strong>Note about errors:</strong> When requests fail for any reason, a list of errors will be returned in the form:  </p>
+
+<div class="center">
+	<div class="codeblock">
+		<code>
+			{'error': ["Some (hopefully) informative error message.", "Possibly another message."]}
+		</code>
+	</div>
+</div>
+
+<hr />
+
+<br />
 
 <div class="center">
 	<br />
