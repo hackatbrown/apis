@@ -207,10 +207,10 @@ class Ratty(Eatery):
         if table == None:
             table = meal_parsed.find('table', {'class':'waffle'})
         rows = table.find_all('tr')[1:]
-        cols = [unquote(col.text).lower() for col in rows[0].find_all('td')[1:]]
+        cols = [unquote(col.text).lower() for col in rows[0].find_all('td')]
         data = {col:[] for col in cols}
         for row in rows[1:-1]:
-            row_cols = row.find_all('td')[1:]
+            row_cols = row.find_all('td')
             for ix, c in enumerate(row_cols):
                 if c.text and not c.text.lower().strip() in self.food_ignore_list:
                         data[cols[ix]].append(c.text.lower().strip())
@@ -386,7 +386,7 @@ class VDub(Eatery):
                 # weekday schedule
                 num_hours += 2
                 print "hours for {0}/{1}/{2} (breakfast/lunch) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (14, 00))
-                print "hours for {0}/{1}/{2} (dinner) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (16, 30), (19, 00))
+                print "hours for {0}/{1}/{2} (dinner) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (16, 30), (19, 30))
             today = today + timedelta(1)
 
         return num_hours
