@@ -20,8 +20,9 @@ def wifi_index():
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/wifi', str(datetime.now()))
-		return make_json_error('No method specified. See documentation for endpoints.')
-	return make_json_error(INVALID_CLIENT_MSG)
+	else:
+		return make_json_error(INVALID_CLIENT_MSG)
+	return make_json_error('No method specified. See documentation for endpoints.')
 
 
 
@@ -42,19 +43,42 @@ def req_wifi_count():
 	if not location:
 		return make_json_error("Invalid location: {0}".format(location))
 
-	response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices")
-	res_dict = json.loads(response.content)
-	del res_dict['locality']	# we'll use the user-provided location instead
+	history = False
+	history_str = request.args.get('history', '')
+	if history_str in ['true', 'True']:
+		history = True
 
-	updated_at = datetime.fromtimestamp(float(res_dict['timestamp']))
-	res_dict['year'] = updated_at.year
-	res_dict['month'] = updated_at.month
-	res_dict['day'] = updated_at.day
-	res_dict['hour'] = updated_at.hour
-	res_dict['minute'] = updated_at.minute
-	res_dict['second'] = updated_at.second
+	if history:
+		response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices?history=true")
+		res_list = json.loads(response.content)
+		history_list = []
+		for res_dict in res_list:
+			del res_dict['locality']	# we'll use the user-provided location instead
 
-	return jsonify(location=original_location, **res_dict)
+			updated_at = datetime.fromtimestamp(float(res_dict['timestamp']))
+			res_dict['year'] = updated_at.year
+			res_dict['month'] = updated_at.month
+			res_dict['day'] = updated_at.day
+			res_dict['hour'] = updated_at.hour
+			res_dict['minute'] = updated_at.minute
+			res_dict['second'] = updated_at.second
+			history_list += [res_dict]
+
+		return jsonify(location=original_location, history=history_list)
+	else:
+		response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices")
+		res_dict = json.loads(response.content)
+		del res_dict['locality']	# we'll use the user-provided location instead
+
+		updated_at = datetime.fromtimestamp(float(res_dict['timestamp']))
+		res_dict['year'] = updated_at.year
+		res_dict['month'] = updated_at.month
+		res_dict['day'] = updated_at.day
+		res_dict['hour'] = updated_at.hour
+		res_dict['minute'] = updated_at.minute
+		res_dict['second'] = updated_at.second
+
+		return jsonify(location=original_location, **res_dict)
 
 
 
