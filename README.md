@@ -20,13 +20,13 @@ Getting Started on Development
 6. Install all the required libraries in your virtual environment:
 	- `pip install -r requirements.txt`
 7. Change to your feature's branch with Git. For example:
-	- `git checkout feature/website`
+	- `git checkout feature/courses`
 	- Or, if your feature's branch does not exist yet: `git checkout -b feature/<name>`
 8. Edit any necessary files with whichever editor you prefer.
 9. Commit your changes:
 	- `git add --all`
 	- `git commit -m "Some informative message your changes"`
-	- `git push origin development` or just `git push`
+	- `git push origin feature/<name>` or just `git push`
 10. To test your code, you may merge them into the `stage` branch. These changes will be automatically reflected on our [staging server](http://brown-apis-staging.herokuapp.com/). You can merge changes from the develop branch into the staging branch with:
 	- `git checkout stage`
 	- `git merge --no-ff feature/<name>`
