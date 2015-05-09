@@ -31,6 +31,11 @@ def wifi_index():
 @support_jsonp
 def req_wifi_count():
 	''' Endpoint for all WiFi count requests (see public docs for documentation) '''
+
+	# TODO enable wifi API again
+	return jsonify(error="We have been asked to disable this API until further notice. Check our home page for updates.")
+
+
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/wifi/count', str(datetime.now()))
@@ -87,6 +92,11 @@ def req_wifi_count():
 @support_jsonp
 def req_wifi_locations():
 	''' Endpoint for all WiFi location requests (see public docs for documentation) '''
+	
+	# TODO enable wifi API again
+	return jsonify(error="We have been asked to disable this API until further notice. Check our home page for updates.")
+
+
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/wifi/locations', str(datetime.now()))
