@@ -287,12 +287,12 @@
 <h2 onclick="toggle_vis('wifi');"><a href="#">Brown WiFi</a></h2>
 
 <div id="wifi" class="api">
-    <p>The only locations currently supported are: <em>ratty</em>, <em>vdub</em>, <em>jos</em>, <em>andrews</em>, and <em>blueroom</em>. More locations may be added in the future.</p>
+    <p>The only locations currently supported are: <em>ratty</em>, <em>vdub</em>, <em>jos</em>, <em>andrews</em>, and <em>blueroom</em>. More locations may be added in the future. Check the &quot;<em>/wifi/locations</em>&quot; endpoint (documented below) for the most up-to-date information.</p>
 
     <h3>Count Users at a Location</h3>
 
     <div class="endpoint">
-        <strong>Endpoint</strong>: "<em>/wifi/count</em>" 
+        <strong>Endpoint</strong>: &quot;<em>/wifi/count</em>&quot;
         <br />
         <strong>Parameters</strong>:
         <ul class="parameters">
@@ -334,6 +334,37 @@
             <div class="codeblock">
                 <code>
                     https://api.students.brown.edu/wifi/count?client_id=your-client-id&amp;location=blueroom&amp;history=true
+                </code>
+            </div>
+        </div>
+    </div>
+
+    <h3>Get All Location Names</h3>
+
+    <div class="endpoint">
+        <strong>Endpoint</strong>: &quot;<em>/wifi/locations</em>&quot;
+        <br />
+        <strong>Parameters</strong>:
+        <ul class="parameters">
+            <em>None.</em>
+        </ul>
+        <strong>Returns</strong>: a JSON dictionary of the form: 
+        <pre class="parameters">
+        {'locations': [<em>STRING</em>, <em>STRING</em>, ...}
+        </pre>
+
+        <em>NOTE</em>: Each string in the list of locations is a location name (e.g. <em>ratty</em>, <em>andrews</em>, etc).
+        <br />
+        <br />
+
+        <strong>Examples:</strong>
+        <br />
+        <span class="example">How to get all the currently offered locations...</span>
+        <br />
+        <div class="center">
+            <div class="codeblock">
+                <code>
+                    https://api.students.brown.edu/wifi/locations?client_id=your-client-id
                 </code>
             </div>
         </div>

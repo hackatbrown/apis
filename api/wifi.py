@@ -30,7 +30,7 @@ def wifi_index():
 @limiter.shared_limit(RATE_LIMIT, 'wifi')
 @support_jsonp
 def req_wifi_count():
-	''' Endpoint for all WiFi count requests (see README for documentation) '''
+	''' Endpoint for all WiFi count requests (see public docs for documentation) '''
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/wifi/count', str(datetime.now()))
@@ -81,6 +81,19 @@ def req_wifi_count():
 		return jsonify(location=original_location, **res_dict)
 
 
+
+@app.route('/wifi/locations')
+@limiter.shared_limit(RATE_LIMIT, 'wifi')
+@support_jsonp
+def req_wifi_locations():
+	''' Endpoint for all WiFi location requests (see public docs for documentation) '''
+	client_id = request.args.get('client_id', 'missing_client')
+	if is_valid_client(client_id):
+		log_client(client_id, '/wifi/locations', str(datetime.now()))
+	else:
+		return make_json_error(INVALID_CLIENT_MSG)
+
+	return jsonify(locations=location_names.keys())
 
 # Helper methods
 
