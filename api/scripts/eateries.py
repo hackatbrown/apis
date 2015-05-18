@@ -16,13 +16,13 @@ class Eatery:
                             "closed for breakfat",
                             "opens at lunch",
                             "winter 6",
-            			    "winter 7",
-            			    "winter 8",
-            			    "winter 9",
-            			    "winter 10",
-            			    "winter 11",
-            			    "winter 12",
-            			    "winter 13",
+                            "winter 7",
+                            "winter 8",
+                            "winter 9",
+                            "winter 10",
+                            "winter 11",
+                            "winter 12",
+                            "winter 13",
                             "spring 5",
                             "spring 6",
                             "spring 7",
@@ -224,13 +224,49 @@ class Ratty(Eatery):
 
     def scrape_hours(self):
         ''' see description in superclass (Eatery) '''
-        # this hours scraper is only valid for Spring 2015
+        # this hours scraper is only valid for Summer 2015
         num_hours = 0
 
         today = date.today()
-        if today > date(2015, 5, 15):
+        if today > date(2015, 8, 9):
             print "ERROR: hours scraper is out of date"
             return num_hours
+        while (today.month != 8 or today.day != 9):
+            today = today + timedelta(1)
+            if today.month == 5 and today.day == 23:
+                # first commencement breakfast
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 00), (10, 30))
+                num_hours += 1
+                continue
+            elif today.month == 5 and today.day == 24:
+                # second commencement breakfast
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 00), (9, 00))
+                num_hours += 1
+                continue
+            elif today.month == 5 and today.day < 31:
+                # closed
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), 'closed'
+                continue
+            elif today.month == 7 and today.day == 4:
+                # July 4th
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (11, 00), (2, 30))
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (4, 30), (7, 30))
+                num_hours += 2
+                continue
+            elif today.month == 8 and today.day == 9:
+                # last open day during summer
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (9, 30))
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (11, 00), (2, 30))
+                num_hours += 2
+                continue
+            else:
+                # regular summer hours
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (9, 30))
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (11, 00), (2, 30))
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (4, 30), (7, 30))
+                num_hours += 3
+
+        '''
         while (today.month != 5 or today.day != 16):
             if today.month == 3 and today.day >= 21 and today.day <= 28:
                 # spring break schedule
@@ -252,6 +288,7 @@ class Ratty(Eatery):
                 num_hours += 1
                 print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30))
             today = today + timedelta(1)
+        '''
         return num_hours
 
 

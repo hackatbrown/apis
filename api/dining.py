@@ -126,8 +126,6 @@ def req_dining_hours():
 
 	result_list = [r for r in results]
 
-	if len(result_list) == 0:
-		return make_json_error("No hours found for {0} on {1}/{2}/{3}.".format(eatery, month, day, year))
 	return jsonify(num_results=len(result_list), results=result_list)
 
 
