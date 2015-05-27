@@ -2,8 +2,9 @@
 <head lang="en">
   {% block head %}
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block page_title %}{% endblock %}{% if self.page_title() %} | {% endif %}APIs@Brown</title>
-    <meta name="viewport" content="initial-scale=1">
 
     <!-- Social Data -->
     <meta property="og:title" content="APIs@Brown">
@@ -34,11 +35,7 @@
 
 <body>
   {% block body %}
-    <header>
-      {% block header %}
-
-      {% endblock %}
-    </header>
+    {% include "includes/header.html" %}
 
     <main>
       {% block main %}
@@ -46,10 +43,7 @@
       {% endblock %}
     </main>
 
-    <footer>
-      {% block footer %}
-      {% endblock %}
-    </footer>
+    {% include "includes/footer.html" %}
 
     <!-- JavaScript -->
     {% assets "js_all" %}
