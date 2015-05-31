@@ -14,7 +14,7 @@ clients = db.clients
 
 # Compile SCSS and JavaScript assets
 bundles = {
-    "css_all": Bundle("scss/vendor/*.scss", "scss/partials/*.scss", filters=["scss"], output="gen/main.css"),
+    "css_all": Bundle("scss/vendor/*.scss", "scss/partials/*.scss", "scss/main.scss", filters=["scss"], output="gen/main.css"),
     "js_all": Bundle("js/vendor/jquery-2.1.3.min.js", "js/vendor/bootstrap.min.js", "js/*.js", output="gen/main.js")
 }
 assets = Environment(app)

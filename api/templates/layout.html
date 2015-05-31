@@ -35,15 +35,15 @@
 
 <body>
   {% block body %}
-    {% include "includes/header.html" %}
+    <div id="wrapper" class="container">
+      {% include "includes/header.html" %}
 
-    <main>
-      {% block main %}
+      <main>
+        {% block main %}{% endblock %}
+      </main>
 
-      {% endblock %}
-    </main>
-
-    {% include "includes/footer.html" %}
+      {% include "includes/footer.html" %}
+    </div>
 
     <!-- JavaScript -->
     {% assets "js_all" %}
