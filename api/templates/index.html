@@ -1,39 +1,52 @@
 {% extends "layout.html" %}
+{% set active_page = "index" %}
 
 {% block main %}
-  <section id="splash">
+  <section class="splash">
     <h2>Build apps that <br>benefit the Brown community.</h2>
     <a href="/docs">Get Started</a>
   </section>
 
-  <section id="learn-more">
+  <section class="learn-more">
     <h2>APIs@Brown allow developers access to on-campus data<br> in a simple and well-structured manner.</h2>
     <p class="description">Query the APIs and use the results to power your app, website, or other project.</p>
 
     <div class="row">
-      <div id="dining" class="col-sm-3">
+      <div class="dining col-sm-3">
+        <img class="api-logo" src="{{ url_for('static', filename='img/api-logos/dining.svg') }}">
         <h3>Dining Services</h3>
+        <p>Find information about the various eateries, their open hours, menus, and individual food items.</p>
+        <a href="/docs/dining" class="api-link">Learn More</a>
       </div>
 
-      <div id="wifi" class="col-sm-3">
-        <h3>WiFi</h3>
+      <div class="wifi col-sm-3">
+        <img class="api-logo" src="{{ url_for('static', filename='img/api-logos/wifi-new.svg') }}">
+        <h3>Wi-Fi</h3>
+        <p>For various locations on campus, chart the number of devices connected to Wi-Fi, as well as other meta data.</p>
+        <p class="api-link unavailable">Temporarily Unavailable</p>
       </div>
 
-      <div id="shuttle" class="col-sm-3">
+      <div class="shuttle col-sm-3">
+        <img class="api-logo" src="{{ url_for('static', filename='img/api-logos/shuttle.svg') }}">
         <h3>Brown Shuttle</h3>
+        <p>Find the routes, planned schedules, and current locations of various daytime and evening shuttles.</p>
+        <p class="api-link coming-soon">Coming Soon</p>
       </div>
 
-      <div id="critical-review" class="col-sm-3">
+      <div class="critical-review col-sm-3">
+        <img class="api-logo" src="{{ url_for('static', filename='img/api-logos/critical-review.png') }}">
         <h3>The Critical Review</h3>
+        <p>Find information about courses, course reviews, and various statistics about course demographics.</p>
+        <p class="api-link coming-soon">Coming Soon</p>
       </div>
     </div>
   </section>
 
-  <section id="examples">
-    <h2>Examples</h2>
+  <section class="examples">
+    <h2>Built with APIs@Brown</h2>
   </section>
 
-  <section id="join-us">
-    <h2>Join Us</h2>
+  <section class="get-started">
+    <h2>Get Started</h2>
   </section>
 {% endblock %}

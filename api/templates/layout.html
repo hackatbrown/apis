@@ -7,6 +7,7 @@
     <title>{% block page_title %}{% endblock %}{% if self.page_title() %} | {% endif %}APIs@Brown</title>
 
     <!-- Social Data -->
+    <!-- Facebook -->
     <meta property="og:title" content="APIs@Brown">
     <meta property="og:url" content="/">
     <meta property="og:type" content="website">
@@ -14,6 +15,7 @@
     <meta property="og:description" content="APIs@Brown allows developers access to on-campus data in a simple and well-structured manner.">
     <meta property="og:image" content="{{ url_for('static', filename='img/og.png', _external=True) }}">
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@hackatbrown">
     <meta name="twitter:creator" content="@hackatbrown">
@@ -30,10 +32,14 @@
     {% assets "css_all" %}
       <link rel="stylesheet" href="{{ ASSET_URL }}">
     {% endassets %}
+
+    <!-- Typekit -->
+    <script src="//use.typekit.net/rxv3cuc.js"></script>
+    <script>try{Typekit.load();}catch(e){}</script>
   {% endblock %}
 </head>
 
-<body>
+<body class="{{ active_page }}">
   {% block body %}
     <div id="wrapper" class="container">
       {% include "includes/header.html" %}

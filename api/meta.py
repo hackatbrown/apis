@@ -13,12 +13,12 @@ DATABASE OBJECTS: View templates on the private, repository README.
 clients = db.clients
 
 # Compile SCSS and JavaScript assets
-bundles = {
-    "css_all": Bundle("scss/vendor/*.scss", "scss/partials/*.scss", "scss/main.scss", filters=["scss"], output="gen/main.css"),
-    "js_all": Bundle("js/vendor/jquery-2.1.3.min.js", "js/vendor/bootstrap.min.js", "js/*.js", output="gen/main.js")
-}
+css = Bundle("scss/main.scss", filters=["scss", "autoprefixer"], depends="scss/**/*.scss", output="gen/main.css")
+js = Bundle("js/vendor/jquery-2.1.3.min.js", "js/vendor/bootstrap.min.js", "js/*.js", output="gen/main.js")
+
 assets = Environment(app)
-assets.register(bundles)
+assets.register("css_all", css)
+assets.register("js_all", js)
 
 # Messages for success/failure during Client ID signup
 SUCCESS_MSG = "Your Client ID has been emailed to you!"

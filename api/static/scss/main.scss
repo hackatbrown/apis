@@ -1,20 +1,38 @@
-.container {
-  max-width: 960px;
+/* Vendor */
+@import "vendor/bootstrap.min";
+
+/* Layout */
+#wrapper {
+  max-width: 1080px;
 }
 
-main > section {
-  padding-top: 30px;
-  padding-bottom: 30px;
+/* Colors */
+$brand-red: #bb2c2c;
 
-  border-bottom: 1px solid #eee;
+$lighter-grey: #bbbbbb;
+$light-grey: #888888;
+$dark-grey: #666666;
+$darker-grey: #333333;
+$accent-grey: #eeeeee;
+
+/* Typography */
+body {
+  font-family: "aktiv-grotesk-std";
+  font-size: 13px;
+  color: $darker-grey;
 }
 
-#splash {
-  text-align: center;
+h2 {
+  font-size: 24px;
+  font-weight: 100;
 }
 
-#learn-more {
-  h2, .description {
-    text-align: center;
-  }
+h3 {
+  font-size: 16px;
 }
+
+/* Partials */
+@import "partials/header";
+
+/* Pages */
+@import "pages/index";
