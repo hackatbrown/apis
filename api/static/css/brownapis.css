@@ -1,0 +1,14 @@
+a {
+	cursor: pointer;
+}
+
+/* Footer */
+.brownAPIsFooter.stackable.grid {
+	padding-top: 3rem;
+	padding-bottom: 4rem;
+	border-top: 1px solid #EEE;
+}
+
+.brownAPIsFooter.stackable.grid h5 {
+	text-transform: uppercase;
+}
