@@ -35,10 +35,17 @@ db.student {
 
 
 @app.route('/student/login')
-def login():
+def login(L):
 	'''Allows a user to receive a token in exchange for a valid password / username combination.'''
 	#TODO: Implement login
-	return
+	Dict = {}
+	count = 0
+	idnum = 1000000
+	while len(L) != 0:
+		Dict.append(L[count], idnum)
+		count++
+		idnum++
+	return Dict
 
 @app.route('/student/balance')
 def balance():
