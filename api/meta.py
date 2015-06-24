@@ -1,5 +1,4 @@
 from flask import jsonify, render_template, url_for, request, redirect
-from flask.ext.assets import Environment, Bundle
 from api import app, db, limiter, RATE_LIMIT
 from scripts.add_client import add_client_id
 from scripts.email_handler import send_id_email
@@ -11,14 +10,6 @@ DATABASE OBJECTS: View templates on the private, repository README.
 
 # simplify collection names
 clients = db.clients
-
-# Compile SCSS and JavaScript assets
-css = Bundle("scss/main.scss", filters=["scss", "autoprefixer"], depends="scss/**/*.scss", output="gen/main.css")
-js = Bundle("js/vendor/jquery-2.1.3.min.js", "js/vendor/bootstrap.min.js", "js/*.js", output="gen/main.js")
-
-assets = Environment(app)
-assets.register("css_all", css)
-assets.register("js_all", js)
 
 # Messages for success/failure during Client ID signup
 SUCCESS_MSG = "Your Client ID has been emailed to you!"

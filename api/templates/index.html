@@ -1,52 +1,85 @@
-{% extends "layout.html" %}
-{% set active_page = "index" %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Brown APIs</title>
 
-{% block main %}
-  <section class="splash">
-    <h2>Build apps that <br>benefit the Brown community.</h2>
-    <a href="/docs">Get Started</a>
-  </section>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
 
-  <section class="learn-more">
-    <h2>APIs@Brown allow developers access to on-campus data<br> in a simple and well-structured manner.</h2>
-    <p class="description">Query the APIs and use the results to power your app, website, or other project.</p>
+        <meta name="description" content="Build better apps for Brown!">
+        <meta name="keywords" content="brown apis">
 
-    <div class="row">
-      <div class="dining col-sm-3">
-        <img class="api-logo" src="{{ url_for('static', filename='img/api-logos/dining.svg') }}">
-        <h3>Dining Services</h3>
-        <p>Find information about the various eateries, their open hours, menus, and individual food items.</p>
-        <a href="/docs/dining" class="api-link">Learn More</a>
-      </div>
+        <!-- Styles -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/semantic.min.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/brownapis.css') }}" />
 
-      <div class="wifi col-sm-3">
-        <img class="api-logo" src="{{ url_for('static', filename='img/api-logos/wifi-new.svg') }}">
-        <h3>Wi-Fi</h3>
-        <p>For various locations on campus, chart the number of devices connected to Wi-Fi, as well as other meta data.</p>
-        <p class="api-link unavailable">Temporarily Unavailable</p>
-      </div>
+        <!-- Scripts -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="{{ url_for('static', filename='js/semantic.min.css') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery.scrollTo.min.js') }}"></script>
 
-      <div class="shuttle col-sm-3">
-        <img class="api-logo" src="{{ url_for('static', filename='img/api-logos/shuttle.svg') }}">
-        <h3>Brown Shuttle</h3>
-        <p>Find the routes, planned schedules, and current locations of various daytime and evening shuttles.</p>
-        <p class="api-link coming-soon">Coming Soon</p>
-      </div>
+        <script>
+            $(document).ready(function() {
+                $('#teddy').hover(
+                    function() {
+                        $('#teddy').attr('src', "{{ url_for('static', filename='img/teddy_bear_happy.svg') }}");
+                    },
+                    function() {
+                        $('#teddy').attr('src', "{{ url_for('static', filename='img/teddy_bear.svg') }}");
+                    }
+                );
 
-      <div class="critical-review col-sm-3">
-        <img class="api-logo" src="{{ url_for('static', filename='img/api-logos/critical-review.png') }}">
-        <h3>The Critical Review</h3>
-        <p>Find information about courses, course reviews, and various statistics about course demographics.</p>
-        <p class="api-link coming-soon">Coming Soon</p>
-      </div>
-    </div>
-  </section>
+                $('#arrow').on('click', function() {
+                    $.scrollTo($('.brownAPIsFooter').offset().top, 400);
+                });
+            });
+        </script>
+    </head>
 
-  <section class="examples">
-    <h2>Built with APIs@Brown</h2>
-  </section>
+    <body>
+        <!-- Body -->
+        <div class="ui vertical segment" style="background: #fdfdfd; height: 100%; position: relative;">
+            <img id="teddy" src="{{ url_for('static', filename='img/teddy_bear.svg') }}" class="ui small image centered" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto;" />
+            <img id="arrow" src="{{ url_for('static', filename='img/arrow.svg') }}" style="position: absolute; width: 48px; bottom: 48px; left: 0; right: 0; margin: auto; cursor: pointer;" />
+        </div><!-- End Body -->
 
-  <section class="get-started">
-    <h2>Get Started</h2>
-  </section>
-{% endblock %}
+        <!-- Footer -->
+        <div class="brownAPIsFooter ui stackable page three column grid" style="background: #990000;">
+            <div class="column" style="text-align: center;">
+                <h5 class="ui header">Organization</h5>
+                <div class="ui link list">
+                    <a class="item" href="/">Home</a>
+                    <a class="item" href="/blog">Blog</a>
+                    <a class="item" href="/jobs">Join Our Team</a>
+                    <a class="item" href="/support">Support</a>
+                    <a class="item" href="https://twitter.com/BrownAPIs">Twitter</a>
+                </div>
+            </div>
+            <div class="column" style="text-align: center;">
+                <h5 class="ui header">Documentation</h5>
+                <div class="ui link list">
+                    <a class="item" href="/start">Getting Started</a>
+                    <a class="item" href="/guides">Examples</a>
+                    <a class="item" href="/resources">Resources</a>
+                </div>
+
+                <h5 class="ui header">Community</h5>
+                <div class="ui link list">
+                    <a class="item" href="/featured">Featured Apps</a>
+                    <a class="item" href="https://www.facebook.com/groups/brown.apis">Facebook</a>
+                </div>
+            </div>
+            <div class="column" style="text-align: center;">
+                <h5 class="ui header" style="text-transform: none;">APIs</h5>
+                <div class="ui link list">
+                    <a class="item" href="/docs/dining">Dining</a>
+                    <a class="item" href="/docs/shuttle">Shuttle</a>
+                    <a class="item" href="/docs/criticalreview">Critical Review</a>
+                    <a class="item" href="/docs/wifi">WiFi</a>
+                    <a class="item" href="/docs/laundry">Laundry</a>
+                </div>
+            </div>
+        </div><!-- End Footer -->
+    </body>
+
+</html>
