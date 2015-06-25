@@ -15,7 +15,7 @@
 
         <!-- Scripts -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="{{ url_for('static', filename='js/semantic.min.css') }}"></script>
+        <script src="{{ url_for('static', filename='js/semantic.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/jquery.scrollTo.min.js') }}"></script>
 
         <script>
@@ -32,13 +32,63 @@
                 $('#arrow').on('click', function() {
                     $.scrollTo($('.brownAPIsFooter').offset().top, 400);
                 });
+
+                /*****************************************
+                 * Links to dynamically load other pages *
+                 *****************************************/
+
+                $('#home').on('click', function() {
+                    if ($('#body').find('#teddy').length == 0) {
+                        $('#body').load('{{ url_for("static", filename="html/home.html") }}');
+                        var obj = {};
+                        history.pushState(obj, 'Home', '/');
+                    }
+                    $.scrollTo(0, 400);
+                });
+
+                $('#blog').on('click', function() {
+                    $('#body').load('{{ url_for("static", filename="html/blog.html") }}');
+                    $.scrollTo(0, 400);
+                    var obj = {};
+                    history.pushState(obj, 'Blog', '/blog');
+                });
+
+                $('#jobs').on('click', function() {
+                    $('#body').load('{{ url_for("static", filename="html/jobs.html") }}');
+                    $.scrollTo(0, 400);
+                });
+
+                $('#support').on('click', function() {
+                    $('#body').load('{{ url_for("static", filename="html/support.html") }}');
+                    $.scrollTo(0, 400);
+                });
+
+                $('#start').on('click', function() {
+                    $('#body').load('{{ url_for("static", filename="html/start.html") }}');
+                    $.scrollTo(0, 400);
+                });
+
+                $('#examples').on('click', function() {
+                    $('#body').load('{{ url_for("static", filename="html/examples.html") }}');
+                    $.scrollTo(0, 400);
+                });
+
+                $('#resources').on('click', function() {
+                    $('#body').load('{{ url_for("static", filename="html/resources.html") }}');
+                    $.scrollTo(0, 400);
+                });
+
+                $('#featured').on('click', function() {
+                    $('#body').load('{{ url_for("static", filename="html/featured.html") }}');
+                    $.scrollTo(0, 400);
+                });
             });
         </script>
     </head>
 
     <body>
         <!-- Body -->
-        <div class="ui vertical segment" style="background: #fdfdfd; height: 100%; position: relative;">
+        <div id="body" class="ui vertical segment" style="background: #fdfdfd; height: 100%; position: relative;">
             <img id="teddy" src="{{ url_for('static', filename='img/teddy_bear.svg') }}" class="ui small image centered" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto;" />
             <img id="arrow" src="{{ url_for('static', filename='img/arrow.svg') }}" style="position: absolute; width: 48px; bottom: 48px; left: 0; right: 0; margin: auto; cursor: pointer;" />
         </div><!-- End Body -->
@@ -48,24 +98,24 @@
             <div class="column" style="text-align: center;">
                 <h5 class="ui header">Organization</h5>
                 <div class="ui link list">
-                    <a class="item" href="/">Home</a>
-                    <a class="item" href="/blog">Blog</a>
-                    <a class="item" href="/jobs">Join Our Team</a>
-                    <a class="item" href="/support">Support</a>
+                    <a class="item" id="home">Home</a>
+                    <a class="item" id="blog">Blog</a>
+                    <a class="item" id="jobs">Join Our Team</a>
+                    <a class="item" id="support">Support</a>
                     <a class="item" href="https://twitter.com/BrownAPIs">Twitter</a>
                 </div>
             </div>
             <div class="column" style="text-align: center;">
                 <h5 class="ui header">Documentation</h5>
                 <div class="ui link list">
-                    <a class="item" href="/start">Getting Started</a>
-                    <a class="item" href="/guides">Examples</a>
-                    <a class="item" href="/resources">Resources</a>
+                    <a class="item" id="start">Getting Started</a>
+                    <a class="item" id="examples">Examples</a>
+                    <a class="item" id="resources">Resources</a>
                 </div>
 
                 <h5 class="ui header">Community</h5>
                 <div class="ui link list">
-                    <a class="item" href="/featured">Featured Apps</a>
+                    <a class="item" id="featured">Featured Apps</a>
                     <a class="item" href="https://www.facebook.com/groups/brown.apis">Facebook</a>
                 </div>
             </div>
