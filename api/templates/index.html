@@ -19,7 +19,7 @@
         <script src="{{ url_for('static', filename='js/jquery.scrollTo.min.js') }}"></script>
 
         <script>
-            $(document).ready(function() {
+            var setupTeddy = function() {
                 $('#teddy').hover(
                     function() {
                         $('#teddy').attr('src', "{{ url_for('static', filename='img/teddy_bear_happy.svg') }}");
@@ -28,10 +28,17 @@
                         $('#teddy').attr('src', "{{ url_for('static', filename='img/teddy_bear.svg') }}");
                     }
                 );
+            };
 
+            var setupArrow = function() {
                 $('#arrow').on('click', function() {
                     $.scrollTo($('.brownAPIsFooter').offset().top, 400);
                 });
+            };
+
+            $(document).ready(function() {
+                setupTeddy();
+                setupArrow();
 
                 /*****************************************
                  * Links to dynamically load other pages *
@@ -39,7 +46,10 @@
 
                 $('#home').on('click', function() {
                     if ($('#body').find('.home.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/home.html") }}');
+                        $('#body').load('{{ url_for("static", filename="html/home.html") }}', 0, function() {
+                            setupTeddy();
+                            setupArrow();
+                        });
                         var obj = {};
                         history.pushState(obj, 'Home', '/');
                     }
