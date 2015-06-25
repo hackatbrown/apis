@@ -38,7 +38,7 @@
                  *****************************************/
 
                 $('#home').on('click', function() {
-                    if ($('#body').find('#teddy').length == 0) {
+                    if ($('#body').find('.home.page').length == 0) {
                         $('#body').load('{{ url_for("static", filename="html/home.html") }}');
                         var obj = {};
                         history.pushState(obj, 'Home', '/');
@@ -47,39 +47,65 @@
                 });
 
                 $('#blog').on('click', function() {
-                    $('#body').load('{{ url_for("static", filename="html/blog.html") }}');
+                    if ($('#body').find('.blog.page').length == 0) {
+                        $('#body').load('{{ url_for("static", filename="html/blog.html") }}');
+                        var obj = {};
+                        history.pushState(obj, 'Blog', '/blog');
+                    }
                     $.scrollTo(0, 400);
-                    var obj = {};
-                    history.pushState(obj, 'Blog', '/blog');
                 });
 
                 $('#jobs').on('click', function() {
-                    $('#body').load('{{ url_for("static", filename="html/jobs.html") }}');
+                    if ($('#body').find('.jobs.page').length == 0) {
+                        $('#body').load('{{ url_for("static", filename="html/jobs.html") }}');
+                        var obj = {};
+                        history.pushState(obj, 'Join Our Team', '/jobs');
+                    }
                     $.scrollTo(0, 400);
                 });
 
                 $('#support').on('click', function() {
-                    $('#body').load('{{ url_for("static", filename="html/support.html") }}');
+                    if ($('#body').find('.support.page').length == 0) {
+                        $('#body').load('{{ url_for("static", filename="html/support.html") }}');
+                        var obj = {};
+                        history.pushState(obj, 'Support', '/support');
+                    }
                     $.scrollTo(0, 400);
                 });
 
                 $('#start').on('click', function() {
-                    $('#body').load('{{ url_for("static", filename="html/start.html") }}');
+                    if ($('#body').find('.start.page').length == 0) {
+                        $('#body').load('{{ url_for("static", filename="html/start.html") }}');
+                        var obj = {};
+                        history.pushState(obj, 'Start', '/start');
+                    }
                     $.scrollTo(0, 400);
                 });
 
                 $('#examples').on('click', function() {
-                    $('#body').load('{{ url_for("static", filename="html/examples.html") }}');
+                    if ($('#body').find('.examples.page').length == 0) {
+                        $('#body').load('{{ url_for("static", filename="html/examples.html") }}');
+                        var obj = {};
+                        history.pushState(obj, 'Examples', '/examples');
+                    }
                     $.scrollTo(0, 400);
                 });
 
                 $('#resources').on('click', function() {
-                    $('#body').load('{{ url_for("static", filename="html/resources.html") }}');
+                    if ($('#body').find('.resources.page').length == 0) {
+                        $('#body').load('{{ url_for("static", filename="html/resources.html") }}');
+                        var obj = {};
+                        history.pushState(obj, 'Reources', '/resources');
+                    }
                     $.scrollTo(0, 400);
                 });
 
                 $('#featured').on('click', function() {
-                    $('#body').load('{{ url_for("static", filename="html/featured.html") }}');
+                    if ($('#body').find('.featured.page').length == 0) {
+                        $('#body').load('{{ url_for("static", filename="html/featured.html") }}');
+                        var obj = {};
+                        history.pushState(obj, 'Featured', '/featured');
+                    }
                     $.scrollTo(0, 400);
                 });
             });
@@ -89,6 +115,7 @@
     <body>
         <!-- Body -->
         <div id="body" class="ui vertical segment" style="background: #fdfdfd; height: 100%; position: relative;">
+            <div class="home page"></div>
             <img id="teddy" src="{{ url_for('static', filename='img/teddy_bear.svg') }}" class="ui small image centered" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto;" />
             <img id="arrow" src="{{ url_for('static', filename='img/arrow.svg') }}" style="position: absolute; width: 48px; bottom: 48px; left: 0; right: 0; margin: auto; cursor: pointer;" />
         </div><!-- End Body -->
