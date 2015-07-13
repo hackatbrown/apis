@@ -12,6 +12,24 @@ location_names = {'jos': 'littlejo',
 				  'ratty': 'ratty',
 				  'vdub': 'vdubs'}
 
+# CIS has set up an endpoint for all WiFi requests to which we forward our incoming
+# requests. They protect these raw endpoints with HTTP 'BASIC' authentication. These
+# are our secret credentials to access their data.
+
+if 'WIFI_USERNAME' in app.config:
+    wifi_username = app.config['WIFI_USERNAME']
+elif 'WIFI_USERNAME' in os.environ:
+	wifi_username = os.environ['WIFI_USERNAME']
+else:
+    print "ERROR (critical): The WiFi endpoint's username variable was not found."
+
+if 'WIFI_PASSWORD' in app.config:
+    wifi_password = app.config['WIFI_PASSWORD']
+elif 'WIFI_PASSWORD' in os.environ:
+	wifi_password = os.environ['WIFI_PASSWORD']
+else:
+    print "ERROR (critical): The WiFi endpoint's password variable was not found."
+
 
 @app.route('/wifi')
 @limiter.shared_limit(RATE_LIMIT, 'wifi')
@@ -32,10 +50,6 @@ def wifi_index():
 def req_wifi_count():
 	''' Endpoint for all WiFi count requests (see public docs for documentation) '''
 
-	# TODO enable wifi API again
-	return jsonify(error="We have been asked to disable this API until further notice. Check our home page for updates.")
-
-
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
 		log_client(client_id, '/wifi/count', str(datetime.now()))
@@ -46,7 +60,7 @@ def req_wifi_count():
 	location = verify_location(original_location)
 
 	if not location:
-		return make_json_error("Invalid location: {0}".format(location))
+		return make_json_error("Invalid location: {0}".format(original_location))
 
 	history = False
 	history_str = request.args.get('history', '')
@@ -54,8 +68,12 @@ def req_wifi_count():
 		history = True
 
 	if history:
-		response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices?history=true")
+		response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices?history=true", auth=(wifi_username, wifi_password))
 		res_list = json.loads(response.content)
+
+		if not res_dict['timestamp'] or not res_dict['count']:
+			return jsonify(error="WiFi data is temporarily unavailable for this location.")
+
 		history_list = []
 		for res_dict in res_list:
 			del res_dict['locality']	# we'll use the user-provided location instead
@@ -71,8 +89,13 @@ def req_wifi_count():
 
 		return jsonify(location=original_location, history=history_list)
 	else:
-		response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices")
+		response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices", auth=(wifi_username, wifi_password))
+		print response.content
 		res_dict = json.loads(response.content)
+
+		if not res_dict['timestamp'] or not res_dict['count']:
+			return jsonify(error="WiFi data is temporarily unavailable for this location.")
+
 		del res_dict['locality']	# we'll use the user-provided location instead
 
 		updated_at = datetime.fromtimestamp(float(res_dict['timestamp']))
@@ -92,10 +115,6 @@ def req_wifi_count():
 @support_jsonp
 def req_wifi_locations():
 	''' Endpoint for all WiFi location requests (see public docs for documentation) '''
-	
-	# TODO enable wifi API again
-	return jsonify(error="We have been asked to disable this API until further notice. Check our home page for updates.")
-
 
 	client_id = request.args.get('client_id', 'missing_client')
 	if is_valid_client(client_id):
