@@ -91,7 +91,6 @@ def req_wifi_count():
 		return jsonify(location=original_location, history=history_list)
 	else:
 		response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices", auth=(wifi_username, wifi_password))
-		print response.content
 		res_dict = json.loads(response.content)
 
 		if not res_dict['timestamp'] or not res_dict['count']:
