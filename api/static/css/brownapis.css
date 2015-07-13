@@ -7,20 +7,20 @@ article {
 	margin-top: 2em;
 	margin-left: auto;
 	margin-right: auto;
-	color: #990000; 
+	color: #000000; 
 	font-family: 'Josefin Sans', sans-serif;
 	font-size: 1.5rem;
 }
 
 .shadow {
-	text-shadow: 1px 1px #990000;
+	text-shadow: 1px 1px #663300;
 }
 
 /* Footer */
 .brownAPIsFooter.stackable.grid {
 	padding-top: 3rem;
 	padding-bottom: 4rem;
-	border-top: 1px solid #EEE;
+	border-top: 1px solid #990000;
 }
 
 .brownAPIsFooter.stackable.grid h5 {
