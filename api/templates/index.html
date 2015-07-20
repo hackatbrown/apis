@@ -94,7 +94,18 @@
 
                 $('#start').on('click', function() {
                     if ($('#body').find('.start.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/start.html") }}');
+                        $('#body').load('{{ url_for("static", filename="html/start.html") }}', 0, function() {
+                            setupArrow();
+                            $(window).scroll(function() {
+                                var scrollBottom = $(document).scrollTop() + $(window).height();
+                                if (scrollBottom < $('#footer').offset().top) {
+                                    $('#arrow').css("position", "fixed");
+                                } else {
+                                    $('#arrow').css("position", "absolute");
+                                }
+                            });
+                            $('#footer').css("top", $("#body").height());
+                        });
                         var obj = {};
                         history.pushState(obj, 'Start', '/start');
                     }
@@ -133,7 +144,7 @@
 
     <body>
         <!-- Body -->
-        <div id="body" class="ui vertical segment" style="background: #ffffff; height: 100%; position: relative;">
+        <div id="body" class="ui vertical segment" style="background: #ffffff; min-height: 100%; position: relative;">
             <div class="home page"></div>
 
             <img id="teddy" src="{{ url_for('static', filename='img/teddy_bear_happy.svg') }}" class="ui small image centered" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto;" />
@@ -141,7 +152,7 @@
         </div><!-- End Body -->
 
         <!-- Footer -->
-        <div class="brownAPIsFooter ui stackable page three column grid" style="background-color: #CC0000;">
+        <div id="footer" class="brownAPIsFooter ui stackable page three column grid" style="background-color: #CC0000;">
             <div class="column" style="text-align: center;">
                 <h5 class="ui header">Organization</h5>
                 <div class="ui link list">
