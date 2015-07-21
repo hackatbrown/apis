@@ -85,7 +85,32 @@
 
                 $('#support').on('click', function() {
                     if ($('#body').find('.support.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/support.html") }}');
+                        $('#body').load('{{ url_for("static", filename="html/support.html") }}', 0, function() {
+                            setupArrow();
+                            $('#bugreport').on('click', function() {
+                                $('#body').load('{{ url_for("static", filename="html/bugreport.html") }}', 0, function() {
+                                    setupArrow();
+                                    $('#report').on('click', function() {
+                                        var failureCallback = function() {
+                                            $('#body').load('{{ url_for("static", filename="html/bugreport_failure.html") }}', 0 , function() {
+                                                    setupArrow();
+                                                });
+                                        };
+                                        $.post('bugreport_submit', { description: $('#description').val() }, function(response) {
+                                            if (response == 'ok') {
+                                                $('#body').load('{{ url_for("static", filename="html/bugreport_success.html") }}', 0 , function() {
+                                                    setupArrow();
+                                                });
+                                            } else {
+                                                failureCallback();
+                                            }
+                                        }).fail(function() {
+                                            failureCallback();
+                                        });
+                                    });
+                                });
+                            });
+                        });
                         var obj = {};
                         history.pushState(obj, 'Support', '/support');
                     }
