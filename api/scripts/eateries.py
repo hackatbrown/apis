@@ -14,6 +14,7 @@ class Eatery:
     # a set of meal names to ignore, because dining services will often put items that aren't meals in the spreadsheets
     food_ignore_list = set(["closed for breakfast",
                             "closed for breakfat",
+                            "closed for service",
                             "opens at lunch",
                             "winter 6",
                             "winter 7",
