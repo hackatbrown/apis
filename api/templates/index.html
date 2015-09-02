@@ -62,9 +62,12 @@
 
                 $('#blog').on('click', function() {
                     if ($('#body').find('.blog.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/blog.html") }}');
-                        var obj = {};
-                        history.pushState(obj, 'Blog', '/blog');
+                        $('#body').load('{{ url_for("static", filename="html/blog.html") }}', 0, function() {
+                            setupArrow();
+                            
+                            var obj = {};
+                            history.pushState(obj, 'Blog', '/blog');
+                        });
                     }
                     $.scrollTo(0, 400);
                 });
@@ -75,6 +78,13 @@
                             setupArrow();
                             $('#apply').hover(function() {
                                 $('#apply').toggleClass('shadow');
+                            });
+                            $('#apply').click(function() {
+                                $('#body').load('{{ url_for("static", filename="html/apply.html") }}', 0, function() {
+                                    setupArrow();
+                                    var obj = {};
+                                    history.pushState(obj, 'Apply', '/apply');
+                                });
                             });
                         });
                         var obj = {};
@@ -94,12 +104,16 @@
                                         var failureCallback = function() {
                                             $('#body').load('{{ url_for("static", filename="html/bugreport_failure.html") }}', 0 , function() {
                                                     setupArrow();
+                                                    var obj = {};
+                                                    history.pushState(obj, 'Oh dear', '/bugreport_failure');
                                                 });
                                         };
                                         $.post('bugreport_submit', { description: $('#description').val() }, function(response) {
                                             if (response == 'ok') {
                                                 $('#body').load('{{ url_for("static", filename="html/bugreport_success.html") }}', 0 , function() {
                                                     setupArrow();
+                                                    var obj = {};
+                                                    history.pushState(obj, 'Bug Reported!', '/bugreport_success');
                                                 });
                                             } else {
                                                 failureCallback();
@@ -108,11 +122,13 @@
                                             failureCallback();
                                         });
                                     });
+                                    var obj = {};
+                                    history.pushState(obj, 'Report a Bug', '/bugreport');
                                 });
                             });
+                            var obj = {};
+                            history.pushState(obj, 'Support', '/support');
                         });
-                        var obj = {};
-                        history.pushState(obj, 'Support', '/support');
                     }
                     $.scrollTo(0, 400);
                 });
@@ -163,6 +179,10 @@
                     }
                     $.scrollTo(0, 400);
                 });
+
+                {% if page %}
+                    $('#{{ page}}').trigger('click');
+                {% endif %}
             });
         </script>
     </head>
@@ -182,7 +202,7 @@
                 <h5 class="ui header">Organization</h5>
                 <div class="ui link list">
                     <a class="item" id="home">Home</a>
-                    <a class="item" id="blog">Blog</a>
+                    <!-- <a class="item" id="blog">Blog</a> -->
                     <a class="item" id="jobs">Join Our Team</a>
                     <a class="item" id="support">Support</a>
                     <a class="item" href="https://twitter.com/BrownAPIs">Twitter</a>
@@ -198,7 +218,7 @@
 
                 <h5 class="ui header">Community</h5>
                 <div class="ui link list">
-                    <a class="item" id="featured">Featured Apps</a>
+                    <!-- <a class="item" id="featured">Featured Apps</a> -->
                     <a class="item" href="https://www.facebook.com/groups/brown.apis">Facebook</a>
                 </div>
             </div>
@@ -207,9 +227,9 @@
                 <div class="ui link list">
                     <a class="item" href="/docs/dining">Dining</a>
                     <a class="item" href="/docs/shuttle">Shuttle</a>
-                    <a class="item" href="/docs/criticalreview">Critical Review</a>
+                    <!-- <a class="item" href="/docs/criticalreview">Critical Review</a> -->
                     <a class="item" href="/docs/wifi">WiFi</a>
-                    <a class="item" href="/docs/laundry">Laundry</a>
+                    <!-- <a class="item" href="/docs/laundry">Laundry</a> -->
                 </div>
             </div>
         </div><!-- End Footer -->

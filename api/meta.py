@@ -1,7 +1,7 @@
 from flask import jsonify, render_template, url_for, request, redirect
 from api import app, db, limiter, RATE_LIMIT
 from scripts.add_client import add_client_id
-from scripts.email_handler import send_id_email
+from scripts.email_handler import send_id_email, send_alert_email
 from scripts.stats import get_total_requests
 
 '''
@@ -19,15 +19,25 @@ FAILURE_MSG = "Your request could not be processed. Please email 'joseph_engelma
 @app.route('/')
 @limiter.limit(RATE_LIMIT)
 def root():
-    signed_up = request.args.get('signedup', '')
-    num_requests = get_total_requests()
-    if signed_up == 'true':
-        return render_template('index.html', message=SUCCESS_MSG, num_requests=num_requests)
-    if signed_up == 'false':
-        return render_template('index.html', message=FAILURE_MSG, num_requests=num_requests)
-    else:
-        return render_template('index.html', num_requests=num_requests)
+    return dispatch('home')
 
+@app.route('/<page>', methods=['GET'])
+@limiter.limit(RATE_LIMIT)
+def dispatch(page):
+    print "Dispatching page in response to request: ", page
+
+    num_requests = get_total_requests()
+    return render_template('index.html', page=page, num_requests=num_requests)
+
+
+@app.route('/bugreport_submit', methods=['POST'])
+@limiter.limit(RATE_LIMIT)
+def bug_report():
+    bug_description = request.form['description']
+    print "Processing bug report:\n\t", bug_description, "\n------ End of bug report ------"
+    send_alert_email(bug_description, urgent=True)
+
+    return dispatch('bugreport_success')
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -42,9 +52,9 @@ def signup():
         client_id = add_client_id(email, firstname + " " + lastname)
         if client_id:
             send_id_email(email, firstname, client_id)
-            return redirect(url_for('root', signedup='true'))
+            return redirect(url_for('root', page='home', signedup='true'))
         else:
-            return redirect(url_for('root', signedup='false'))
+            return redirect(url_for('root', page='home', signedup='false'))
 
 
 # Static responses

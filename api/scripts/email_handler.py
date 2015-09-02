@@ -4,7 +4,7 @@ import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-ERROR_RECEPIENT = "7172159174@vtext.com"
+URGENT_RECEPIENT = "7172159174@vtext.com"
 ALERT_RECEPIENT = "joseph_engelman@brown.edu"
 
 def send_id_email(address, firstname, client_id):
@@ -71,11 +71,11 @@ def send_alert_email(message, urgent=False):
 	# me == my email address
 	me = os.environ['GMAIL_USER']
 	# recepient's email address depends on how urgent the alert is
-	recepient = ERROR_RECEPIENT if urgent else ALERT_RECEPIENT
+	recepient = URGENT_RECEPIENT if urgent else ALERT_RECEPIENT
 
 	# Create message container - the correct MIME type is multipart/alternative.
 	msg = MIMEMultipart('alternative')
-	msg['Subject'] = "Brown APIs Error!" if urgent else "Brown APIs Alert!"
+	msg['Subject'] = "Brown APIs - Urgent Alert!" if urgent else "Brown APIs - System Error"
 	msg['From'] = me
 	msg['To'] = recepient
 
