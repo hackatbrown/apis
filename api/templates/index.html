@@ -64,7 +64,7 @@
                     if ($('#body').find('.blog.page').length == 0) {
                         $('#body').load('{{ url_for("static", filename="html/blog.html") }}', 0, function() {
                             setupArrow();
-                            
+
                             var obj = {};
                             history.pushState(obj, 'Blog', '/blog');
                         });
@@ -137,6 +137,12 @@
                     if ($('#body').find('.start.page').length == 0) {
                         $('#body').load('{{ url_for("static", filename="html/start.html") }}', 0, function() {
                             setupArrow();
+                            $('#sign_up').hover(function() {
+                                $('#sign_up').toggleClass('shadow');
+                            });
+                            $('#sign_up').click(function() {
+                                alert("Not implemented.");
+                            });
                             $(window).scroll(function() {
                                 var scrollBottom = $(document).scrollTop() + $(window).height();
                                 if (scrollBottom < $('#footer').offset().top) {

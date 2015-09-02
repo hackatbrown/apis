@@ -10,10 +10,22 @@ article {
 	color: #000000; 
 	font-family: 'Josefin Sans', sans-serif;
 	font-size: 1.5rem;
+	line-height: 110%;
 }
 
 .shadow {
 	text-shadow: 1px 1px #663300;
+}
+
+.codeExample {
+	width: 90%;
+	margin-top: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	font-size: 1.35rem;
+	font-family: "Courier New", Courier, monospace;
+	font-weight: bold;
 }
 
 /* Footer */

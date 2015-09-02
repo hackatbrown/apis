@@ -4,21 +4,31 @@
 <h1 class="ui center aligned header" style="font-size: 6rem; font-family: 'Amatic SC', cursive; color: #CC0000;">Getting Started</h1>
 
 <article>
-	<p>What is an API? Well, API is short for "application programming interface", but don't worry about remembering that, even the director of Brown APIs had to look up the exact definition to write this. More importantly, APIs allow developers to share their data with other, 3rd-party developers. For example, many location-aware apps use the Google Maps API to get and display maps and landmarks. Tinder uses the Facebook API to learn about users' genders, interests, and photos. Student developers at Brown can use the Brown APIs to access all sorts of campus data, from menus at the Ratty to the number of people currently studying at the Sci Li.</p>
+	<p>To access Brown's data, you'll need a <em>Client ID</em>. Your Client ID will be included with every request you make to the API. It's sort of like your secret key to all of the data we provide (so don't share it with other developers!).</p>
+</article>
 
-	<p>So, how can you actually get to Brown's data? First, you'll need a <em>Client ID</em>. Your Client ID will be included with every request you make to the API. It's sort of like your secret key to all of the data we provide (so don't share it with other developers!). You can sign up for a Client ID <a id="sign_up">here</a>.</p>
+<h2 id="sign_up" class="ui center aligned header" style="font-size: 3rem; font-family: 'Amatic SC', cursive; cursor: pointer; color: #CC0000;">Get a Client ID</h2>
 
-	<p>Once you have your Client ID, you can begin requesting data from our various APIs. The primary means of accessing each API is by requesting a specific web page. For instance, the following URL will return a JSON object representing the current number of people in the Ratty:</p>
+<article>
+	<p>Once you have your Client ID, you can begin requesting data from our various APIs. For instance, the following URL will return a JSON object representing the current number of people in the Ratty:</p>
+</article>
 
-	<code>https://api.students.brown.edu/wifi/count?client_id=<your_client_id>&location=ratty</code>
+<br />
 
-	<p>Let's break down that URL. The "https" ensures we've established a secure connection to the API (i.e. the request is private and cannot be viewed by other sneaky listeners on the network). The next bit, "api.students.brown.edu", is our <em>base URL</em> with which every single requests begins (and it's also our website home page!). After that, "wifi" names the current API we're accessing (as opposed to "dining" or other APIs). The next word, "count" further specifies what data we're interested in getting. In this case, we're looking for a count of people in the Ratty. After the question mark, we list certain arguments to add more detail to our request. Each argument is a key separated from its value by an equals sign. The key-value pairs are separated by ampersands. Every request will require your Client ID. This request also requires a location where it should count the current number of people.</p>
+<p class='codeExample'>https://api.students.brown.edu/wifi/count?client_id=YOUR-CLIENT-ID&location=ratty</p>
+
+<article>
+	<p>Let's break down that URL. The "https" ensures we've established a secure connection to the API (i.e. the request is private and cannot be viewed by other sneaky listeners on the network). The next bit, "api.students.brown.edu", is our <em>base URL</em> with which every single requests begins (and it's also our website home page!). After that, "wifi/count" names the current API we're accessing (as opposed to "dining" or other APIs) and a specific endpoint supported by that API. After the question mark, we include certain arguments to add more detail to our request. Every request will require your Client ID. This request also requires a location where it should count the current number of people.</p>
 
 	<p>These requests and all their different arguments can become very confusing. That's why we provide <a id="documentation">detailed documentation</a> for you to reference. Some APIs also have language-specific libraries to make it even easier to make requests. For example, the Dining API has a Python library that helps simplify API requests. You can find a list of all these libraries on our <a id="resources">resources page</a>.</p>
 
-	<br />
-	<br />
+	<p>If you have questions, join our developer <a href="https://www.facebook.com/groups/brown.apis">community on Facebook</a>, check out <a id="examples">some examples</a>, or hit up our <a id="support">support page. Build something awesome, and we'll add it to our <a id="featured">Featured Apps</a>!
 </article>
+
+<br />
+<br />
+<br />
+<br />
 
 <img id="arrow" src="/static/img/arrow.svg" style="position: fixed; width: 48px; bottom: 24px; left: 0; right: 0; margin: auto; cursor: pointer;" />
 <!-- Dynamically inserted content ends here -->
