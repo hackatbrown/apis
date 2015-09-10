@@ -40,6 +40,183 @@
                 });
             };
 
+            var homePage = function() {
+                if ($('#body').find('.home.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/home.html") }}', 0, function() {
+                        setupTeddy();
+                        setupArrow();
+                    });
+                    var obj = {};
+                    history.pushState(obj, 'Home', '/');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var jobsPage = function() {
+                if ($('#body').find('.jobs.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/jobs.html") }}', 0, function() {
+                        setupArrow();
+                        $('#apply').hover(function() {
+                            $('#apply').toggleClass('shadow');
+                        });
+                        $('#apply').click(function() {
+                            $('#body').load('{{ url_for("static", filename="html/apply.html") }}', 0, function() {
+                                setupArrow();
+                                var obj = {};
+                                history.pushState(obj, 'Apply', '/apply');
+                            });
+                        });
+                    });
+                    var obj = {};
+                    history.pushState(obj, 'Join Our Team', '/jobs');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var supportPage = function() {
+                if ($('#body').find('.support.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/support.html") }}', 0, function() {
+                        setupArrow();
+                        $('#bugreport').on('click', function() {
+                            $('#body').load('{{ url_for("static", filename="html/bugreport.html") }}', 0, function() {
+                                setupArrow();
+                                $('#report').on('click', function() {
+                                    var failureCallback = function() {
+                                        $('#body').load('{{ url_for("static", filename="html/bugreport_failure.html") }}', 0 , function() {
+                                                setupArrow();
+                                                var obj = {};
+                                                history.pushState(obj, 'Oh dear', '/bugreport_failure');
+                                            });
+                                    };
+                                    $.post('bugreport_submit', { description: $('#description').val() }, function(response) {
+                                        if (response == 'ok') {
+                                            $('#body').load('{{ url_for("static", filename="html/bugreport_success.html") }}', 0 , function() {
+                                                setupArrow();
+                                                var obj = {};
+                                                history.pushState(obj, 'Bug Reported!', '/bugreport_success');
+                                            });
+                                        } else {
+                                            failureCallback();
+                                        }
+                                    }).fail(function() {
+                                        failureCallback();
+                                    });
+                                });
+                                var obj = {};
+                                history.pushState(obj, 'Report a Bug', '/bugreport');
+                            });
+                        });
+                        var obj = {};
+                        history.pushState(obj, 'Support', '/support');
+                    });
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var startPage = function() {
+                if ($('#body').find('.start.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/start.html") }}', 0, function() {
+                        setupArrow();
+
+                        $('#sign_up').click(function() {
+                            alert("Not implemented.");
+                        });
+
+                        $('#resources').click(function() {
+                            resourcesPage();
+                        });
+
+                        $('#examples').click(function() {
+                            alert("Not implemented.");
+                        });
+
+                        $('#support').click(function() {
+                            alert("Not implemented.");
+                        });
+
+                        $(window).scroll(function() {
+                            var scrollBottom = $(document).scrollTop() + $(window).height();
+                            if (scrollBottom < $('#footer').offset().top) {
+                                $('#arrow').css("position", "fixed");
+                            } else {
+                                $('#arrow').css("position", "absolute");
+                            }
+                        });
+                        $('#footer').css("top", $("#body").height());
+                    });
+                    var obj = {};
+                    history.pushState(obj, 'Start', '/start');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var examplesPage = function() {
+                if ($('#body').find('.examples.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/examples.html") }}');
+                    var obj = {};
+                    history.pushState(obj, 'Examples', '/examples');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var resourcesPage = function() {
+                if ($('#body').find('.resources.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/resources.html") }}');
+
+                    $('#dining').click(function() {
+                        diningPage();
+                    });
+
+                    $('#shuttle').click(function() {
+                        shuttlePage();
+                    });
+
+                    $('#wifi').click(function() {
+                        wifiPage();
+                    });
+
+                    var obj = {};
+                    history.pushState(obj, 'Resources', '/resources');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var featuredPage = function() {
+                if ($('#body').find('.featured.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/featured.html") }}');
+                    var obj = {};
+                    history.pushState(obj, 'Featured', '/featured');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var diningPage = function() {
+                if ($('#body').find('.dining.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/dining.html") }}');
+                    var obj = {};
+                    history.pushState(obj, 'Dining', '/documentation/dining');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var shuttlePage = function() {
+                if ($('#body').find('.shuttle.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/shuttle.html") }}');
+                    var obj = {};
+                    history.pushState(obj, 'Shuttle', '/documentation/shuttle');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var wifiPage = function() {
+                if ($('#body').find('.wifi.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/wifi.html") }}');
+                    var obj = {};
+                    history.pushState(obj, 'WiFi', '/documentation/wifi');
+                }
+                $.scrollTo(0, 400);
+            };
+
             $(document).ready(function() {
                 setupTeddy();
                 setupArrow();
@@ -49,141 +226,43 @@
                  *****************************************/
 
                 $('#home').on('click', function() {
-                    if ($('#body').find('.home.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/home.html") }}', 0, function() {
-                            setupTeddy();
-                            setupArrow();
-                        });
-                        var obj = {};
-                        history.pushState(obj, 'Home', '/');
-                    }
-                    $.scrollTo(0, 400);
-                });
-
-                $('#blog').on('click', function() {
-                    if ($('#body').find('.blog.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/blog.html") }}', 0, function() {
-                            setupArrow();
-
-                            var obj = {};
-                            history.pushState(obj, 'Blog', '/blog');
-                        });
-                    }
-                    $.scrollTo(0, 400);
+                    homePage();
                 });
 
                 $('#jobs').on('click', function() {
-                    if ($('#body').find('.jobs.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/jobs.html") }}', 0, function() {
-                            setupArrow();
-                            $('#apply').hover(function() {
-                                $('#apply').toggleClass('shadow');
-                            });
-                            $('#apply').click(function() {
-                                $('#body').load('{{ url_for("static", filename="html/apply.html") }}', 0, function() {
-                                    setupArrow();
-                                    var obj = {};
-                                    history.pushState(obj, 'Apply', '/apply');
-                                });
-                            });
-                        });
-                        var obj = {};
-                        history.pushState(obj, 'Join Our Team', '/jobs');
-                    }
-                    $.scrollTo(0, 400);
+                    jobsPage();
                 });
 
                 $('#support').on('click', function() {
-                    if ($('#body').find('.support.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/support.html") }}', 0, function() {
-                            setupArrow();
-                            $('#bugreport').on('click', function() {
-                                $('#body').load('{{ url_for("static", filename="html/bugreport.html") }}', 0, function() {
-                                    setupArrow();
-                                    $('#report').on('click', function() {
-                                        var failureCallback = function() {
-                                            $('#body').load('{{ url_for("static", filename="html/bugreport_failure.html") }}', 0 , function() {
-                                                    setupArrow();
-                                                    var obj = {};
-                                                    history.pushState(obj, 'Oh dear', '/bugreport_failure');
-                                                });
-                                        };
-                                        $.post('bugreport_submit', { description: $('#description').val() }, function(response) {
-                                            if (response == 'ok') {
-                                                $('#body').load('{{ url_for("static", filename="html/bugreport_success.html") }}', 0 , function() {
-                                                    setupArrow();
-                                                    var obj = {};
-                                                    history.pushState(obj, 'Bug Reported!', '/bugreport_success');
-                                                });
-                                            } else {
-                                                failureCallback();
-                                            }
-                                        }).fail(function() {
-                                            failureCallback();
-                                        });
-                                    });
-                                    var obj = {};
-                                    history.pushState(obj, 'Report a Bug', '/bugreport');
-                                });
-                            });
-                            var obj = {};
-                            history.pushState(obj, 'Support', '/support');
-                        });
-                    }
-                    $.scrollTo(0, 400);
+                    supportPage();
                 });
 
                 $('#start').on('click', function() {
-                    if ($('#body').find('.start.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/start.html") }}', 0, function() {
-                            setupArrow();
-                            $('#sign_up').hover(function() {
-                                $('#sign_up').toggleClass('shadow');
-                            });
-                            $('#sign_up').click(function() {
-                                alert("Not implemented.");
-                            });
-                            $(window).scroll(function() {
-                                var scrollBottom = $(document).scrollTop() + $(window).height();
-                                if (scrollBottom < $('#footer').offset().top) {
-                                    $('#arrow').css("position", "fixed");
-                                } else {
-                                    $('#arrow').css("position", "absolute");
-                                }
-                            });
-                            $('#footer').css("top", $("#body").height());
-                        });
-                        var obj = {};
-                        history.pushState(obj, 'Start', '/start');
-                    }
-                    $.scrollTo(0, 400);
+                    startPage();
                 });
 
                 $('#examples').on('click', function() {
-                    if ($('#body').find('.examples.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/examples.html") }}');
-                        var obj = {};
-                        history.pushState(obj, 'Examples', '/examples');
-                    }
-                    $.scrollTo(0, 400);
+                    examplesPage();
                 });
 
                 $('#resources').on('click', function() {
-                    if ($('#body').find('.resources.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/resources.html") }}');
-                        var obj = {};
-                        history.pushState(obj, 'Reources', '/resources');
-                    }
-                    $.scrollTo(0, 400);
+                    resourcesPage();
                 });
 
                 $('#featured').on('click', function() {
-                    if ($('#body').find('.featured.page').length == 0) {
-                        $('#body').load('{{ url_for("static", filename="html/featured.html") }}');
-                        var obj = {};
-                        history.pushState(obj, 'Featured', '/featured');
-                    }
-                    $.scrollTo(0, 400);
+                    featuredPage();
+                });
+
+                $('#dining').on('click', function() {
+                    diningPage();
+                });
+
+                $('#shuttle').on('click', function() {
+                    shuttlePage();
+                });
+
+                $('#wifi').on('click', function() {
+                    wifiPage();
                 });
 
                 {% if page %}
@@ -218,7 +297,7 @@
                 <h5 class="ui header">Documentation</h5>
                 <div class="ui link list">
                     <a class="item" id="start">Getting Started</a>
-                    <a class="item" id="examples">Examples</a>
+                    <!-- <a class="item" id="examples">Examples</a> -->
                     <a class="item" id="resources">Resources</a>
                 </div>
 
@@ -231,10 +310,10 @@
             <div class="column" style="text-align: center;">
                 <h5 class="ui header" style="text-transform: none;">APIs</h5>
                 <div class="ui link list">
-                    <a class="item" href="/docs/dining">Dining</a>
-                    <a class="item" href="/docs/shuttle">Shuttle</a>
+                    <a class="item" id="dining">Dining</a>
+                    <a class="item" id="shuttle">Shuttle</a>
                     <!-- <a class="item" href="/docs/criticalreview">Critical Review</a> -->
-                    <a class="item" href="/docs/wifi">WiFi</a>
+                    <a class="item" id="wifi">WiFi</a>
                     <!-- <a class="item" href="/docs/laundry">Laundry</a> -->
                 </div>
             </div>

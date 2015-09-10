@@ -13,8 +13,15 @@ article {
 	line-height: 110%;
 }
 
+.apiDocLink {
+	font-family: 'Amatic SC', cursive;
+	font-weight: bold;
+	cursor: pointer;
+	font-size: 3.0rem;
+}
+
 .shadow {
-	text-shadow: 1px 1px #663300;
+	text-shadow: 1px 1px #666666;
 }
 
 .codeExample {
@@ -26,6 +33,14 @@ article {
 	font-size: 1.35rem;
 	font-family: "Courier New", Courier, monospace;
 	font-weight: bold;
+}
+
+.apiTable {
+	width: 70%;
+	margin-top: 2.2em;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
 }
 
 /* Footer */
