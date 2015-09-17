@@ -224,61 +224,26 @@ class Ratty(Eatery):
 
     def scrape_hours(self):
         ''' see description in superclass (Eatery) '''
-        # this hours scraper is only valid for Summer 2015
+        # this hours scraper is only valid for Spring 2015
         num_hours = 0
 
         today = date.today()
-        if today > date(2015, 8, 9):
+        if today > date(2015, 12, 22):
             print "ERROR: hours scraper is out of date"
             return num_hours
-        while (today.month != 8 or today.day != 9):
-            today = today + timedelta(1)
-            if today.month == 5 and today.day == 23:
-                # first commencement breakfast
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 00), (10, 30))
+        while today < date(2015, 12, 22):
+            if today.month == 11 and today.day == 6:
+                # Thanksgiving (open 11:30AM-7:30PM)
                 num_hours += 1
-                continue
-            elif today.month == 5 and today.day == 24:
-                # second commencement breakfast
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 00), (9, 00))
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (11, 30), (19, 30))
+            elif today.month == 11 and today.day >= 27 and today.day <= 29:
+                # Thanksgiving weekend (10:30AM-7:30AM)
                 num_hours += 1
-                continue
-            elif today.month == 5 and today.day < 31:
-                # closed
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), 'closed'
-                continue
-            elif today.month == 7 and today.day == 4:
-                # July 4th
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (11, 00), (2, 30))
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (4, 30), (7, 30))
-                num_hours += 2
-                continue
-            elif today.month == 8 and today.day == 9:
-                # last open day during summer
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (9, 30))
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (11, 00), (2, 30))
-                num_hours += 2
-                continue
-            else:
-                # regular summer hours
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (9, 30))
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (11, 00), (2, 30))
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (4, 30), (7, 30))
-                num_hours += 3
-
-        '''
-        while (today.month != 5 or today.day != 16):
-            if today.month == 3 and today.day >= 21 and today.day <= 28:
-                # spring break schedule
-                pass
-            elif today.month == 3 and today.day == 29:
-                # last day of spring break (open 4PM-7:30PM)
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (10, 30), (19, 30))
+            elif today.month == 12 and today.day == 20:
+                # Finals period Sunday schedule (Weekday hours)
                 num_hours += 1
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (16, 00), (19, 30))
-            elif today.month == 5 and today.day >= 5:
-                # finals period with early breakfast hours (7AM-7:30PM)
-                num_hours += 1
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 00), (19, 30))
+                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30))
             elif today.weekday() == 6:
                 # Sunday brunch schedule
                 num_hours += 1
@@ -288,7 +253,6 @@ class Ratty(Eatery):
                 num_hours += 1
                 print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30))
             today = today + timedelta(1)
-        '''
         return num_hours
 
 
@@ -409,13 +373,30 @@ class VDub(Eatery):
         num_hours = 0
 
         today = date.today()
-        if today > date(2015, 5, 15):
+        if today > date(2015, 12, 22):
             print "ERROR: hours scraper is out of date"
             return num_hours
-        while (today.month != 5 or today.day != 16):
-            if today.month == 3 and today.day >= 21 and today.day <= 29:
-                # spring break schedule
+        while today < date(2015, 12, 22):
+            if today.month == 10 and today.day >= 10 and today.day <= 11:
+                # fall break schedule
                 pass
+            elif today.month == 10 and today.day >= 17 and today.day <= 18:
+                # parent's weekend schedule
+                pass
+            elif today.month == 11 and today.day == 25:
+                # wednesday before thxgiving
+                num_hours += 1
+                print "hours for {0}/{1}/{2} (breakfast/lunch) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (14, 00))
+            elif today.month == 11 and today.day >= 26 and today.day <= 29:
+                # thxgiving weekend
+                pass
+            elif today.month == 12 and today.day >= 19 and today.day <= 20:
+                # end of finals
+                pass
+            elif today.month == 12 and today.day == 21:
+                # last day of finals
+                num_hours += 1
+                print "hours for {0}/{1}/{2} (breakfast/lunch) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (14, 00))
             elif today.weekday() >= 5:
                 # weekend schedule
                 pass
