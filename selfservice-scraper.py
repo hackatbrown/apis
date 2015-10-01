@@ -152,6 +152,56 @@ class SelfserviceSession():
         s = None
         return True # Should probably handle exceptions here
 
+def gen_current_semester():
+    '''
+    Generates the semester string for the current semester.
+    This uses fixed months for each semester, which isn't exactly optimal.
+    
+    I/P: Nothing.
+    O/P: A valid semester string "(Fall/Summer/Spring) YEAR"
+    '''
+    seasons = [("Spring ",{1,2,3,4,5})  , ("Summer ", {6, 7}), ("Fall ", {8, 9, 10, 11, 12})]
+    today = date.today()
+    year = today.year
+    month = today.month
+    seasonTuple = filter(lambda (seas, dates): month in dates, seasons)[0][0]
+    return seasonTuple + str(year)
+
+def gen_next_semester(semester_string):
+    '''
+    Given a semester string, generates the next
+    valid semester to occur.
+    
+    e.g "Fall 2015" => "Spring 2016"
+    '''
+    season, year = semester_string.split()
+    year = int(year)
+    if season.lower() == "fall":
+        return "Spring " + str(year + 1)
+    if season.lower() == "spring":
+        return "Summer " + str(year)
+    if season.lower() == "summer":
+        return "Fall " + str(year)
+    else:
+        return None
+
+def generate_semesters(n):
+    '''
+    Generates n semester strings, starting
+    from the current semester.
+    
+    I/P: An integer, n, s.t n >= 1
+    O/P: A list of length n whose elements are
+         the upcoming semesters in order (including
+         the current semester)
+    '''
+    semesters = []
+    semesters.append(gen_current_semester())
+    for i in range(1, n):
+        semesters.append(gen_next_semester(semesters[i-1]))
+    return semesters
+
+
 def main():
 
     username = ''
