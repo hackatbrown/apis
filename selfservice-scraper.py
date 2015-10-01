@@ -38,7 +38,7 @@ class SelfserviceSession():
     }
 
     def get_base_headers(self):
-        return deepcopy(BaseHeaders)
+        return deepcopy(self.BaseHeaders)
 
     @staticmethod
     def _semester_to_value(semester_string):
