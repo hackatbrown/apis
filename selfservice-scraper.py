@@ -26,7 +26,7 @@ class SelfserviceSession():
     # for this is not worth. Possible TODO: Add some Date functionality to determine what
     # seasons/years to populate this list.
     #Semesters = ['Spring 2015', 'Summer 2015', 'Fall 2015', 'Spring 2016']
-    Semesters = ['Fall 2015']
+    Semesters = generate_semesters(3)
     Departments = ['AFRI','AMST','ANTH','APMA','ARAB','ARCH','ASYR','BEO','BIOL','CATL','CHEM','CHIN','CLAS','CLPS','COLT','CROL','CSCI','CZCH','DEVL','EAST','ECON','EDUC','EGYT','EINT','ENGL','ENGN','ENVS','ERLY','ETHN','FREN','GEOL','GNSS','GREK','GRMN','HIAA','HISP','HIST','HMAN','HNDI','INTL','ITAL','JAPN','JUDS','KREA','LAST','LATN','LING','LITR','MATH','MCM','MDVL','MED','MES','MGRK','MUSC','NEUR','PHIL','PHP','PHYS','PLCY','PLME','PLSH','POBS','POLS','PRSN','RELS','REMS','RUSS','SANS','SCSO','SIGN','SLAV','SOC','SWED','TAPS','TKSH','UNIV','URBN','VISA']
 
     @staticmethod
