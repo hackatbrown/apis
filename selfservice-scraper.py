@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from copy import deepcopy
 import requests
 import logging
 import re
@@ -28,6 +29,16 @@ class SelfserviceSession():
     #Semesters = ['Spring 2015', 'Summer 2015', 'Fall 2015', 'Spring 2016']
     Semesters = generate_semesters(3)
     Departments = ['AFRI','AMST','ANTH','APMA','ARAB','ARCH','ASYR','BEO','BIOL','CATL','CHEM','CHIN','CLAS','CLPS','COLT','CROL','CSCI','CZCH','DEVL','EAST','ECON','EDUC','EGYT','EINT','ENGL','ENGN','ENVS','ERLY','ETHN','FREN','GEOL','GNSS','GREK','GRMN','HIAA','HISP','HIST','HMAN','HNDI','INTL','ITAL','JAPN','JUDS','KREA','LAST','LATN','LING','LITR','MATH','MCM','MDVL','MED','MES','MGRK','MUSC','NEUR','PHIL','PHP','PHYS','PLCY','PLME','PLSH','POBS','POLS','PRSN','RELS','REMS','RUSS','SANS','SCSO','SIGN','SLAV','SOC','SWED','TAPS','TKSH','UNIV','URBN','VISA']
+    
+    # The standard headers for sending a request. Typically you'll add a Referer.
+    BaseHeaders = {
+        'User-Agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/43.0.2357.130 Chrome/43.0.2357.130 Safari/537.36",
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Origin': 'https://selfservice.brown.edu'
+    }
+
+    def get_base_headers(self):
+        return deepcopy(BaseHeaders)
 
     @staticmethod
     def _semester_to_value(semester_string):
@@ -85,12 +96,10 @@ class SelfserviceSession():
             'IN_METHOD':'S',
             'IN_CRN': '',
         }
-        headers = {
-            'User-Agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/43.0.2357.130 Chrome/43.0.2357.130 Safari/537.36",
-            'Referer': url,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Origin': 'https://selfservice.brown.edu'
-        }
+        
+        headers = get_base_headers()
+        headers['Referer'] = url
+        
         r = self.s.post(url, data=payload, headers=headers)
 
         # Jank extraction of args for Show_Details page
@@ -111,12 +120,10 @@ class SelfserviceSession():
             'IN_CRN': args[1],
             'IN_FROM': '3',
         }
-        headers = {
-            'User-Agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/43.0.2357.130 Chrome/43.0.2357.130 Safari/537.36",
-            'Referer': 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Main',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Origin': 'https://selfservice.brown.edu'
-        }
+
+        headers = get_base_headers()
+        headers['Referer'] = "https://selfservice.brown.edu/ss/hwwkcsearch.P_Main"
+    
         r = self.s.post(url, data=payload, headers=headers)
         info = BeautifulSoup(r.content,'html.parser').select("#CourseDetailx")[0]
         print info
@@ -133,12 +140,9 @@ class SelfserviceSession():
     def __enter__(self):
         url = "https://selfservice.brown.edu/ss/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu"
         login_url = "https://selfservice.brown.edu/ss/twbkwbis.P_ValLogin"
-        headers = {
-            'User-Agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/43.0.2357.130 Chrome/43.0.2357.130 Safari/537.36",
-            'Referer': url,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Origin': 'https://selfservice.brown.edu'
-        }
+        headers = get_base_headers()
+        headers['Referer'] = url
+        
         payload = {
             'sid': self.username,
             'PIN': self.password
