@@ -12,4 +12,4 @@ def get_count(location):
 	return response['count']
 
 for location in location_names:
-	print "There are", get_count(location_names[location]), "people at", location + "."
+	print("There are", get_count(location_names[location]), "people at", location + ".")

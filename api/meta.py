@@ -1,8 +1,8 @@
 from flask import jsonify, render_template, url_for, request, redirect
-from api import app, db, limiter, RATE_LIMIT
-from scripts.add_client import add_client_id
-from scripts.email_handler import send_id_email
-from scripts.stats import get_total_requests
+from api import app, db
+from api.scripts.add_client import add_client_id
+from api.scripts.email_handler import send_id_email
+from api.scripts.stats import get_total_requests
 
 '''
 DATABASE OBJECTS: View templates on the private, repository README.
@@ -17,7 +17,6 @@ FAILURE_MSG = "Your request could not be processed. Please email 'joseph_engelma
 
 
 @app.route('/')
-@limiter.limit(RATE_LIMIT)
 def root():
     signed_up = request.args.get('signedup', '')
     num_requests = get_total_requests()
@@ -31,7 +30,6 @@ def root():
 
 
 @app.route('/signup', methods=['GET', 'POST'])
-@limiter.limit(RATE_LIMIT)
 def signup():
     if request.method == 'GET':
         return render_template('signup.html')
@@ -64,7 +62,7 @@ def is_valid_client(client_id):
     if client and 'valid' in client and client['valid']:
         # client exists in database and is marked as valid
         return True
-    print "Client ID", client_id, "not found in client collection" 
+    print("Client ID", client_id, "not found in client collection")
     return False
 
 def log_client(client_id, endpoint, timestamp):
@@ -74,7 +72,7 @@ def log_client(client_id, endpoint, timestamp):
     result = clients.update({'client_id': client_id}, {'$inc': {'requests': 1}, '$push': {'activity': {'endpoint': endpoint, 'timestamp': timestamp}}})
     if u'nModified' in result and result[u'nModified'] == 1:
         return True
-    print "Bad result from log_client: ", result
+    print("Bad result from log_client: ", result)
     return False
 
 def invalidate_client(client_id):

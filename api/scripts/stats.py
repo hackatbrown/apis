@@ -45,16 +45,16 @@ if __name__ == '__main__':
             req = stats[client].get(endpoint, 0)
             endpoint_count[endpoint] += req
 
-    print "REQUEST STATISTICS AS OF", '{dt:%A}, {dt:%B} {dt.day}, {dt.year}'.format(dt=date.today()).upper()
-    print
-    print "BY CLIENT:"
+    print("REQUEST STATISTICS AS OF", '{dt:%A}, {dt:%B} {dt.day}, {dt.year}'.format(dt=date.today()).upper())
+    print()
+    print("BY CLIENT:")
     for client in stats.keys():
-        print '{0:<25} {1:>6}'.format(client, client_count[client])
+        print('{0:<25} {1:>6}'.format(client, client_count[client]))
 
-    print
-    print "BY ENDPOINT:"
+    print()
+    print("BY ENDPOINT:")
     for endpoint in endpoints:
-        print '{0:<25} {1:>6}'.format(endpoint, endpoint_count[endpoint])
+        print('{0:<25} {1:>6}'.format(endpoint, endpoint_count[endpoint]))
 
-    print
-    print "TOTAL REQUESTS:", total_requests
+    print()
+    print("TOTAL REQUESTS:", total_requests)
