@@ -1,6 +1,6 @@
 from flask import request, jsonify
-from api import app, db, make_json_error, limiter, RATE_LIMIT, support_jsonp
-from meta import is_valid_client, log_client, INVALID_CLIENT_MSG
+from api import app, db, make_json_error, support_jsonp
+from api.meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 import os
 import requests
 import json
@@ -22,18 +22,17 @@ if 'WIFI_USERNAME' in app.config:
 elif 'WIFI_USERNAME' in os.environ:
 	wifi_username = os.environ['WIFI_USERNAME']
 else:
-    print "ERROR (critical): The WiFi endpoint's username variable was not found."
+    print("ERROR (critical): The WiFi endpoint's username variable was not found.")
 
 if 'WIFI_PASSWORD' in app.config:
     wifi_password = app.config['WIFI_PASSWORD']
 elif 'WIFI_PASSWORD' in os.environ:
 	wifi_password = os.environ['WIFI_PASSWORD']
 else:
-    print "ERROR (critical): The WiFi endpoint's password variable was not found."
+    print("ERROR (critical): The WiFi endpoint's password variable was not found.")
 
 
 @app.route('/wifi')
-@limiter.shared_limit(RATE_LIMIT, 'wifi')
 @support_jsonp
 def wifi_index():
 	client_id = request.args.get('client_id', 'missing_client')
@@ -46,7 +45,6 @@ def wifi_index():
 
 
 @app.route('/wifi/count')
-@limiter.shared_limit(RATE_LIMIT, 'wifi')
 @support_jsonp
 def req_wifi_count():
 	''' Endpoint for all WiFi count requests (see public docs for documentation) '''
@@ -111,7 +109,6 @@ def req_wifi_count():
 
 
 @app.route('/wifi/locations')
-@limiter.shared_limit(RATE_LIMIT, 'wifi')
 @support_jsonp
 def req_wifi_locations():
 	''' Endpoint for all WiFi location requests (see public docs for documentation) '''

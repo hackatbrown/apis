@@ -61,7 +61,7 @@ def send_id_email(address, firstname, client_id):
 
 	# sendmail function takes 3 arguments: sender's address, recipient's address
 	# and message to send - here it is sent as one string.
-	print s.sendmail(me, address, msg.as_string())
+	print(s.sendmail(me, address, msg.as_string()))
 	s.quit()
 
 # Example usage of the above method:
@@ -117,7 +117,7 @@ def send_alert_email(message, urgent=False):
 
 	# sendmail function takes 3 arguments: sender's address, recipient's address
 	# and message to send - here it is sent as one string.
-	print s.sendmail(me, recepient, msg.as_string())
+	print(s.sendmail(me, recepient, msg.as_string()))
 	s.quit()
 
 # Example usage of the above method:
