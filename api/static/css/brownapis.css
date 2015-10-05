@@ -46,9 +46,22 @@ article {
 /* Footer */
 .brownAPIsFooter.stackable.grid {
 	padding-top: 3rem;
-	padding-bottom: 4rem;
+	padding-bottom: 2rem;
 }
 
 .brownAPIsFooter.stackable.grid h5 {
 	text-transform: uppercase;
+}
+
+#requests {
+	font-size: 0.8em;
+	font-family: HelveticaNeue-Light, 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+	font-weight: lighter;
+	color: white;
+	background-color: #CC0000;
+	padding-bottom: 1em;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
 }

@@ -56,10 +56,10 @@
                 if ($('#body').find('.jobs.page').length == 0) {
                     $('#body').load('{{ url_for("static", filename="html/jobs.html") }}', 0, function() {
                         setupArrow();
-                        $('#apply').hover(function() {
-                            $('#apply').toggleClass('shadow');
+                        $('.apply').hover(function() {
+                            $('.apply').toggleClass('shadow');
                         });
-                        $('#apply').click(function() {
+                        $('.apply').click(function() {
                             $('#body').load('{{ url_for("static", filename="html/apply.html") }}', 0, function() {
                                 setupArrow();
                                 var obj = {};
@@ -77,10 +77,10 @@
                 if ($('#body').find('.support.page').length == 0) {
                     $('#body').load('{{ url_for("static", filename="html/support.html") }}', 0, function() {
                         setupArrow();
-                        $('#bugreport').on('click', function() {
+                        $('.bugreport').on('click', function() {
                             $('#body').load('{{ url_for("static", filename="html/bugreport.html") }}', 0, function() {
                                 setupArrow();
-                                $('#report').on('click', function() {
+                                $('.report').on('click', function() {
                                     var failureCallback = function() {
                                         $('#body').load('{{ url_for("static", filename="html/bugreport_failure.html") }}', 0 , function() {
                                                 setupArrow();
@@ -118,20 +118,20 @@
                     $('#body').load('{{ url_for("static", filename="html/start.html") }}', 0, function() {
                         setupArrow();
 
-                        $('#sign_up').click(function() {
+                        $('.sign_up').click(function() {
                             alert("Not implemented.");
                         });
 
-                        $('#resources').click(function() {
+                        $('.resources').click(function() {
                             resourcesPage();
                         });
 
-                        $('#examples').click(function() {
+                        $('.examples').click(function() {
                             alert("Not implemented.");
                         });
 
-                        $('#support').click(function() {
-                            alert("Not implemented.");
+                        $('.support').click(function() {
+                            supportPage();
                         });
 
                         $(window).scroll(function() {
@@ -163,15 +163,15 @@
                 if ($('#body').find('.resources.page').length == 0) {
                     $('#body').load('{{ url_for("static", filename="html/resources.html") }}');
 
-                    $('#dining').click(function() {
+                    $('.dining').click(function() {
                         diningPage();
                     });
 
-                    $('#shuttle').click(function() {
+                    $('.shuttle').click(function() {
                         shuttlePage();
                     });
 
-                    $('#wifi').click(function() {
+                    $('.wifi').click(function() {
                         wifiPage();
                     });
 
@@ -225,48 +225,56 @@
                  * Links to dynamically load other pages *
                  *****************************************/
 
-                $('#home').on('click', function() {
+                $('.home').on('click', function() {
                     homePage();
                 });
 
-                $('#jobs').on('click', function() {
+                $('.jobs').on('click', function() {
                     jobsPage();
                 });
 
-                $('#support').on('click', function() {
+                $('.support').on('click', function() {
                     supportPage();
                 });
 
-                $('#start').on('click', function() {
+                $('.start').on('click', function() {
                     startPage();
                 });
 
-                $('#examples').on('click', function() {
+                $('.examples').on('click', function() {
                     examplesPage();
                 });
 
-                $('#resources').on('click', function() {
+                $('.resources').on('click', function() {
                     resourcesPage();
                 });
 
-                $('#featured').on('click', function() {
+                $('.featured').on('click', function() {
                     featuredPage();
                 });
 
-                $('#dining').on('click', function() {
+                $('.dining').on('click', function() {
                     diningPage();
                 });
 
-                $('#shuttle').on('click', function() {
+                $('.shuttle').on('click', function() {
                     shuttlePage();
                 });
 
-                $('#wifi').on('click', function() {
+                $('.wifi').on('click', function() {
                     wifiPage();
                 });
 
+                {% if num_requests %}
+                    function numberWithCommas(x) {
+                        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                    requests = numberWithCommas({{num_requests}});
+                    $('#requests').html('<em>' + requests + ' requests so far!</em>');
+                {% endif %}
+
                 {% if page %}
-                    $('#{{ page}}').trigger('click');
+                    $('.{{ page}}').trigger('click');
                 {% endif %}
             });
         </script>
@@ -288,17 +296,17 @@
                 <div class="ui link list">
                     <a class="item" id="home">Home</a>
                     <!-- <a class="item" id="blog">Blog</a> -->
-                    <a class="item" id="jobs">Join Our Team</a>
-                    <a class="item" id="support">Support</a>
+                    <a class="item jobs">Join Our Team</a>
+                    <a class="item support">Support</a>
                     <a class="item" href="https://twitter.com/BrownAPIs">Twitter</a>
                 </div>
             </div>
             <div class="column" style="text-align: center;">
                 <h5 class="ui header">Documentation</h5>
                 <div class="ui link list">
-                    <a class="item" id="start">Getting Started</a>
+                    <a class="item start">Getting Started</a>
                     <!-- <a class="item" id="examples">Examples</a> -->
-                    <a class="item" id="resources">Resources</a>
+                    <a class="item resources">Resources</a>
                 </div>
 
                 <h5 class="ui header">Community</h5>
@@ -310,14 +318,15 @@
             <div class="column" style="text-align: center;">
                 <h5 class="ui header" style="text-transform: none;">APIs</h5>
                 <div class="ui link list">
-                    <a class="item" id="dining">Dining</a>
-                    <a class="item" id="shuttle">Shuttle</a>
+                    <a class="item dining">Dining</a>
+                    <a class="item shuttle">Shuttle</a>
                     <!-- <a class="item" href="/docs/criticalreview">Critical Review</a> -->
-                    <a class="item" id="wifi">WiFi</a>
+                    <a class="item wifi">WiFi</a>
                     <!-- <a class="item" href="/docs/laundry">Laundry</a> -->
                 </div>
             </div>
         </div><!-- End Footer -->
+        <div id="requests"></div>
     </body>
 
 </html>
