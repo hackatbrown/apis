@@ -21,19 +21,17 @@ def root():
     return dispatch('home')
 
 @app.route('/<page>', methods=['GET'])
-@limiter.limit(RATE_LIMIT)
 def dispatch(page):
-    print "Dispatching page in response to request: ", page
+    print("Dispatching page in response to request: ", page)
 
     num_requests = get_total_requests()
     return render_template('index.html', page=page, num_requests=num_requests)
 
 
 @app.route('/bugreport_submit', methods=['POST'])
-@limiter.limit(RATE_LIMIT)
 def bug_report():
     bug_description = request.form['description']
-    print "Processing bug report:\n\t", bug_description, "\n------ End of bug report ------"
+    print("Processing bug report:\n\t", bug_description, "\n------ End of bug report ------")
     send_alert_email(bug_description, urgent=True)
 
     return dispatch('bugreport_success')
