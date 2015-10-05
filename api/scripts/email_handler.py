@@ -19,7 +19,7 @@ def send_id_email(address, firstname, client_id):
 	msg['To'] = address
 
 	# Create the body of the message (a plain-text and an HTML version).
-	text = "Hi, " + firstname + "! Welcome to the Brown APIs developer community.\nYour Client ID is: " + client_id + ". Be sure to include it in every request!) You can use this Client ID for multiple projects. There is currently a maximum of one Client ID per student, but exceptions can be made on a case-by-case basis.\n\nJoin the developer community on Facebook: https://www.facebook.com/groups/brown.apis/\n\nHappy developing!\nThe Brown APIs Team\n"
+	text = "Hi, " + firstname + "! Welcome to the Brown APIs developer community.\nYour Client ID is: " + client_id + ". Be sure to include it in every request!) You can use this Client ID for multiple projects. There is currently a maximum of one Client ID per student, but exceptions can be made on a case-by-case basis.\n\nBrown APIs are currently in beta. This means functionality may be added, removed, or modified at any time (however, this is very rare). To keep up-to-date on any changes, be sure to join the developer community on Facebook: https://www.facebook.com/groups/brown.apis/\n\nHappy developing!\nThe Brown APIs Team\n"
 	html = """\
 	<html>
 	  <head>
@@ -37,7 +37,7 @@ def send_id_email(address, firstname, client_id):
 	    <h2 class="center">Hi, """ + firstname + """! Welcome to the Brown APIs developer community.</h2>
 	    <p>Your Client ID is: <em>""" + client_id + """</em>.</p>
 	    <p>Be sure to include your Client ID with every request you make! You can use this Client ID for multiple projects. Currently, there is a maximum of one Client ID per student, but exceptions can be made on a case-by-case basis.</p>
-	    <p>Also, be sure to join our <a href="https://www.facebook.com/groups/brown.apis/">community of developers</a> on Facebook.</p>
+	    <p>Brown APIs are currently in beta. This means functionality may be added, removed, or modified at any time (however, this is very rare). To keep up-to-date on any changes, be sure to join our <a href="https://www.facebook.com/groups/brown.apis/">community of developers</a> on Facebook.</p>
 	    <br />
 	    Happy developing! <br />
 	    The Brown APIs Team
@@ -61,7 +61,7 @@ def send_id_email(address, firstname, client_id):
 
 	# sendmail function takes 3 arguments: sender's address, recipient's address
 	# and message to send - here it is sent as one string.
-	print s.sendmail(me, address, msg.as_string())
+	print(s.sendmail(me, address, msg.as_string()))
 	s.quit()
 
 # Example usage of the above method:
@@ -117,7 +117,7 @@ def send_alert_email(message, urgent=False):
 
 	# sendmail function takes 3 arguments: sender's address, recipient's address
 	# and message to send - here it is sent as one string.
-	print s.sendmail(me, recepient, msg.as_string())
+	print(s.sendmail(me, recepient, msg.as_string()))
 	s.quit()
 
 # Example usage of the above method:

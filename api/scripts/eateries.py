@@ -1,4 +1,5 @@
-from urllib2 import Request, unquote, urlopen
+import requests
+from urllib.parse import unquote
 from bs4 import BeautifulSoup as soup
 from datetime import date, timedelta
 import time
@@ -14,15 +15,16 @@ class Eatery:
     # a set of meal names to ignore, because dining services will often put items that aren't meals in the spreadsheets
     food_ignore_list = set(["closed for breakfast",
                             "closed for breakfat",
+                            "closed for service",
                             "opens at lunch",
                             "winter 6",
-            			    "winter 7",
-            			    "winter 8",
-            			    "winter 9",
-            			    "winter 10",
-            			    "winter 11",
-            			    "winter 12",
-            			    "winter 13",
+                            "winter 7",
+                            "winter 8",
+                            "winter 9",
+                            "winter 10",
+                            "winter 11",
+                            "winter 12",
+                            "winter 13",
                             "spring 5",
                             "spring 6",
                             "spring 7",
@@ -170,14 +172,14 @@ class Ratty(Eatery):
                     import time
                     time.sleep(1) # delays for 1 second (BDS rate limits their site)
                     try:
-                        print meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal)
+                        print(meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal))
                         num_menus += 1
                     except:
                         error_did_occur = True
                         import traceback
                         traceback.print_exc()
-                        print "Could not scrape data for", meal, "on", day, menu_date
-                        print "Attempting to continue..."
+                        print("Could not scrape data for", meal, "on", day, menu_date)
+                        print("Attempting to continue...")
                 menu_date += timedelta(1)
         if error_did_occur:
             raise RuntimeError("Could not scrape data for at least one VDub meal.")
@@ -229,29 +231,29 @@ class Ratty(Eatery):
 
         today = date.today()
         if today > date(2015, 12, 22):
-            print "ERROR: hours scraper is out of date"
+            print("ERROR: hours scraper is out of date")
             return num_hours
         while today < date(2015, 12, 22):
             if today.month == 11 and today.day == 6:
                 # Thanksgiving (open 11:30AM-7:30PM)
                 num_hours += 1
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (11, 30), (19, 30))
+                print("hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (11, 30), (19, 30)))
             elif today.month == 11 and today.day >= 27 and today.day <= 29:
                 # Thanksgiving weekend (10:30AM-7:30AM)
                 num_hours += 1
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (10, 30), (19, 30))
+                print("hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (10, 30), (19, 30)))
             elif today.month == 12 and today.day == 20:
                 # Finals period Sunday schedule (Weekday hours)
                 num_hours += 1
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30))
+                print("hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30)))
             elif today.weekday() == 6:
                 # Sunday brunch schedule
                 num_hours += 1
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (10, 30), (19, 30))
+                print("hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (10, 30), (19, 30)))
             elif today.weekday() != 6:
                 # weekday and Saturday schedule
                 num_hours += 1
-                print "hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30))
+                print("hours for {0}/{1}/{2} ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (19, 30)))
             today = today + timedelta(1)
         return num_hours
 
@@ -306,15 +308,15 @@ class VDub(Eatery):
                 try:
                     menu_ids = self.scrape_menu(menu_date, day, days_meals[day], n)
                     for menu_id in menu_ids:
-                        print menu_id[0], "for", day, menu_date, "->", menu_id[1]
+                        print(menu_id[0], "for", day, menu_date, "->", menu_id[1])
                         num_menus += 1
                     menu_date += timedelta(1)
                 except:
                     error_did_occur = True
                     import traceback
                     traceback.print_exc()
-                    print "Could not scrape data for", menu_id[0], "on", day, menu_date
-                    print "Attempting to continue..."
+                    print("Could not scrape data for", menu_id[0], "on", day, menu_date)
+                    print("Attempting to continue...")
         if error_did_occur:
             raise RuntimeError("Could not scrape data for at least one VDub meal.")
         return num_menus
@@ -374,7 +376,7 @@ class VDub(Eatery):
 
         today = date.today()
         if today > date(2015, 12, 22):
-            print "ERROR: hours scraper is out of date"
+            print("ERROR: hours scraper is out of date")
             return num_hours
         while today < date(2015, 12, 22):
             if today.month == 10 and today.day >= 10 and today.day <= 11:
@@ -386,7 +388,7 @@ class VDub(Eatery):
             elif today.month == 11 and today.day == 25:
                 # wednesday before thxgiving
                 num_hours += 1
-                print "hours for {0}/{1}/{2} (breakfast/lunch) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (14, 00))
+                print("hours for {0}/{1}/{2} (breakfast/lunch) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (14, 00)))
             elif today.month == 11 and today.day >= 26 and today.day <= 29:
                 # thxgiving weekend
                 pass
@@ -396,15 +398,15 @@ class VDub(Eatery):
             elif today.month == 12 and today.day == 21:
                 # last day of finals
                 num_hours += 1
-                print "hours for {0}/{1}/{2} (breakfast/lunch) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (14, 00))
+                print("hours for {0}/{1}/{2} (breakfast/lunch) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (14, 00)))
             elif today.weekday() >= 5:
                 # weekend schedule
                 pass
             elif today.weekday() <= 4:
                 # weekday schedule
                 num_hours += 2
-                print "hours for {0}/{1}/{2} (breakfast/lunch) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (14, 00))
-                print "hours for {0}/{1}/{2} (dinner) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (16, 30), (19, 30))
+                print("hours for {0}/{1}/{2} (breakfast/lunch) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (7, 30), (14, 00)))
+                print("hours for {0}/{1}/{2} (dinner) ->".format(today.month, today.day, today.year), self.add_hours_to_db(today.year, today.month, today.day, (16, 30), (19, 30)))
             today = today + timedelta(1)
 
         return num_hours
@@ -435,7 +437,7 @@ class Jos(Eatery):
 
 def get_html(url):
     ''' The HTML data for a given URL '''
-    return urlopen(Request(url)).read()
+    return requests.get(url).text
 
 def flatten(dct):
     ''' Flatten a dictionary's values into a list '''

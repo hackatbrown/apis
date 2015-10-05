@@ -1,6 +1,6 @@
 from flask import request, jsonify
-from api import app, db, make_json_error, limiter, RATE_LIMIT, support_jsonp
-from meta import is_valid_client, log_client, INVALID_CLIENT_MSG
+from api import app, db, make_json_error, support_jsonp
+from api.meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 
 from datetime import datetime, date, timedelta
 from difflib import get_close_matches
@@ -23,7 +23,6 @@ valid_food_names = []
 
 
 @app.route('/dining')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 @support_jsonp
 def dining_index():
 	client_id = request.args.get('client_id', 'missing_client')
@@ -35,7 +34,6 @@ def dining_index():
 
 
 @app.route('/dining/menu')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 @support_jsonp
 def req_dining_menu():
 	''' Endpoint for all menu requests (see README for documentation) '''
@@ -93,7 +91,6 @@ def req_dining_menu():
 
 
 @app.route('/dining/hours')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 @support_jsonp
 def req_dining_hours():
 	''' Endpoint for all hours requests (see README for documentation) '''
@@ -126,14 +123,11 @@ def req_dining_hours():
 
 	result_list = [r for r in results]
 
-	if len(result_list) == 0:
-		return make_json_error("No hours found for {0} on {1}/{2}/{3}.".format(eatery, month, day, year))
 	return jsonify(num_results=len(result_list), results=result_list)
 
 
 
 @app.route('/dining/find')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 @support_jsonp
 def req_dining_find():
 	''' Endpoint for requests to find food (see README for documentation) '''
@@ -157,7 +151,6 @@ def req_dining_find():
 
 
 @app.route('/dining/nutrition')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 @support_jsonp
 def req_dining_nutrition():
 	''' Endpoint for nutrtitional requests (see README for documentation) '''
@@ -178,7 +171,6 @@ def req_dining_nutrition():
 
 
 @app.route('/dining/open')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 @support_jsonp
 def req_dining_open():
 	''' Endpoint for open eatery requests (see README for documentation) '''
@@ -234,7 +226,6 @@ def req_dining_open():
 	return jsonify(open_eateries=open_eateries)
 
 @app.route('/dining/all_food')
-@limiter.shared_limit(RATE_LIMIT, 'dining')
 @support_jsonp
 def req_dining_all_food():
 	''' Endpoint for all food requests (see README for documentation) '''
