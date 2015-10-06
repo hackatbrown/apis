@@ -58,7 +58,7 @@ class SelfserviceSession():
         elif words[0] == 'Summer':
             pass
         else:
-            print "ERROR: Unidentified Semester"
+            print("ERROR: Unidentified Semester")
         return res
 
     @staticmethod
@@ -76,7 +76,7 @@ class SelfserviceSession():
         elif season == "20":
             return str(year + 1) + " Spring"
         else:
-            print "ERROR: Unidentified Semester"
+            print("ERROR: Unidentified Semester")
 
     def gen_courses(self, semester, department):
         url = 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Main'
@@ -108,7 +108,7 @@ class SelfserviceSession():
             #print line.find('n_term')
             if i != -1 and line.find('n_term') == -1:
                 deets_args = line[i+13:i+34].split("','")
-                print deets_args
+                print(deets_args)
                 self._extract_course(deets_args)
 
         yield r #Does nothing atm
@@ -126,10 +126,10 @@ class SelfserviceSession():
     
         r = self.s.post(url, data=payload, headers=headers)
         info = BeautifulSoup(r.content,'html.parser').select("#CourseDetailx")[0]
-        print info
+        print(info)
         if not info:
             exit(0)
-        print info.get_text()
+        print(info.get_text())
         return 
     
     def __init__(self, username, password):
@@ -213,12 +213,12 @@ def main():
 
     with SelfserviceSession(username,passwd) as s:
         for semester in SelfserviceSession.Semesters:
-            print semester
+            print(semester)
             for department in SelfserviceSession.Departments:
-                print department
+                print(department)
                 for course in s.gen_courses(semester, department):
-                    print r
-                    print "YAY"
+                    print(r)
+                    print("YAY")
                     exit(0);
 
 
