@@ -168,7 +168,7 @@ def gen_current_semester():
     today = date.today()
     year = today.year
     month = today.month
-    seasonTuple = filter(lambda (seas, dates): month in dates, seasons)[0][0]
+    seasonTuple = list(filter(lambda p: month in p[1], seasons))[0][0]
     return seasonTuple + str(year)
 
 def gen_next_semester(semester_string):
