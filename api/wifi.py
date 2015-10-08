@@ -68,7 +68,7 @@ def req_wifi_count():
 
 	if history:
 		response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices?history=true", auth=(wifi_username, wifi_password))
-		res_list = json.loads(response.content)
+		res_list = json.loads(response.content.decode('UTF-8'))
 
 		history_list = []
 		for res_dict in res_list:
@@ -89,7 +89,7 @@ def req_wifi_count():
 		return jsonify(location=original_location, history=history_list)
 	else:
 		response = requests.get("https://i2s.brown.edu/wap/apis/localities/" + location + "/devices", auth=(wifi_username, wifi_password))
-		res_dict = json.loads(response.content)
+		res_dict = json.loads(response.content.decode('UTF-8'))
 
 		if not res_dict['timestamp'] or not res_dict['count']:
 			return jsonify(error="WiFi data is temporarily unavailable for this location.")
