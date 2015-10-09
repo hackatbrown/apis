@@ -40,7 +40,7 @@ How to Manually Run Scripts
 
 1. Navigate to the top-level directory (_brown-apis/_).
 2. Run the script from a package environment, allowing it to import the database from the _api_ package:
-	- `python -m api.scripts.<scriptname>` where 'scriptname' does NOT include the '.py' extension.
+	- `python3 -m api.scripts.<scriptname>` where 'scriptname' does NOT include the '.py' extension.
 3. You can include any script arguments after the command (just like you normally would).
 
 Data Structures
