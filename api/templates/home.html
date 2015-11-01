@@ -36,45 +36,49 @@
   <body>
 
     <div class="container">
-      <div class="header clearfix">
-        <nav class="navbar navbar-default">
+      <div class="header">
+        <nav class="navbar">
           <div class="container-fluid">
             <div class="navbar-header">
               <a class="navbar-brand" href="#">
-                <img class="img-responsive" alt="Brand" src="{{ url_for('static', filename='brand.png')}}">
+                <img class="brand" alt="Brand" src="{{ url_for('static', filename='brand.png')}}">
+                <i>Brown APIs</i>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav navbar-left">
+                <li><a href="#" class="navbar-link">Docs</a></li>
+                <li><a href="#" class="navbar-link">Examples</a></li>
+                <li><a href="#" class="navbar-link">Community</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Sign Up</a></li>
+              </ul>
             </div>
           </div>
         </nav>
       </div>
 
       <div class="jumbotron">
-        <h1>Jumbotron heading</h1>
-        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>
+        <h1>Data Viz Here!</h1>
+        <!--<p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>-->
+        <!--<p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>-->
       </div>
       <hr>
 
       <div class="row marketing">
-        <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+        <div class="col-md-4">
+          <h4>Dining API</h4>
 
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
         </div>
 
-        <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+        <div class="col-md-4">
+          <h4>Wifi API</h4>
 
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+        </div>
+        <div class="col-md-4">
+          <h4>Shuttle API</h4>
 
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
         </div>
       </div>
 
