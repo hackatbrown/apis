@@ -19,13 +19,13 @@ FAILURE_MSG = "Your request could not be processed. Please email 'joseph_engelma
 @app.route('/')
 def root():
     signed_up = request.args.get('signedup', '')
-    num_requests = get_total_requests()
+    # num_requests = get_total_requests()
     if signed_up == 'true':
         return render_template('home.html', message=SUCCESS_MSG, num_requests=num_requests)
     if signed_up == 'false':
         return render_template('home.html', message=FAILURE_MSG, num_requests=num_requests)
     else:
-        return render_template('home.html', num_requests=num_requests)
+        return render_template('home.html')
 
 
 

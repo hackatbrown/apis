@@ -12,23 +12,11 @@ body {
   padding-left: 15px;
 }
 
-/* Custom page header */
-.header {
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e5e5e5;
-}
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
   margin-top: 0;
   margin-bottom: 0;
   line-height: 40px;
-}
-
-/* Custom page footer */
-.footer {
-  padding-top: 19px;
-  color: #777;
-  border-top: 1px solid #e5e5e5;
 }
 
 /* Customize container */
@@ -85,4 +73,13 @@ body {
     overflow: visible;
     padding-top: 0;
     padding-bottom: 0; 
+}
+a {
+  color: black;
+}
+
+hr {
+  border: 0 none;
+  background-color: black;
+  height: 5px;
 }
