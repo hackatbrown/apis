@@ -68,12 +68,18 @@ body {
 }
 
 .navbar .brand { 
-    max-height: 90px;
+    max-height: 220px;
     max-width: 30%; 
     overflow: visible;
     padding-top: 0;
     padding-bottom: 0; 
 }
+
+.navbar-right {
+    font-size: 20pt;
+    margin-botton: 0;
+}
+
 a.navbar-link {
   color: black;
 }
@@ -81,7 +87,8 @@ a.navbar-link {
 hr {
   border: 0 none;
   background-color: black;
-  height: 5px;
+  height: 6px;
+  margin-top: 0;
 }
 
 .footer {
