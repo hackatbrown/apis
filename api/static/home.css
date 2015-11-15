@@ -78,10 +78,9 @@ body {
 .navbar-right {
     font-size: 20pt;
     margin-botton: 0;
-    font: times new roman;
 }
 
-a {
+a.navbar-link {
   color: black;
 }
 
@@ -90,4 +89,25 @@ hr {
   background-color: black;
   height: 6px;
   margin-top: 0;
+}
+
+.footer {
+  background-color: black;
+  color: white;
+  position: absolute;
+  bottom: -270px;
+  width: 100%;
+}
+
+.footer a {
+  color: white;
+}
+
+.footer h3 {
+  font-weight: bold;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
 }
