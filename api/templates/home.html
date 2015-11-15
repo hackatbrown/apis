@@ -23,6 +23,11 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='home.css') }}">
 
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.0/jquery.scrollTo.min.js"></script>
+
+    <script src="{{ url_for('static', filename='home.js') }}"></script>
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -55,28 +60,35 @@
       </div>
 
       
-        <div class="jumbotron">
-          <h1>Data Viz Here!</h1>
-          <!--<p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>-->
-          <!--<p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>-->
+      <div class="jumbotron">
+        <h1>Data Viz Here!</h1>
+        <!--<p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>-->
+        <!--<p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>-->
+      </div>
+      <div class="row marketing">
+        <div class="col-md-4 col-sm-4">
+          <h4>Dining</h4>
         </div>
-        <div class="row marketing">
-          <div class="col-md-4 col-sm-3">
-            <h4>Dining</h4>
-          </div>
-          <div class="col-md-4 col-sm-3">
-            <h4>Wifi</h4>
-          </div>
-          <div class="col-md-4 col-sm-3">
-            <h4>Shuttle</h4>
-          </div>
+        <div class="col-md-4 col-sm-4">
+          <h4>Wifi</h4>
         </div>
+        <div class="col-md-4 col-sm-4">
+          <h4>Shuttle</h4>
         </div>
+      </div>
+
+      <button type="button" class="btn" id="scrollDown" onclick="$.scrollTo($('#footer'), 500);">
+        {
+      </button>
+
+
     </div>
-      <footer class="footer">
+
+
+      <footer class="footer" id="footer">
         <div class="container">
           <div class="row">
-            <div class="col-sm-4">
+            <div class="col-md-4 col-sm-4">
               <h3>ORGANIZATION</h3>
               <ul>
                 <li><a href="#">About Us</a></li>
@@ -85,7 +97,7 @@
                 <li><a href="#">Twitter</a></li>
               </ul>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-4 col-sm-4">
               <h3>SUPPORT</h3>
               <ul>
                 <li><a href="#">Getting Started</a></li>
@@ -93,7 +105,7 @@
                 <li><a href="#">Report an Issue</a></li>
               </ul>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-4 col-sm-4">
               <h3>DOCUMENTATION</h3>
               <ul>
                 <li><a href="#">Dining</a></li>
@@ -103,10 +115,8 @@
                 <li><a href="#">Laundry</a></li>
               </ul>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-4 col-md-offset-4">
-              <h3>Community</h3>
+            <div class="col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">
+              <h3>COMMUNITY</h3>
               <ul>
                 <li><a href="#">Featured Apps</a></li>
                 <li><a href="#">Facebook</a></li>
@@ -117,8 +127,6 @@
       </footer>
 
 
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 
 </html>
