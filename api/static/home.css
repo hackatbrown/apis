@@ -82,6 +82,7 @@ body {
 
 a.navbar-link {
   color: black;
+  font-style: bold;
 }
 
 hr {
@@ -110,4 +111,9 @@ hr {
 ul {
   list-style-type: none;
   padding-left: 0px;
+}
+
+.main {
+  padding-left: 10%;
+  padding-right: 10%;
 }
