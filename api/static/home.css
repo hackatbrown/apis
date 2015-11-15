@@ -74,7 +74,7 @@ body {
     padding-top: 0;
     padding-bottom: 0; 
 }
-a {
+a.navbar-link {
   color: black;
 }
 
@@ -82,4 +82,25 @@ hr {
   border: 0 none;
   background-color: black;
   height: 5px;
+}
+
+.footer {
+  background-color: black;
+  color: white;
+  position: absolute;
+  bottom: -270px;
+  width: 100%;
+}
+
+.footer a {
+  color: white;
+}
+
+.footer h3 {
+  font-weight: bold;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
 }
