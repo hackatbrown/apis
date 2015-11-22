@@ -158,13 +158,17 @@ class SelfserviceSession():
         visited = set()
         for page in self._gen_results_page_soup(semester, department):
             for course_deets in self._courses_on_page(page):
-                visited.add(course_deets[1])
-                print(self._extract_course(course_deets))
-        yield 'shit'
+                if not course_deets[1] in visited:
+                    yield self._extract_course(course_deets)
+                    visited.add(course_deets[1])
 
     def _gen_results_page_soup(self, semester, department):
+        '''
+        Generates a 'BeautifulSoup' for each page in the results of
+        searching through all the courses.
+        This is called by gen_courses().
+        '''
         url = 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Main'
-        print("HERE")
         payload = {
             'IN_TERM': SelfserviceSession._semester_to_value(semester),
             'IN_SUBJ': department,
@@ -191,11 +195,12 @@ class SelfserviceSession():
 
         r = self.s.post(url, data=payload, headers=headers)
         s = BeautifulSoup(r.content, 'html.parser')
-        maxPage = len(s.select("#SearchResults")[0].select('a')) - 1
-        print(maxPage)
+        # maxPage = len(s.select("#SearchResults")[0].select('a')) - 1
+        setResultsString = s.select('img[onload^=setResults2]')[0]['onload']
+        maxPage = int(setResultsString[12:-1].split(',')[0])
         yield s
         current += 1
-        while current < maxPage:
+        while current <= maxPage:
             requests.utils.add_dict_to_cookiejar(
                 self.s.cookies, {'L_PAGE887098': str(current)})
 
@@ -205,14 +210,25 @@ class SelfserviceSession():
             current += 1
 
     def _courses_on_page(self, page):
+        '''
+        Given a page (BeautifulSoup), this method parses out couses which
+        appear on the page.
+        Called by gen_courses.
+        '''
         courses = [c['onclick'] for c in
-                   page.select('a[onclick^="Show_Detail"]')]
+                   page.select('td[onclick^="Show_Detail"]')]
 
         args = [c[13:-3].split("','") for c in courses]
         return args
 
     def _extract_course(self, args):
-        # return args[1]
+        '''
+        Given the args which reprsent the course in the source code of
+        banner in a tuple, this method should produce some object or
+        dictionary of data to be added to the database. This is the last
+        step.
+        Called by gen_courses()
+        '''
         url = 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Detail'
         payload = {
             'IN_TERM': args[0],
@@ -274,10 +290,10 @@ def main():
 
     with SelfserviceSession(username, passwd) as s:
         for semester in SelfserviceSession.Semesters:
-            print(semester)
+            # print(semester)
             # for department in SelfserviceSession.Departments:
             for department in ['CSCI']:
-                print(department)
+                # print(department)
                 for course in s.gen_courses(semester, department):
                     print(course)
 
