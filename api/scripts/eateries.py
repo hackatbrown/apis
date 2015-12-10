@@ -36,11 +36,12 @@ class Eatery:
                             "for your safety, it is the customers obligation to inform the server about any food allergies.",
                             "for your safety, it is the customer's obligation to inform the server about any food allergies",
                             "",
-                            "."])
+                            ".",
+                            "Look for Monthly Specials!"])
     base_url = "https://www.brown.edu/Student_Services/Food_Services/eateries/"
 
     def scrape(self, get_menus=True, get_hours=True):
-        ''' This method is called on each eatery by 'scraper.py'
+        ''' This method is called on each eatery by ' r.py'
             Scrape menus and hours for this eatery and add them to database
             Return number of menus and hours scraped
         '''
@@ -431,7 +432,176 @@ class Jos(Eatery):
         #TODO: Implement Jos scraping
         return None
 
+######### IvyRoom PROJECT ##########
 
+#Weekday Lunch
+# 11:30am - 1:45pm
+# Night
+# 7:45pm - Midnight (Sun-Thu)
+class IvyRoom(Eatery):
+    '''Author: kcockrel'''
+    def __init__(self):
+        self.name = "ivyroom"
+        self.eatery_page = "ivyroom_menu.php"
+        self.regular_page = "ivyroom.php"
+        self.mealtimes = {' lunch':  {'start': {'hour':11, 'minute':30}, 
+                                    'end': {'hour':13, 'minute': 45}},
+                            'dinner':   {'start': {'hour': 19, 'minute': 45},
+                                    'end': {'hour': 24, 'minute': 00}}}
+
+    def find_available_days_and_meals(self):
+        ''' see description in superclass (Eatery) '''
+
+        html = get_html(self.base_url + self.eatery_page)
+        parsed_html = soup(html, 'html5lib')
+        
+        # search for all 'h4' tags on the page -- the IvyRoom staff uses these as headers for the days available
+        available_days = [h4.text.split()[0].lower() for h4 in parsed_html.find_all("h4")]
+    
+        # the IvyRoom is open for lunch on weekdays & open nights Sun-Thurs
+        days_meals = {}
+        for day in available_days:
+            if day != 'friday':
+                days_meals[day] = ['lunch', 'dinner']
+            else:
+                days_meals[day] = ['lunch']
+
+        return (available_days, days_meals)
+    
+    def scrape_menus(self):
+        ''' see description in superclass (Eatery) '''
+        # the IvyRoom is open for lunch on weekdays & open nights Sun-Thurs
+
+        ordered_days, days_meals = self.find_available_days_and_meals()
+        today = date.today()
+        #IvyRoom is closed on Saturdays
+        if today.weekday() == 5:
+            menu_date = today + timedelta(1)
+        else:
+            menu_date = today
+
+        #TODO: Add menus to the database. Talk to Joe about how they should be added. 
+        #(Ratty & VDub are done differently)
+
+       
+        return None
+
+    def scrape_menu(self, menu_date, day, meals, nth_day):
+        ''' see description in superclass (Eatery) 
+            nth_day - allows scraper to determine which table to use on VDub website
+            NOTE: Only the lunch menu is shown on the table
+            Dinner menu must be scraped from ivyroom.php 
+        '''
+
+        # start at the menu page for the IvyRoom
+        #Note that this page only contains the changing menu items @ the IR
+        #There are some things they serve regularly on the regular page
+        main_html = get_html(self.base_url + self.eatery_page)
+        main_parsed = soup(main_html, 'html5lib')  # the website has errors, so the default parser fails -> use html5lib instead
+
+        # get the nth_day's iframe
+        iframes = main_parsed.find_all('iframe')
+        nth_day_iframe = iframes[nth_day]
+
+        # load the iframe's HTML content
+        menu_html = get_html(nth_day_iframe['src'])
+        meal_parsed = soup(menu_html, 'html5lib')
+
+        table = meal_parsed.find('table', {'id':'tblMain'})
+        if table == None:
+            table = meal_parsed.find('table', {'class':'waffle'})
+
+        #Lunch is a list of the changing lunch menu items
+        lunch = []
+
+        rows = table.findChildren('tr')
+        for row in rows:
+            cols = row.findChildren('td')
+            for col in cols:
+                value = col.string
+                if value != None:
+                    lunch.append(value)
+        
+        ''' Pulling menu items from ivyroom.php,, ie, the page with the recurring food menu items
+        '''
+        main_html = get_html(self.base_url + self.regular_page)
+        main_parsed = soup(main_html, 'html5lib') 
+        
+        uls = main_parsed.find_all('ul', {'class':'lcol'})
+        dinner = []
+
+        #TODO: Add things to food ignore list
+        
+        lunch_regulars = uls[0]
+        dinner_regulars = uls[1]
+
+        #TODO: Update this so that it pulls all lunch list items for lunch, not just strong
+
+        lunch_list = lunch_regulars.findChildren('strong')
+        for i in lunch_list:
+            value = i.string
+            if value not in self.food_ignore_list:
+                lunch.append(value)
+
+        dinner_list = dinner_regulars.findChildren('strong')
+
+        for i in dinner_list:
+            value = i.string
+            if value not in self.food_ignore_list:
+                dinner.append(value)
+
+        print("DINNER:")
+        print(dinner)
+        print("LUNCH")
+        print(lunch)
+        #find the 
+
+        #TODO: Add the menu items to the database
+        results = []
+
+        return None
+
+    def scrape_hours(self):
+        ''' Scrape hours for this eatery
+            Return number of hours added, add hours to database
+        '''
+        #TODO
+        num_hours = 0
+        today = date.today()
+
+        if today > date(2015, 12, 22):
+            print("ERROR: hours scraper is out of date")
+            return num_hours
+
+        while today < date(2015, 12, 22):
+
+            #If it's thanksgiving weekend, IR is closed
+            if today.month == 11 and today.day >=26 and today.day <= 29:
+                pass
+            elif today.weekday() == 4 or today.weekday() == 5 :
+                #TODO: Fix this. IvyRoom IS open for lunch on Fridays
+                #weekend schedule
+                #IR is closed sat
+                pass
+            elif today.weekday() == 6:
+                #dinner on sunday, no lunch
+
+                num_hours += 1
+                print("hours for {0}/{1}/{2} (dinner) -> ".format(today.month, today.day, today.year), 
+                    self.add_hours_to_db(today.year, today.month, today.day, (19,45), (24, 00)))
+
+            elif today.weekday() <= 3:
+                #weekday schedule
+                #sun - thurs
+                num_hours += 2
+
+                print("hours for {0}/{1}/{2} (lunch) ->".format(today.month, today.day, today.year), 
+                    self.add_hours_to_db(today.year, today.month, today.day,(11,30),(13,45)))
+                print("hours for {0}/{1}/{2} (dinner) ->".format(today.month, today.day, today.year), 
+                    self.add_hours_to_db(today.year, today.month, today.day,(19,45), (24,00)))
+            today = today + timedelta(1)
+
+        return num_hours
 
 # Helper methods
 
