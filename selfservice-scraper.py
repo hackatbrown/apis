@@ -1,15 +1,17 @@
-from bs4 import BeautifulSoup
-from copy import deepcopy
+# from bs4 import BeautifulSoup
+import bs4
 import requests
-from datetime import date
-import secret
-'''
-import logging
 import re
-'''
+from itertools import tee
+from copy import deepcopy
+from datetime import date
+
+import secret  # Passwords
 
 '''
+# Debugging HTTP Erros can be tough
 # Uncomment this to debug requests and see everything
+
 try:
     import http.client as http_client
 except ImportError:
@@ -25,6 +27,11 @@ requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 '''
 
+def pairwise(iterable):
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
 
 def gen_current_semester():
     '''
@@ -82,11 +89,11 @@ def generate_semesters(n):
 
 class SelfserviceSession():
     '''
-    Hard code these values. Bringing a full browswer into our stack to execute
-    JS for this is not worth. Possible TODO: Add some Date functionality to
-    determine what seasons/years to populate this list.
+    Used to obtain course information from self service. This session object
+    holds repeated request headers and is a wrapper for the requests Session
+    object which manages cookies.
     '''
-    # Semesters = ['Spring 2015', 'Summer 2015', 'Fall 2015', 'Spring 2016']
+
     Semesters = generate_semesters(3)
     Departments = ['AFRI', 'AMST', 'ANTH', 'APMA', 'ARAB', 'ARCH', 'ASYR',
                    'BEO', 'BIOL', 'CATL', 'CHEM', 'CHIN', 'CLAS', 'CLPS',
@@ -101,8 +108,8 @@ class SelfserviceSession():
                    'SLAV', 'SOC', 'SWED', 'TAPS', 'TKSH', 'UNIV', 'URBN',
                    'VISA']
 
-    # The standard headers for sending a request. Typically you'll add a
-    # Referer.
+    # The standard headers for sending a request.
+    # Typically you'll add a Referer.
     BaseHeaders = {
         'User-Agent': ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
                        "(KHTML, like Gecko) Ubuntu Chromium/43.0.2357.130"
@@ -154,18 +161,22 @@ class SelfserviceSession():
         else:
             print("ERROR: Unidentified Semester")
 
-    def gen_courses(self, semester, department):
-        visited = set()
-        for page in self._gen_results_page_soup(semester, department):
-            for course_deets in self._courses_on_page(page):
-                if not course_deets[1] in visited:
-                    yield self._extract_course(course_deets)
-                    visited.add(course_deets[1])
+    def gen_courses(self, semester, dept):
+        '''
+        A generator for courses of a particular semester and department
+        '''
+        visited = set()  # This may not be necessary
+        for results_page in self._gen_search_results_soup(semester, dept):
+            print("RESULTS PAGE")
+            for course_details in self._courses_on_page(results_page):
+                if not course_details[1] in visited:
+                    yield self._extract_course(course_details)
+                    visited.add(course_details[1])
 
-    def _gen_results_page_soup(self, semester, department):
+    def _gen_search_results_soup(self, semester, department):
         '''
         Generates a 'BeautifulSoup' for each page in the results of
-        searching through all the courses.
+        searching through all the courses by semester and department.
         This is called by gen_courses().
         '''
         url = 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Main'
@@ -194,18 +205,18 @@ class SelfserviceSession():
                                              {'L_PAGE887098': str(current)})
 
         r = self.s.post(url, data=payload, headers=headers)
-        s = BeautifulSoup(r.content, 'html.parser')
+        s = bs4.BeautifulSoup(r.content, 'html.parser')
         # maxPage = len(s.select("#SearchResults")[0].select('a')) - 1
         setResultsString = s.select('img[onload^=setResults2]')[0]['onload']
         maxPage = int(setResultsString[12:-1].split(',')[0])
-        yield s
+        yield s  # Page 1
         current += 1
         while current <= maxPage:
             requests.utils.add_dict_to_cookiejar(
                 self.s.cookies, {'L_PAGE887098': str(current)})
 
             r = self.s.post(url, data=payload, headers=headers)
-            s = BeautifulSoup(r.content, 'html.parser')
+            s = bs4.BeautifulSoup(r.content, 'html.parser')
             yield s
             current += 1
 
@@ -220,6 +231,14 @@ class SelfserviceSession():
 
         args = [c[13:-3].split("','") for c in courses]
         return args
+
+    @staticmethod
+    def _get_first(iterable, default=None):
+        ''' Courtesy of SO'''
+        if iterable:
+            for item in iterable:
+                return item
+        return default
 
     def _extract_course(self, args):
         '''
@@ -241,16 +260,62 @@ class SelfserviceSession():
                               "/ss/hwwkcsearch.P_Main")
 
         r = self.s.post(url, data=payload, headers=headers)
-        info = BeautifulSoup(r.content, 'html.parser')
-        i1_partial = info.select("#CourseDetailx")[0]
-        i1 = i1_partial.contents[0].contents[1].contents[0]
+        info = bs4.BeautifulSoup(r.content, 'html5lib')
+        course_data = {}
+        course_html = info.select("#CourseDetailx")[0]
 
-        # .contents[0].contents[0].contents[0]
-        # i2 = info.select("#div_DESC")[0]
-        if not info:
-            exit(0)
-            # return (i1.text, i2.text)
-        return i1.text
+        for shit in course_html.select('img.headerImg'):
+            shit.replace_with('')
+
+        # Goals
+        course_data['number'] = course_html.contents[0].contents[1].contents[0].find_all()[0].text
+        course_data['title'] = course_html.contents[0].contents[1].contents[0].find_all('td')[1].text
+
+        print(course_data['number'])
+        print(course_data['title'])
+        seats_split = course_html.table.tbody.find_all('tr')[3].text.split(" ")
+        course_data['seats_available'] = seats_split[0]
+        course_data['seats_total'] = seats_split[2]
+        # Do some classes have multiple meeting times? If so, I need an example in order to scrape it
+        course_data['meeting'] = str(self._get_first(course_html.find_all(text=re.compile('Primary Meeting:'))))
+        #for td in upper_table_rows[4].find_all('td'):
+            #course_data['meeting'].append((td.contents[0], td.contents[2]))
+        course_data['description'] = course_html.select("#div_DESC")[0].text
+        course_data['instructors'] = []
+        # Can do more parsing here, would need to pair strings with
+        # emails, or maybe find out which professor is primary
+        # I'm just grabbing email address for now
+        instructor_data = course_html.select('td.resultstable')[0]
+        for email in instructor_data.select('a'):
+            course_data['instructors'].append(email['href'][7:])
+        # Prereqs should be tested
+        lower_table_rows = course_html.find_all('tbody')[2].find_all('tr')
+        course_data['prerequisites'] = lower_table_rows[2].text
+
+        exam_info = course_html.find_all('b', text=re.compile('Exam Information'))[0].parent
+        print(exam_info.find_all('td'))
+        if "Please contact" not in exam_info.text:
+            for key, val in pairwise(exam_info.find_all('td')):
+                course_data[key.text] = val.text
+
+        #print(exam_info.find_all('td')[1].text)
+        #course_data['exam_date'] = exam_info.find_all('td')[2].text
+        #print(exam_info.find_all('td')[3].text)
+        #course_data['exam_time'] = exam_info.find_all('td')[3].text
+        #course_data['exam_group'] = exam_info.find_all('td')[5].text
+
+        # I thought there was exam location data? I can't seem to find it.
+        # course_data['exam_building'] =
+        # course_data['exam_room'] =
+
+        course_data['critical_review'] = course_html\
+            .find_all('a', text="Critical Review")[0]['href']
+
+        '''
+        TODO: course_data['books'] = []
+        '''
+
+        return course_data
 
     def __init__(self, username, password):
         self.s = None
@@ -258,6 +323,10 @@ class SelfserviceSession():
         self.password = password
 
     def __enter__(self):
+        '''
+        Creates a new object which stores the cookie and header information
+        using the requests Session object.
+        '''
         url = ("https://selfservice.brown.edu/"
                "ss/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu")
         login_url = "https://selfservice.brown.edu/ss/twbkwbis.P_ValLogin"
@@ -275,7 +344,9 @@ class SelfserviceSession():
 
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, ex_type, ex_value, traceback):
+        if ex_type:
+            throws()
         return True  # Should probably handle exceptions here
 
 
@@ -284,16 +355,14 @@ def main():
     Main Function
     '''
 
-    # Load up the passwords
+    # Load up the username and password
     username = secret.username
     passwd = secret.password
 
     with SelfserviceSession(username, passwd) as s:
         for semester in SelfserviceSession.Semesters:
-            # print(semester)
             # for department in SelfserviceSession.Departments:
             for department in ['CSCI']:
-                # print(department)
                 for course in s.gen_courses(semester, department):
                     print(course)
 
