@@ -15,7 +15,6 @@ def scrape_rooms(collection):
     parsed = soup(html, 'html5lib')
     room_list = parsed.find('div', {'id': 'campus1'})
     links = room_list.find_all('a')
-    rooms = []
     for link in links:
         rid = _rid_re.match(link['href']).group(1)
         name = link.text.strip()
@@ -28,5 +27,4 @@ def scrape_rooms(collection):
         else:
             room['machines'] = existing_room[0]['machines']
 
-        rooms.append(room)
-    return rooms
+        yield room

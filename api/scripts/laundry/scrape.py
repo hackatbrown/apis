@@ -10,8 +10,7 @@ from api.scripts.util.logger import log
 
 def main():
     ldb = db.laundry
-    rooms = Campus.scrape_rooms(ldb)
-    for room in rooms:
+    for room in Campus.scrape_rooms(ldb):
         query = {'name': room['name'], 'id': room['id']}
         log("found room {0} with {1} machine(s)".format(
             room['name'], len(room['machines'])))
