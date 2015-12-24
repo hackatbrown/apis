@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup as soup
 
 from api.scripts.laundry import Room, util
 
-_campus_url = "http://laundryview.com/lvs.php"
+_brown_campus_id = "brownu"
+_campus_url = "http://laundryview.com/{0}".format(_brown_campus_id)
 _rid_re = re.compile(r".*\.php\?lr=([0-9]+)")
 
 
