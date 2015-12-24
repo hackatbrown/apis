@@ -6,6 +6,14 @@ _This README is for development of the APIs. Public documentation is located [he
 **DO NOT PUSH DIRECTLY TO MASTER UNLESS YOU INTEND TO DEPLOY A NEW VERSION OF THE SITE. YOU COULD BREAK EVERYTHING!**
 
 
+Requirements
+------------
+- Python 3
+    - `virtualenv`
+    - `pip`
+- MongoDB
+- Git
+
 Getting Started on Development
 ------------------------------
 
@@ -15,7 +23,7 @@ Getting Started on Development
 3. Also, make sure you have 'virtualenv' installed (find instructions online).
 4. Open a terminal and navigate to the top level of the reposity (_brown-apis/_).
 5. Create and activate a virtual environment:
-	- `virtualenv venv`
+	- ``virtualenv -p `which python3` venv``
 	- `source venv/bin/activate`
 6. Install all the required libraries in your virtual environment:
 	- `pip install -r requirements.txt`
