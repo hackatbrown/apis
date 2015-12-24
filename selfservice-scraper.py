@@ -5,6 +5,7 @@ import re
 from itertools import tee
 from copy import deepcopy
 from datetime import date
+from pprint import pprint
 
 import secret  # Passwords
 
@@ -266,6 +267,8 @@ class SelfserviceSession():
 
         for shit in course_html.select('img.headerImg'):
             shit.replace_with('')
+        #for moreshit in course_html.select('br'):
+            #moreshit.replace_with('')
 
         # Goals
         course_data['number'] = course_html.contents[0].contents[1].contents[0].find_all()[0].text
@@ -289,14 +292,24 @@ class SelfserviceSession():
         for email in instructor_data.select('a'):
             course_data['instructors'].append(email['href'][7:])
         # Prereqs should be tested
-        lower_table_rows = course_html.find_all('tbody')[2].find_all('tr')
-        course_data['prerequisites'] = lower_table_rows[2].text
+        #lower_table_rows = course_html.find_all('tbody')[2].find_all('tr')
+        #course_data['prerequisites'] = lower_table_rows[2].text
+        # TODO: Test This
 
-        exam_info = course_html.find_all('b', text=re.compile('Exam Information'))[0].parent
-        print(exam_info.find_all('td'))
-        if "Please contact" not in exam_info.text:
-            for key, val in pairwise(exam_info.find_all('td')):
-                course_data[key.text] = val.text
+        reg = re.compile(r'Prerequisites')
+        prereq_elements = [e for e in course_html.find_all('b') if reg.match(e.text)]
+        if len(prereq_elements) > 0:
+            course_data['prerequisites'] = prereq_elements[0].parent.contents[2].strip()
+
+        exam_info = course_html.find_all('b', text=re.compile('Exam Information'))
+        if len(exam_info) > 0:
+            exam_info = exam_info[0].parent
+            if "Please contact" not in exam_info.text:
+                for key, val in pairwise(exam_info.find_all('td')):
+                    course_data[key.text] = val.text
+            else:
+                # Odd case where only the Exam Group is present
+                course_data['Exam Group'] = exam_info.find('td').text.split(":")[1].strip()
 
         #print(exam_info.find_all('td')[1].text)
         #course_data['exam_date'] = exam_info.find_all('td')[2].text
@@ -345,8 +358,6 @@ class SelfserviceSession():
         return self
 
     def __exit__(self, ex_type, ex_value, traceback):
-        if ex_type:
-            throws()
         return True  # Should probably handle exceptions here
 
 
@@ -364,7 +375,7 @@ def main():
             # for department in SelfserviceSession.Departments:
             for department in ['CSCI']:
                 for course in s.gen_courses(semester, department):
-                    print(course)
+                    pprint({k: course[k] for k in course.keys() if "prerequisites" in k})
 
     '''
     def meta_redirect(content):
