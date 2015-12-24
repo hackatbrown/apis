@@ -43,7 +43,53 @@ def laundry_index():
 @app.route('/laundry/rooms')
 @support_jsonp
 @requireKey('/laundry/rooms')
-def req_laundry_rooms():
-    results = ldb.find({}, {'_id': 0})
+def req_laundry_room_list():
+    results = ldb.find({}, {'_id': False, 'machines': False})
     result_list = [r for r in results]
     return jsonify(num_result=len(result_list), results=result_list)
+
+
+@app.route('/laundry/rooms/<room_id>')
+@support_jsonp
+@requireKey('/laundry/rooms/<room_id>')
+def req_room_detail(room_id):
+    room = ldb.find_one({'id': str(room_id)}, {'_id': False})
+    if room is None:
+        return make_json_error('Room not found')
+    return jsonify(result=room)
+
+
+@app.route('/laundry/rooms/<room_id>/machines')
+@support_jsonp
+@requireKey('/laundry/rooms/<room_id>/machines')
+def req_machines(room_id):
+    # TODO support a getStatus parameter to optionally get machine statuses
+    get_statuses = request.args.get('get_statuses')
+    print(get_statuses)
+
+    # TODO make a type field to filter on (washer, dryer, etc)
+
+    room = ldb.find_one({'id': str(room_id)}, {'_id': False, 'machines': True})
+    if room is None:
+        return make_json_error('Room not found')
+    return jsonify(results=room['machines'])
+
+
+@app.route('/laundry/rooms/<room_id>/machines/<machine_id>')
+@support_jsonp
+@requireKey('/laundry/rooms/<room_id>/machines/<machine_id>')
+def req_machine_details(room_id, machine_id):
+    # TODO support a getStatus parameter to optionally get machine statuses
+    get_statuses = request.args.get('get_statuses')
+    print(get_statuses)
+
+    m = ldb.find_one({'id': str(room_id), 'machines.id': str(machine_id)},
+                     {'_id': False, 'machines': True})
+    if m is None:
+        return make_json_error("Machine or room not found")
+
+    m = list(filter(lambda x: x['id'] == str(machine_id), m['machines']))
+    if len(m) == 0:
+        return make_json_error("Machine not found")
+
+    return jsonify(result=m[0])
