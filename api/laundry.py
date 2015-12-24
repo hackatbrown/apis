@@ -2,6 +2,7 @@
 from flask import request, jsonify
 from api import app, db, make_json_error, support_jsonp
 from api.meta import is_valid_client, log_client, INVALID_CLIENT_MSG
+from api.scripts.laundry import Room
 from functools import wraps
 
 from datetime import datetime  # , date, timedelta
@@ -63,15 +64,18 @@ def req_room_detail(room_id):
 @support_jsonp
 @requireKey('/laundry/rooms/<room_id>/machines')
 def req_machines(room_id):
-    # TODO support a getStatus parameter to optionally get machine statuses
-    get_statuses = request.args.get('get_statuses')
-    print(get_statuses)
-
     # TODO make a type field to filter on (washer, dryer, etc)
 
-    room = ldb.find_one({'id': str(room_id)}, {'_id': False, 'machines': True})
+    room = ldb.find_one({'id': str(room_id)},
+                        {'_id': False, 'id': True, 'machines': True})
     if room is None:
         return make_json_error('Room not found')
+
+    # support a get_status parameter to optionally get machine statuses
+    if bool(request.args.get('get_status')):
+        room = Room.get_machine_statuses(room)
+
+    del room['id']
     return jsonify(results=room['machines'])
 
 
@@ -79,16 +83,20 @@ def req_machines(room_id):
 @support_jsonp
 @requireKey('/laundry/rooms/<room_id>/machines/<machine_id>')
 def req_machine_details(room_id, machine_id):
-    # TODO support a getStatus parameter to optionally get machine statuses
-    get_statuses = request.args.get('get_statuses')
-    print(get_statuses)
+    # get_statuses = request.args.get('get_statuses')
 
-    m = ldb.find_one({'id': str(room_id), 'machines.id': str(machine_id)},
-                     {'_id': False, 'machines': True})
-    if m is None:
+    room = ldb.find_one({'id': str(room_id), 'machines.id': str(machine_id)},
+                        {'_id': False, 'machines': True, 'id': True})
+    if room is None:
         return make_json_error("Machine or room not found")
 
-    m = list(filter(lambda x: x['id'] == str(machine_id), m['machines']))
+    print(room)
+
+    # support a get_status parameter to optionally get machine status
+    if bool(request.args.get('get_status')):
+        room = Room.get_machine_statuses(room)
+
+    m = list(filter(lambda x: x['id'] == str(machine_id), room['machines']))
     if len(m) == 0:
         return make_json_error("Machine not found")
 
