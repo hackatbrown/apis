@@ -24,7 +24,7 @@ valid_food_names = []
 
 @app.route('/dining')
 @support_jsonp
-@require_client_id
+@require_client_id()
 def dining_index():
     return make_json_error('No method specified. '
                            'See documentation for endpoints.')
@@ -32,7 +32,7 @@ def dining_index():
 
 @app.route('/dining/menu')
 @support_jsonp
-@require_client_id
+@require_client_id()
 def req_dining_menu():
     ''' Endpoint for all menu requests (see README for documentation) '''
 
@@ -88,7 +88,7 @@ def req_dining_menu():
 
 @app.route('/dining/hours')
 @support_jsonp
-@require_client_id
+@require_client_id()
 def req_dining_hours():
     ''' Endpoint for all hours requests (see README for documentation) '''
 
@@ -122,7 +122,7 @@ def req_dining_hours():
 
 @app.route('/dining/find')
 @support_jsonp
-@require_client_id
+@require_client_id()
 def req_dining_find():
     ''' Endpoint for requests to find food (see README for documentation) '''
 
@@ -142,7 +142,7 @@ def req_dining_find():
 
 @app.route('/dining/nutrition')
 @support_jsonp
-@require_client_id
+@require_client_id()
 def req_dining_nutrition():
     ''' Endpoint for nutrtitional requests (see README for documentation) '''
 
@@ -158,7 +158,7 @@ def req_dining_nutrition():
 
 @app.route('/dining/open')
 @support_jsonp
-@require_client_id
+@require_client_id()
 def req_dining_open():
     ''' Endpoint for open eatery requests (see README for documentation) '''
 
@@ -214,7 +214,7 @@ def req_dining_open():
 
 @app.route('/dining/all_food')
 @support_jsonp
-@require_client_id
+@require_client_id()
 def req_dining_all_food():
     ''' Endpoint for all food requests (see README for documentation) '''
     eatery = verify_eatery(request.args.get('eatery', ''))
