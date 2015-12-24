@@ -40,7 +40,7 @@ How to Manually Run Scripts
 
 1. Navigate to the top-level directory (_brown-apis/_).
 2. Run the script from a package environment, allowing it to import the database from the _api_ package:
-	- `python -m api.scripts.<scriptname>` where 'scriptname' does NOT include the '.py' extension.
+	- `python3 -m api.scripts.<scriptname>` where 'scriptname' does NOT include the '.py' extension.
 3. You can include any script arguments after the command (just like you normally would).
 
 Data Structures
@@ -91,3 +91,12 @@ We use MongoDB to store various menus and schedules, as well as client informati
 
 - *eatery*: &lt;STRING&gt;,
 - *food*: [ &lt;STRING&gt;, &lt;STRING&gt;, ... ]
+
+
+### db.laundry ###
+- *room*
+    - *name*: &lt;STRING&gt;
+    - *id*: &lt;INT&gt;
+    - *machines*: list of objects with:
+        - *id*: &lt;INT&gt;
+        - *type*: &lt;STRING&gt; (one of `washFL`, `washNdry`, `dry`)

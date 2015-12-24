@@ -32,8 +32,8 @@ def add_client_id(email, username, client_id=None):
     return client_id
 
 if __name__ == '__main__':
-    if len(argv) < 2 or len(argv) > 3:
-        print("Usage:  python -m api.scripts.add_client <client_name> <client_email> <username> [client_id]")
+    if len(argv) < 3 or len(argv) > 4:
+        print("Usage:  python -m api.scripts.add_client <client_email> <username> [client_id]")
         print("\tclient_email - Required. An @brown.edu email address.")
         print("\tusername - Required. A user who owns this client (typically a first and last name, like 'Josiah Carberry').")
         print("\tclient_id - Optional. Provide a string representation of a UUID4 client ID.")
