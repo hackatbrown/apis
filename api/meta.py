@@ -1,8 +1,11 @@
 from flask import render_template, url_for, request, redirect
+from functools import wraps
+from api import make_json_error
 from api import app, db
 from api.scripts.add_client import add_client_id
 from api.scripts.email_handler import send_id_email
 from api.scripts.stats import get_total_requests
+from datetime import datetime
 
 '''
 DATABASE OBJECTS: View templates on the private, repository README.
@@ -116,3 +119,27 @@ def validate_client(client_id):
     if u'nModified' in result and result[u'nModified'] == 1:
         return True
     return False
+
+
+class require_client_id(object):
+    ''' Wraps view functions to require valid client IDs.
+        Must be included *after* the app.route decorator.
+        Optionally takes a custom endpoint string to log on success.'''
+    def __init__(self, endpoint=None):
+        self.endpoint = endpoint
+
+    def __call__(self, f):
+        @wraps(f)
+        def wrapper_fn(*args, **kwargs):
+            ep = self.endpoint
+            if ep is None:
+                ep = str(request.url_rule)
+
+            client_id = request.args.get('client_id', 'missing_client')
+            if is_valid_client(client_id):
+                log_client(client_id, ep, str(datetime.now()))
+                return f(*args, **kwargs)
+            else:
+                return make_json_error(INVALID_CLIENT_MSG)
+
+        return wrapper_fn
