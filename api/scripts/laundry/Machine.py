@@ -3,9 +3,10 @@
 
 def props_to_doc(machine_id, prop_str):
     prop_list = prop_str.split(':')
-    return {'type': prop_list[3], 'id': machine_id, 'message': None}
+    return {'type': prop_list[3], 'id': machine_id}
 
 
+# NOTE: not currently in use, but may be useful for live API querying
 def update_status(machine_doc, prop_str):
     prop_list = prop_str.split(':')
     if prop_list[6] == '0':
