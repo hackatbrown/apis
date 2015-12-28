@@ -2,7 +2,7 @@
 import bs4
 import requests
 import re
-from itertools import tee
+from itertools import tee, zip_longest
 from copy import deepcopy
 from datetime import date
 from pprint import pprint
@@ -36,6 +36,11 @@ def pairwise(iterable):
     a, b = tee(iterable)
     next(b, None)
     return zip(a, b)
+
+
+def grouper(iterable, n, fillvalue=None):
+    args = [iter(iterable)] * n
+    return zip_longest(*args, fillvalue=fillvalue)
 
 
 def gen_current_semester():
@@ -289,13 +294,10 @@ class SelfserviceSession():
             course_html.find_all(text=re.compile('Primary Meeting:'))))
 
         course_data['description'] = course_html.select("#div_DESC")[0].text
-        course_data['instructors'] = []
-        # Can do more parsing here, would need to pair strings with
-        # emails, or maybe find out which professor is primary
-        # I'm just grabbing email address for now
+   
         instructor_data = course_html.select('td.resultstable')[0]
-        for email in instructor_data.select('a'):
-            course_data['instructors'].append(email['href'][7:])
+        course_data['instructors'] = self._extract_course_instructors(self, instructor_data)
+
 
         # TODO: Test This
         reg = re.compile(r'Prerequisites')
@@ -329,6 +331,27 @@ class SelfserviceSession():
         '''
 
         return course_data
+
+    @staticmethod
+    def _extract_course_instructors(self, instructor_data):
+        if 'TBA' in instructor_data.contents[1]:
+            return None
+        ans = []
+        contents = instructor_data.contents
+        assert(len(contents) > 4)
+        prof = {}
+        prof['name'] = contents[0].replace('(','').strip()
+        prof['email'] = contents[3]['href'][7:]
+        prof['isPrimary'] = (contents[1].text == "P")
+        ans.append(prof)
+        if contents[4] != '\n':
+            for group in grouper(contents[4:],3):
+                prof = {}
+                prof['name'] = group[0].strip()
+                prof['email'] = group[1]['href'][7:]
+                prof['isPrimary'] = False
+                ans.append(prof)
+        return ans
 
     def __init__(self, username, password):
         self.s = None
