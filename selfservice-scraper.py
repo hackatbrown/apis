@@ -6,6 +6,8 @@ from itertools import tee
 from copy import deepcopy
 from datetime import date
 from pprint import pprint
+from tqdm import *
+import os
 
 import secret  # Passwords
 
@@ -28,11 +30,13 @@ requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 '''
 
+
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = tee(iterable)
     next(b, None)
     return zip(a, b)
+
 
 def gen_current_semester():
     '''
@@ -168,7 +172,6 @@ class SelfserviceSession():
         '''
         visited = set()  # This may not be necessary
         for results_page in self._gen_search_results_soup(semester, dept):
-            print("RESULTS PAGE")
             for course_details in self._courses_on_page(results_page):
                 if not course_details[1] in visited:
                     yield self._extract_course(course_details)
@@ -208,7 +211,10 @@ class SelfserviceSession():
         r = self.s.post(url, data=payload, headers=headers)
         s = bs4.BeautifulSoup(r.content, 'html.parser')
         # maxPage = len(s.select("#SearchResults")[0].select('a')) - 1
-        setResultsString = s.select('img[onload^=setResults2]')[0]['onload']
+        setResultsString = s.select('img[onload^=setResults2]')
+        if len(setResultsString) == 0:  # No Classes
+            return
+        setResultsString = setResultsString[0]['onload']
         maxPage = int(setResultsString[12:-1].split(',')[0])
         yield s  # Page 1
         current += 1
@@ -267,22 +273,21 @@ class SelfserviceSession():
 
         for shit in course_html.select('img.headerImg'):
             shit.replace_with('')
-        #for moreshit in course_html.select('br'):
-            #moreshit.replace_with('')
 
-        # Goals
-        course_data['number'] = course_html.contents[0].contents[1].contents[0].find_all()[0].text
-        course_data['title'] = course_html.contents[0].contents[1].contents[0].find_all('td')[1].text
+        course_data['number'] = course_html.contents[0].contents[1]\
+            .contents[0].find_all()[0].text
+        course_data['title'] = course_html.contents[0].contents[1]\
+            .contents[0].find_all('td')[1].text
 
-        print(course_data['number'])
-        print(course_data['title'])
         seats_split = course_html.table.tbody.find_all('tr')[3].text.split(" ")
         course_data['seats_available'] = seats_split[0]
         course_data['seats_total'] = seats_split[2]
-        # Do some classes have multiple meeting times? If so, I need an example in order to scrape it
-        course_data['meeting'] = str(self._get_first(course_html.find_all(text=re.compile('Primary Meeting:'))))
-        #for td in upper_table_rows[4].find_all('td'):
-            #course_data['meeting'].append((td.contents[0], td.contents[2]))
+
+        # Do some classes have multiple meeting times?
+        # If so, I need an example in order to scrape it
+        course_data['meeting'] = str(self._get_first(
+            course_html.find_all(text=re.compile('Primary Meeting:'))))
+
         course_data['description'] = course_html.select("#div_DESC")[0].text
         course_data['instructors'] = []
         # Can do more parsing here, would need to pair strings with
@@ -291,17 +296,17 @@ class SelfserviceSession():
         instructor_data = course_html.select('td.resultstable')[0]
         for email in instructor_data.select('a'):
             course_data['instructors'].append(email['href'][7:])
-        # Prereqs should be tested
-        #lower_table_rows = course_html.find_all('tbody')[2].find_all('tr')
-        #course_data['prerequisites'] = lower_table_rows[2].text
+
         # TODO: Test This
-
         reg = re.compile(r'Prerequisites')
-        prereq_elements = [e for e in course_html.find_all('b') if reg.match(e.text)]
+        prereq_elements = [e for e in course_html.find_all('b')
+                           if reg.match(e.text)]
         if len(prereq_elements) > 0:
-            course_data['prerequisites'] = prereq_elements[0].parent.contents[2].strip()
+            course_data['prerequisites'] = \
+                prereq_elements[0].parent.contents[2].strip()
 
-        exam_info = course_html.find_all('b', text=re.compile('Exam Information'))
+        reg = re.compile('Exam Information')
+        exam_info = course_html.find_all('b', text=reg)
         if len(exam_info) > 0:
             exam_info = exam_info[0].parent
             if "Please contact" not in exam_info.text:
@@ -309,13 +314,8 @@ class SelfserviceSession():
                     course_data[key.text] = val.text
             else:
                 # Odd case where only the Exam Group is present
-                course_data['Exam Group'] = exam_info.find('td').text.split(":")[1].strip()
-
-        #print(exam_info.find_all('td')[1].text)
-        #course_data['exam_date'] = exam_info.find_all('td')[2].text
-        #print(exam_info.find_all('td')[3].text)
-        #course_data['exam_time'] = exam_info.find_all('td')[3].text
-        #course_data['exam_group'] = exam_info.find_all('td')[5].text
+                course_data['Exam Group'] = exam_info.find('td')\
+                    .text.split(":")[1].strip()
 
         # I thought there was exam location data? I can't seem to find it.
         # course_data['exam_building'] =
@@ -358,7 +358,8 @@ class SelfserviceSession():
         return self
 
     def __exit__(self, ex_type, ex_value, traceback):
-        return True  # Should probably handle exceptions here
+        # return True  # Should probably handle exceptions here
+        return None
 
 
 def main():
@@ -370,26 +371,16 @@ def main():
     username = secret.username
     passwd = secret.password
 
+    path = str(os.path.expanduser('~/Desktop/course_data/'))
+
     with SelfserviceSession(username, passwd) as s:
         for semester in SelfserviceSession.Semesters:
-            # for department in SelfserviceSession.Departments:
-            for department in ['CSCI']:
+            print("Current: "+semester)
+            os.makedirs(path+semester, exist_ok=True)
+            for department in tqdm(SelfserviceSession.Departments, unit="Depts."):
                 for course in s.gen_courses(semester, department):
-                    pprint({k: course[k] for k in course.keys() if "prerequisites" in k})
-
-    '''
-    def meta_redirect(content):
-        soup = BeautifulSoup(content)
-        result=soup.find("meta",attrs={"http-equiv":"refresh"})
-        if result:
-            wait,text=result["content"].split(";")
-            if text.lower().startswith("url="):
-                url=text[4:]
-                return url
-                return None
-                while meta_redirect(p.content):
-                    p = s.get('https://selfservice.brown.edu' +
-                    meta_redirect(p.content))
-    '''
+                    fpath = path + semester + '/' + course['number'] + '.txt'
+                    with open(fpath, 'w+') as fd:
+                        pprint(course, fd)
 
 main()
