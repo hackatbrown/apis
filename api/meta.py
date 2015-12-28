@@ -44,7 +44,35 @@ def signup():
         else:
             return redirect(url_for('root', signedup='false'))
 
+@app.route('/docs', methods=['GET', 'POST'])
+def docs():
+    if request.method == 'GET':
+        return render_template('signup.html')
+    else:
+        firstname = request.form['firstname'].strip()
+        lastname = request.form['lastname'].strip()
+        email = request.form['email'].strip()
+        client_id = add_client_id(email, firstname + " " + lastname)
+        if client_id:
+            send_id_email(email, firstname, client_id)
+            return redirect(url_for('root', signedup='true'))
+        else:
+            return redirect(url_for('root', signedup='false'))
 
+@app.route('/support', methods=['GET', 'POST'])
+def support():
+    if request.method == 'GET':
+        return render_template('signup.html')
+    else:
+        firstname = request.form['firstname'].strip()
+        lastname = request.form['lastname'].strip()
+        email = request.form['email'].strip()
+        client_id = add_client_id(email, firstname + " " + lastname)
+        if client_id:
+            send_id_email(email, firstname, client_id)
+            return redirect(url_for('root', signedup='true'))
+        else:
+            return redirect(url_for('root', signedup='false'))
 # Static responses
 
 INVALID_CLIENT_MSG = "invalid client id"

@@ -1,0 +1,58 @@
+body {
+  padding-top: 20px;
+}
+
+.navbar {
+  margin-bottom: 0px;
+}
+
+.navbar .brand { 
+    max-height: 100%;
+    max-width: auto%; 
+}
+
+.navbar-brand {
+  padding: 0px;
+}
+
+.navbar-right {
+    font-size: 20pt;
+}
+
+a.navbar-link {
+  color: black;
+  font-style: bold;
+}
+
+.footer {
+  background-color: black;
+  color: white;
+  position: absolute;
+  bottom: -270px;
+  width: 100%;
+}
+
+.footer a {
+  color: white;
+}
+
+.footer h3 {
+  font-weight: bold;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+.main {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+hr {
+  border: 0 none;
+  background-color: black;
+  height: 6px;
+  margin-top: 0;
+}
