@@ -294,7 +294,7 @@ class SelfserviceSession():
             course_html.find_all(text=re.compile('Primary Meeting:'))))
 
         course_data['description'] = course_html.select("#div_DESC")[0].text
-   
+
         instructor_data = course_html.select('td.resultstable')[0]
         course_data['instructors'] = self._extract_course_instructors(self, instructor_data)
 
@@ -345,7 +345,9 @@ class SelfserviceSession():
         prof['isPrimary'] = (contents[1].text == "P")
         ans.append(prof)
         if contents[4] != '\n':
-            for group in grouper(contents[4:],3):
+            for group in grouper(contents[4:],2):
+                if group[0] == '\n' or group[1] == '\n':
+                    break
                 prof = {}
                 prof['name'] = group[0].strip()
                 prof['email'] = group[1]['href'][7:]
