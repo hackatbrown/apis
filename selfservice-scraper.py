@@ -2,7 +2,7 @@
 import bs4
 import requests
 import re
-from itertools import tee, zip_longest
+from itertools import zip_longest
 from copy import deepcopy
 from datetime import date
 from pprint import pprint
@@ -29,14 +29,6 @@ requests_log = logging.getLogger("requests.packages.urllib3")
 requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 '''
-
-
-def pairwise(iterable):
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
-
 
 def grouper(iterable, n, fillvalue=None):
     args = [iter(iterable)] * n
@@ -274,86 +266,33 @@ class SelfserviceSession():
         r = self.s.post(url, data=payload, headers=headers)
         info = bs4.BeautifulSoup(r.content, 'html5lib')
         course_data = {}
-        course_html = info.select("#CourseDetailx")[0]
+        course_soup = info.select("#CourseDetailx")[0]
 
-        for shit in course_html.select('img.headerImg'):
+        for shit in course_soup.select('img.headerImg'):
             shit.replace_with('')
 
-        course_data['number'] = course_html.contents[0].contents[1]\
+        course_data['number'] = course_soup.contents[0].contents[1]\
             .contents[0].find_all()[0].text
-        course_data['title'] = course_html.contents[0].contents[1]\
+        course_data['title'] = course_soup.contents[0].contents[1]\
             .contents[0].find_all('td')[1].text
 
-        seats_split = course_html.table.tbody.find_all('tr')[3].text.split(" ")
-        course_data['seats_available'] = seats_split[0]
-        course_data['seats_total'] = seats_split[2]
+        course_data.update(_extract_course_seats(course_soup))
 
-        # Do some classes have multiple meeting times?
-        # If so, I need an example in order to scrape it
-        course_data['meeting'] = str(self._get_first(
-            course_html.find_all(text=re.compile('Primary Meeting:'))))
+        course_data.update(_extract_course_meeting(course_soup))
 
-        course_data['description'] = course_html.select("#div_DESC")[0].text
+        course_data.update(_extract_course_description(course_soup))
 
-        instructor_data = course_html.select('td.resultstable')[0]
-        course_data['instructors'] = self._extract_course_instructors(self, instructor_data)
-
-
+        course_data.update(_extract_course_instructors(course_soup))
         # TODO: Test This
-        reg = re.compile(r'Prerequisites')
-        prereq_elements = [e for e in course_html.find_all('b')
-                           if reg.match(e.text)]
-        if len(prereq_elements) > 0:
-            course_data['prerequisites'] = \
-                prereq_elements[0].parent.contents[2].strip()
-
-        reg = re.compile('Exam Information')
-        exam_info = course_html.find_all('b', text=reg)
-        if len(exam_info) > 0:
-            exam_info = exam_info[0].parent
-            if "Please contact" not in exam_info.text:
-                for key, val in pairwise(exam_info.find_all('td')):
-                    course_data[key.text] = val.text
-            else:
-                # Odd case where only the Exam Group is present
-                course_data['Exam Group'] = exam_info.find('td')\
-                    .text.split(":")[1].strip()
-
+        course_data.update(_extract_course_prerequisites(course_soup))
         # I thought there was exam location data? I can't seem to find it.
-        # course_data['exam_building'] =
-        # course_data['exam_room'] =
+        course_data.update(_extract_course_exam_info(course_soup))
 
-        course_data['critical_review'] = course_html\
+        course_data['critical_review'] = course_soup\
             .find_all('a', text="Critical Review")[0]['href']
-
-        '''
-        TODO: course_data['books'] = []
-        '''
+        # TODO: course_data['books'] = []
 
         return course_data
-
-    @staticmethod
-    def _extract_course_instructors(self, instructor_data):
-        if 'TBA' in instructor_data.contents[1]:
-            return None
-        ans = []
-        contents = instructor_data.contents
-        assert(len(contents) > 4)
-        prof = {}
-        prof['name'] = contents[0].replace('(','').strip()
-        prof['email'] = contents[3]['href'][7:]
-        prof['isPrimary'] = (contents[1].text == "P")
-        ans.append(prof)
-        if contents[4] != '\n':
-            for group in grouper(contents[4:],2):
-                if group[0] == '\n' or group[1] == '\n':
-                    break
-                prof = {}
-                prof['name'] = group[0].strip()
-                prof['email'] = group[1]['href'][7:]
-                prof['isPrimary'] = False
-                ans.append(prof)
-        return ans
 
     def __init__(self, username, password):
         self.s = None
@@ -386,6 +325,105 @@ class SelfserviceSession():
         # return True  # Should probably handle exceptions here
         return None
 
+def _extract_course_seats(course_soup):
+    seats_data = {}
+    seats_split = course_soup.table.tbody.find_all('tr')[3].text.split(" ")
+    seats_data['seats_available'] = seats_split[0]
+    seats_data['seats_total'] = seats_split[2]
+    return seats_data
+
+def _extract_course_description(course_soup):
+    return {'description': course_soup.select("#div_DESC")[0].text[2:]}
+
+def _extract_course_instructors(course_soup):
+        instructor_data = course_soup.select('td.resultstable')[0]
+        if 'TBA' in instructor_data.contents[1]:
+            return {'instructors': None}
+        ans = []
+        contents = instructor_data.contents
+        assert(len(contents) > 4)
+        prof = {}
+        prof['name'] = contents[0].replace('(','').strip()
+        prof['email'] = contents[3]['href'][7:]
+        prof['isPrimary'] = (contents[1].text == "P")
+        ans.append(prof)
+        if contents[4] != '\n':
+            for group in grouper(contents[4:],2):
+                if group[0] == '\n' or group[1] == '\n':
+                    break
+                prof = {}
+                prof['name'] = group[0].strip()
+                prof['email'] = group[1]['href'][7:]
+                prof['isPrimary'] = False
+                ans.append(prof)
+        return {'instructors': ans}
+
+def parse_schedule(schedule):
+    words = schedule.split()[2:]
+    days = words[:-5]
+    time = ' '.join(words[-5:]).split(' - ')
+    return (days, time)
+
+def parse_duration(duration):
+    words = duration.split(' ')
+    return (words[1], words[3])
+
+def _extract_course_meeting(course_html):
+    '''
+    :param course_html: The soup of the page
+    :return: a list of all meeting times
+    '''
+
+    data = course_html.find_all(text=re.compile("Primary Meeting:"))
+    if len(data) == 0:
+        return {'meeting': None}
+    data = [d for d in data[0].parent.contents if d.name != 'br']
+    ans = []
+    i = 0
+    while i < len(data):
+        meeting = {}
+        meeting['schedule'] = parse_schedule(data[i])
+        i+=1
+        meeting['duration'] = None
+        if (data[i]).startswith('From:'):
+            meeting['duration'] = parse_duration(data[i])
+            i+=1
+        meeting['location'] = str(data[i])
+        i+=1
+        ans.append(meeting)
+    return {'meeting': ans}
+
+def _extract_course_prerequisites(course_soup):
+        reg = re.compile(r'Prerequisites')
+        prereq_elements = [e for e in course_soup.find_all('b') if reg.match(e.text)]
+        if len(prereq_elements) > 0:
+            return {'prerequisites': prereq_elements[0].parent.contents[2].strip()}
+        return {'prerequisites': None}
+
+def _extract_course_exam_info(course_soup):
+    exam_data = {}
+    reg = re.compile('Exam Information')
+    exam_info = course_soup.find_all('b', text=reg)
+    if len(exam_info) > 0:
+
+        # TODO: Clean up these if statements, two logics going on here
+        exam_info = exam_info[0].parent.select('table.resultstable')
+        print(exam_info)
+        if len(exam_info) > 1:
+            exam_info = exam_info[1]
+        else:
+            return {}
+
+        if "Please contact" not in exam_info.text and "Not Assigned" not in exam_info.text:
+            tds = exam_info.find_all('td')
+            print(tds)
+            for key, val in grouper(tds, 2):
+                exam_data[key.text] = val.text
+            # TODO: Get values from the next results table. possibly 3 columns
+        else:
+            # Odd case where only the Exam Group is present
+            exam_data['Exam Group'] = exam_info.find('td').text.split(":")[1].strip()
+    return exam_data
 
 def main():
     '''
@@ -400,6 +438,7 @@ def main():
 
     with SelfserviceSession(username, passwd) as s:
         for semester in SelfserviceSession.Semesters:
+        #for semester in ['Spring 2016']:
             print("Current: "+semester)
             os.makedirs(path+semester, exist_ok=True)
             for department in tqdm(SelfserviceSession.Departments, unit="Depts."):
