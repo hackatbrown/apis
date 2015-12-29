@@ -1,6 +1,7 @@
 # from bs4 import BeautifulSoup
 import argparse
 import os
+from time import time
 import re
 from copy import deepcopy
 from datetime import date
@@ -34,6 +35,13 @@ requests_log.propagate = True
 
 
 def grouper(iterable, n, fillvalue=None):
+    """
+    Groups items from iterable into groups of n with a fill of None
+    :param iterable: the source
+    :param n: the size of the group
+    :param fillvalue: Fill a partial group with these
+    :return: tuple of length n
+    """
     args = [iter(iterable)] * n
     return zip_longest(*args, fillvalue=fillvalue)
 
@@ -91,6 +99,61 @@ def generate_semesters(n):
         semesters.append(gen_next_semester(semesters[i-1]))
         return semesters
 
+Semesters = generate_semesters(3)
+Departments = ['AFRI', 'AMST', 'ANTH', 'APMA', 'ARAB', 'ARCH', 'ASYR',
+               'BEO', 'BIOL', 'CATL', 'CHEM', 'CHIN', 'CLAS', 'CLPS',
+               'COLT', 'CROL', 'CSCI', 'CZCH', 'DEVL', 'EAST', 'ECON',
+               'EDUC', 'EGYT', 'EINT', 'ENGL', 'ENGN', 'ENVS', 'ERLY',
+               'ETHN', 'FREN', 'GEOL', 'GNSS', 'GREK', 'GRMN', 'HIAA',
+               'HISP', 'HIST', 'HMAN', 'HNDI', 'INTL', 'ITAL', 'JAPN',
+               'JUDS', 'KREA', 'LAST', 'LATN', 'LING', 'LITR', 'MATH',
+               'MCM', 'MDVL', 'MED', 'MES', 'MGRK', 'MUSC', 'NEUR', 'PHIL',
+               'PHP', 'PHYS', 'PLCY', 'PLME', 'PLSH', 'POBS', 'POLS',
+               'PRSN', 'RELS', 'REMS', 'RUSS', 'SANS', 'SCSO', 'SIGN',
+               'SLAV', 'SOC', 'SWED', 'TAPS', 'TKSH', 'UNIV', 'URBN',
+               'VISA']
+
+def _semester_to_value(semester_string):
+    """
+    Converts a Semester String to its numeric representation.
+
+    [SelfserviceSession._semester_to_value(s) for s in ['Spring 2015', 'Summer 2015',
+                                          'Fall 2015', 'Spring 2016']]
+    [201420, 201500, 201510, 201520]
+    """
+    words = semester_string.split(' ')
+    assert(len(words) == 2)
+    assert(int(words[1]) > 2010)  # Not really needed.
+    res = int(words[1]) * 100
+    if words[0] == 'Fall':
+        res += 10
+    elif words[0] == 'Spring':
+        res -= 100
+        res += 20
+    elif words[0] == 'Summer':
+        pass
+    else:
+        print("ERROR: Unidentified Semester")
+    return res
+
+def _value_to_semester(value):
+    """
+    Converts a numeric representation of a semester to a String.
+    >>> [ SelfserviceSession._value_to_semester(v) for v in [201420, 201500, 201510, 201520]]
+    ['Spring 2015', 'Summer 2015', 'Fall 2015', 'Spring 2016']
+    """
+    year = int(value[:4])  # Get Year
+    season = value[-2:]
+    if season == "00":
+        return str(year) + " Summer"
+    elif season == "10":
+        return str(year) + " Fall"
+    elif season == "20":
+        return str(year + 1) + " Spring"
+    else:
+        print("ERROR: Unidentified Semester")
+
+
 
 class SelfserviceSession:
     '''
@@ -98,20 +161,6 @@ class SelfserviceSession:
     holds repeated request headers and is a wrapper for the requests Session
     object which manages cookies.
     '''
-
-    Semesters = generate_semesters(3)
-    Departments = ['AFRI', 'AMST', 'ANTH', 'APMA', 'ARAB', 'ARCH', 'ASYR',
-                   'BEO', 'BIOL', 'CATL', 'CHEM', 'CHIN', 'CLAS', 'CLPS',
-                   'COLT', 'CROL', 'CSCI', 'CZCH', 'DEVL', 'EAST', 'ECON',
-                   'EDUC', 'EGYT', 'EINT', 'ENGL', 'ENGN', 'ENVS', 'ERLY',
-                   'ETHN', 'FREN', 'GEOL', 'GNSS', 'GREK', 'GRMN', 'HIAA',
-                   'HISP', 'HIST', 'HMAN', 'HNDI', 'INTL', 'ITAL', 'JAPN',
-                   'JUDS', 'KREA', 'LAST', 'LATN', 'LING', 'LITR', 'MATH',
-                   'MCM', 'MDVL', 'MED', 'MES', 'MGRK', 'MUSC', 'NEUR', 'PHIL',
-                   'PHP', 'PHYS', 'PLCY', 'PLME', 'PLSH', 'POBS', 'POLS',
-                   'PRSN', 'RELS', 'REMS', 'RUSS', 'SANS', 'SCSO', 'SIGN',
-                   'SLAV', 'SOC', 'SWED', 'TAPS', 'TKSH', 'UNIV', 'URBN',
-                   'VISA']
 
     # The standard headers for sending a request.
     # Typically you'll add a Referer.
@@ -124,188 +173,16 @@ class SelfserviceSession:
         'Origin': 'https://selfservice.brown.edu'
     }
 
-    def get_base_headers(self):
-        return deepcopy(self.BaseHeaders)
-
-    @staticmethod
-    def _semester_to_value(semester_string):
-        """
-        [SelfserviceSession._semester_to_value(s) for s in ['Spring 2015', 'Summer 2015',
-                                              'Fall 2015', 'Spring 2016']]
-        [201420, 201500, 201510, 201520]
-        """
-        words = semester_string.split(' ')
-        assert(len(words) == 2)
-        assert(int(words[1]) > 2010)  # Not really needed.
-        res = int(words[1]) * 100
-        if words[0] == 'Fall':
-            res += 10
-        elif words[0] == 'Spring':
-            res -= 100
-            res += 20
-        elif words[0] == 'Summer':
-            pass
-        else:
-            print("ERROR: Unidentified Semester")
-        return res
-
-    @staticmethod
-    def _value_to_semester(value):
-        """
-        >>> [ SelfserviceSession._value_to_semester(v) for v in [201420, 201500, 201510, 201520]]
-        ['Spring 2015', 'Summer 2015', 'Fall 2015', 'Spring 2016']
-        """
-        year = int(value[:4])  # Get Year
-        season = value[-2:]
-        if season == "00":
-            return str(year) + " Summer"
-        elif season == "10":
-            return str(year) + " Fall"
-        elif season == "20":
-            return str(year + 1) + " Spring"
-        else:
-            print("ERROR: Unidentified Semester")
-
-    def gen_courses(self, semester, dept):
-        """
-        A generator for courses of a particular semester and department
-        """
-        visited = set()  # This may not be necessary
-        for results_page in self._gen_search_results_soup(semester, dept):
-            for course_details in self._courses_on_page(results_page):
-                if not course_details[1] in visited:
-                    yield self._extract_course(course_details)
-                    visited.add(course_details[1])
-
-    def _gen_search_results_soup(self, semester, department):
-        """
-        Generates a 'BeautifulSoup' for each page in the results of
-        searching through all the courses by semester and department.
-        This is called by gen_courses().
-        """
-        url = 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Main'
-        payload = {
-            'IN_TERM': SelfserviceSession._semester_to_value(semester),
-            'IN_SUBJ': department,
-            'IN_SUBJ_multi': department,
-            'IN_TITLE': '',
-            'IN_INST': '',
-            'IN_CRSE': '',
-            'IN_ATTR': 'ALL',
-            'IN_INDP': 'on',
-            'IN_HOUR': '',
-            'IN_DESCRIPTION': '',
-            'IN_CREDIT': 'ALL',
-            'IN_DEPT': 'ALL',
-            'IN_METHOD': 'S',
-            'IN_CRN': '',
-        }
-
-        headers = self.get_base_headers()
-        headers['Referer'] = url
-        current = 1
-
-        requests.utils.add_dict_to_cookiejar(self.s.cookies,
-                                             {'L_PAGE887098': str(current)})
-
-        r = self.s.post(url, data=payload, headers=headers)
-        s = bs4.BeautifulSoup(r.content, 'html.parser')
-        # max_page = len(s.select("#SearchResults")[0].select('a')) - 1
-        set_results_string = s.select('img[onload^=setResults2]')
-        if len(set_results_string) == 0:  # No Classes
-            return
-        set_results_string = set_results_string[0]['onload']
-        max_page = int(set_results_string[12:-1].split(',')[0])
-        yield s  # Page 1
-        current += 1
-        while current <= max_page:
-            requests.utils.add_dict_to_cookiejar(
-                self.s.cookies, {'L_PAGE887098': str(current)})
-
-            r = self.s.post(url, data=payload, headers=headers)
-            s = bs4.BeautifulSoup(r.content, 'html.parser')
-            yield s
-            current += 1
-
-    @staticmethod
-    def _courses_on_page(page):
-        """
-        Given a page (BeautifulSoup), this method parses out couses which
-        appear on the page.
-        Called by gen_courses.
-        """
-        courses = [c['onclick'] for c in
-                   page.select('td[onclick^="Show_Detail"]')]
-
-        args = [c[13:-3].split("','") for c in courses]
-        return args
-
-    @staticmethod
-    def _get_first(iterable, default=None):
-        ''' Courtesy of SO'''
-        if iterable:
-            for item in iterable:
-                return item
-        return default
-
-    def _extract_course(self, args):
-        '''
-        Given the args which reprsent the course in the source code of
-        banner in a tuple, this method should produce some object or
-        dictionary of data to be added to the database. This is the last
-        step.
-        Called by gen_courses()
-        '''
-        url = 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Detail'
-        payload = {
-            'IN_TERM': args[0],
-            'IN_CRN': args[1],
-            'IN_FROM': '3',
-        }
-
-        headers = self.get_base_headers()
-        headers['Referer'] = ("https://selfservice.brown.edu"
-                              "/ss/hwwkcsearch.P_Main")
-
-        r = self.s.post(url, data=payload, headers=headers)
-        info = bs4.BeautifulSoup(r.content, 'html5lib')
-        course_data = {}
-        course_soup = info.select("#CourseDetailx")[0]
-
-        for shit in course_soup.select('img.headerImg'):
-            shit.replace_with('')
-
-        course_data['number'] = course_soup.contents[0].contents[1]\
-            .contents[0].find_all()[0].text
-        course_data['title'] = course_soup.contents[0].contents[1]\
-            .contents[0].find_all('td')[1].text
-
-        course_data.update(_extract_course_seats(course_soup))
-
-        course_data.update(_extract_course_meeting(course_soup))
-
-        course_data.update(_extract_course_description(course_soup))
-
-        course_data.update(_extract_course_instructors(course_soup))
-
-        course_data.update(_extract_course_prerequisites(course_soup))
-
-        course_data.update(_extract_course_exam_info(course_soup))
-
-        course_data['critical_review'] = course_soup\
-            .find_all('a', text="Critical Review")[0]['href']
-
-        # TODO: course_data['books'] = []
-        #course_data.update(_extract_course_books(course_soup))
-
-        return course_data
-
     def __init__(self, username, password):
         self.s = None
         self.username = username
         self.password = password
+        self.logged_in = self.login()
 
-    def __enter__(self):
+    def get_base_headers(self):
+        return deepcopy(self.BaseHeaders)
+
+    def login(self):
         '''
         Creates a new object which stores the cookie and header information
         using the requests Session object.
@@ -326,15 +203,137 @@ class SelfserviceSession:
                     allow_redirects=True)
 
         if 'Invalid login information' in res.text:
-            print("FAILED LOGIN")
-            exit(0)
+            return False
+        return True
 
 
-        return self
+def gen_courses( ss, semester, dept):
+    """
+    A generator for courses of a particular semester and department
+    :return: course details to be processed by other threads
+    """
+    visited = set()  # This may not be necessary
+    for results_page in _gen_search_results_soup(ss, semester, dept):
+        for course_details in _courses_on_page(results_page):
+            if not course_details[1] in visited:
+                yield _extract_course(ss, course_details)
+                #yield course_details
+                visited.add(course_details[1])
 
-    def __exit__(self, ex_type, ex_value, traceback):
-        # return True  # Should probably handle exceptions here
-        return None
+
+def _gen_search_results_soup(ss, semester, department):
+    """
+    Generates a 'BeautifulSoup' for each page in the results of
+    searching through all the courses by semester and department.
+    This is called by gen_courses().
+    """
+    url = 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Main'
+    payload = {
+        'IN_TERM': _semester_to_value(semester),
+        'IN_SUBJ': department,
+        'IN_SUBJ_multi': department,
+        'IN_TITLE': '',
+        'IN_INST': '',
+        'IN_CRSE': '',
+        'IN_ATTR': 'ALL',
+        'IN_INDP': 'on',
+        'IN_HOUR': '',
+        'IN_DESCRIPTION': '',
+        'IN_CREDIT': 'ALL',
+        'IN_DEPT': 'ALL',
+        'IN_METHOD': 'S',
+        'IN_CRN': '',
+    }
+
+    headers = ss.get_base_headers()
+    headers['Referer'] = url
+    current = 1
+
+    requests.utils.add_dict_to_cookiejar(ss.s.cookies,
+                                         {'L_PAGE887098': str(current)})
+
+    r = ss.s.post(url, data=payload, headers=headers)
+    s = bs4.BeautifulSoup(r.content, 'html.parser')
+    # max_page = len(s.select("#SearchResults")[0].select('a')) - 1
+    set_results_string = s.select('img[onload^=setResults2]')
+    if len(set_results_string) == 0:  # No Classes
+        return
+    set_results_string = set_results_string[0]['onload']
+    max_page = int(set_results_string[12:-1].split(',')[0])
+    yield s  # Page 1
+    current += 1
+    while current <= max_page:
+        requests.utils.add_dict_to_cookiejar(
+            ss.s.cookies, {'L_PAGE887098': str(current)})
+
+        r = ss.s.post(url, data=payload, headers=headers)
+        s = bs4.BeautifulSoup(r.content, 'html.parser')
+        yield s
+        current += 1
+
+def _courses_on_page(page):
+    """
+    Given a page (BeautifulSoup), this method parses out couses which
+    appear on the page.
+    Called by gen_courses.
+    """
+    courses = [c['onclick'] for c in
+               page.select('td[onclick^="Show_Detail"]')]
+
+    args = [c[13:-3].split("','") for c in courses]
+    return args
+
+def _extract_course(ss, args):
+    '''
+    Given the args which reprsent the course in the source code of
+    banner in a tuple, this method should produce some object or
+    dictionary of data to be added to the database. This is the last
+    step.
+    Called by gen_courses()
+    '''
+    url = 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Detail'
+    payload = {
+        'IN_TERM': args[0],
+        'IN_CRN': args[1],
+        'IN_FROM': '3',
+    }
+
+    headers = ss.get_base_headers()
+    headers['Referer'] = ("https://selfservice.brown.edu"
+                          "/ss/hwwkcsearch.P_Main")
+
+    r = ss.s.post(url, data=payload, headers=headers)
+    info = bs4.BeautifulSoup(r.content, 'html5lib')
+    course_data = {}
+    course_soup = info.select("#CourseDetailx")[0]
+
+    for shit in course_soup.select('img.headerImg'):
+        shit.replace_with('')
+
+    course_data['number'] = course_soup.contents[0].contents[1]\
+        .contents[0].find_all()[0].text
+    course_data['title'] = course_soup.contents[0].contents[1]\
+        .contents[0].find_all('td')[1].text
+
+    course_data.update(_extract_course_seats(course_soup))
+
+    course_data.update(_extract_course_meeting(course_soup))
+
+    course_data.update(_extract_course_description(course_soup))
+
+    course_data.update(_extract_course_instructors(course_soup))
+
+    course_data.update(_extract_course_prerequisites(course_soup))
+
+    course_data.update(_extract_course_exam_info(course_soup))
+
+    course_data['critical_review'] = course_soup\
+        .find_all('a', text="Critical Review")[0]['href']
+
+    # TODO: course_data['books'] = []
+    #course_data.update(_extract_course_books(course_soup))
+
+    return course_data
 
 
 def _extract_course_seats(course_soup):
@@ -475,18 +474,21 @@ def main():
     if args.to_files != None:
         path = str(os.path.expanduser(os.path.join(args.to_files[0],'')))
 
-    with SelfserviceSession(username, passwd) as s:
-        for semester in SelfserviceSession.Semesters:
-            print("Current: "+semester, file=sys.stderr)
-            if args.to_files != None: os.makedirs(path+semester, exist_ok=True)
-            for department in tqdm(SelfserviceSession.Departments, unit="Departments"):
-                for course in s.gen_courses(semester, department):
-                    if args.to_files != None:
-                        fpath = path + semester + '/' + course['number'] + '.txt'
-                        with open(fpath, 'w+') as fd:
-                            pprint(course, fd)
-                    else:
-                        pprint(course)
+    s = SelfserviceSession(username, passwd)
+
+    ts = time()
+    for semester in Semesters:
+        print("Current: "+semester, file=sys.stderr)
+        if args.to_files != None: os.makedirs(path+semester, exist_ok=True)
+        for department in tqdm(Departments, unit="Departments"):
+            for course in gen_courses(s, semester, department):
+                if args.to_files != None:
+                    fpath = path + semester + '/' + course['number'] + '.txt'
+                    with open(fpath, 'w+') as fd:
+                        pprint(course, fd)
+                else:
+                    pprint(course)
+    print('Took {}s'.format(time() - ts))
 
 main()
 
