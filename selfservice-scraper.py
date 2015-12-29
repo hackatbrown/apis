@@ -1,18 +1,19 @@
 # from bs4 import BeautifulSoup
 import argparse
 import os
-from time import time
 import re
+import sys
 from copy import deepcopy
 from datetime import date
 from itertools import zip_longest
 from pprint import pprint
-import sys
+from queue import Queue
+from threading import Thread
+from time import time
+
 import bs4
 import requests
 from tqdm import *
-
-import secret  # Passwords
 
 '''
 # Debugging HTTP Errors can be tough
@@ -216,8 +217,8 @@ def gen_courses( ss, semester, dept):
     for results_page in _gen_search_results_soup(ss, semester, dept):
         for course_details in _courses_on_page(results_page):
             if not course_details[1] in visited:
-                yield _extract_course(ss, course_details)
-                #yield course_details
+                #yield _extract_course(ss, course_details)
+                yield course_details
                 visited.add(course_details[1])
 
 
@@ -456,6 +457,30 @@ def _extract_course_exam_info(course_soup):
     return exam_data
 
 
+class CourseExtractionWorker(Thread):
+    """
+    Given course details, downloads and extracts information for that course
+    """
+    def __init__(self, queue, session, to_files):
+        Thread.__init__(self)
+        self.queue = queue
+        self.session = session
+        self.to_files = to_files
+
+    def run(self):
+        while True:
+            # Get the work from the queue and expand the tuple?
+            path, semester, course_details = self.queue.get()
+            course = _extract_course(self.session, course_details)
+            if self.to_files:
+                # Save Course
+                fpath = path + semester + '/' + course['number'] + '.txt'
+                with open(fpath, 'w+') as fd:
+                    pprint(course, fd)
+            else:
+                pprint(course)
+            self.queue.task_done()
+
 def main():
     '''
     Main Function
@@ -471,24 +496,24 @@ def main():
     username = getattr(args, 'user_and_pass')[0]
     passwd = getattr(args, 'user_and_pass')[1]
 
+    path = ""
     if args.to_files != None:
         path = str(os.path.expanduser(os.path.join(args.to_files[0],'')))
-
     s = SelfserviceSession(username, passwd)
 
-    ts = time()
+    queue = Queue()
+    for x in range(8):
+        worker = CourseExtractionWorker(queue, s, (args.to_files != None))
+        worker.daemon = True
+        worker.start()
+
     for semester in Semesters:
         print("Current: "+semester, file=sys.stderr)
         if args.to_files != None: os.makedirs(path+semester, exist_ok=True)
         for department in tqdm(Departments, unit="Departments"):
             for course in gen_courses(s, semester, department):
-                if args.to_files != None:
-                    fpath = path + semester + '/' + course['number'] + '.txt'
-                    with open(fpath, 'w+') as fd:
-                        pprint(course, fd)
-                else:
-                    pprint(course)
-    print('Took {}s'.format(time() - ts))
+                queue.put((path, semester, course))
+    queue.join()
 
 main()
 
