@@ -1,13 +1,15 @@
 # from bs4 import BeautifulSoup
-import bs4
-import requests
+import argparse
+import os
 import re
-from itertools import zip_longest
 from copy import deepcopy
 from datetime import date
+from itertools import zip_longest
 from pprint import pprint
+import sys
+import bs4
+import requests
 from tqdm import *
-import os
 
 import secret  # Passwords
 
@@ -30,6 +32,7 @@ requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 '''
 
+
 def grouper(iterable, n, fillvalue=None):
     args = [iter(iterable)] * n
     return zip_longest(*args, fillvalue=fillvalue)
@@ -49,17 +52,17 @@ def gen_current_semester():
     today = date.today()
     year = today.year
     month = today.month
-    seasonTuple = list(filter(lambda p: month in p[1], seasons))[0][0]
-    return seasonTuple + str(year)
+    season_tuple = list(filter(lambda p: month in p[1], seasons))[0][0]
+    return season_tuple + str(year)
 
 
 def gen_next_semester(semester_string):
-    '''
+    """
     Given a semester string, generates the next
     valid semester to occur.
 
     e.g "Fall 2015" => "Spring 2016"
-    '''
+    """
     season, year = semester_string.split()
     year = int(year)
     if season.lower() == "fall":
@@ -73,7 +76,7 @@ def gen_next_semester(semester_string):
 
 
 def generate_semesters(n):
-    '''
+    """
     Generates n semester strings, starting
     from the current semester.
 
@@ -81,7 +84,7 @@ def generate_semesters(n):
     O/P: A list of length n whose elements are
     the upcoming semesters in order (including
     the current semester)
-    '''
+    """
     semesters = []
     semesters.append(gen_current_semester())
     for i in range(1, n):
@@ -89,7 +92,7 @@ def generate_semesters(n):
         return semesters
 
 
-class SelfserviceSession():
+class SelfserviceSession:
     '''
     Used to obtain course information from self service. This session object
     holds repeated request headers and is a wrapper for the requests Session
@@ -126,11 +129,11 @@ class SelfserviceSession():
 
     @staticmethod
     def _semester_to_value(semester_string):
-        '''
-        >>> [ _semester_to_value(s) for s in ['Spring 2015', 'Summer 2015',
+        """
+        [SelfserviceSession._semester_to_value(s) for s in ['Spring 2015', 'Summer 2015',
                                               'Fall 2015', 'Spring 2016']]
         [201420, 201500, 201510, 201520]
-        '''
+        """
         words = semester_string.split(' ')
         assert(len(words) == 2)
         assert(int(words[1]) > 2010)  # Not really needed.
@@ -148,10 +151,10 @@ class SelfserviceSession():
 
     @staticmethod
     def _value_to_semester(value):
-        '''
-        >>> [ __value_to_semester(v) for v in [201420, 201500, 201510, 201520]]
+        """
+        >>> [ SelfserviceSession._value_to_semester(v) for v in [201420, 201500, 201510, 201520]]
         ['Spring 2015', 'Summer 2015', 'Fall 2015', 'Spring 2016']
-        '''
+        """
         year = int(value[:4])  # Get Year
         season = value[-2:]
         if season == "00":
@@ -164,9 +167,9 @@ class SelfserviceSession():
             print("ERROR: Unidentified Semester")
 
     def gen_courses(self, semester, dept):
-        '''
+        """
         A generator for courses of a particular semester and department
-        '''
+        """
         visited = set()  # This may not be necessary
         for results_page in self._gen_search_results_soup(semester, dept):
             for course_details in self._courses_on_page(results_page):
@@ -175,11 +178,11 @@ class SelfserviceSession():
                     visited.add(course_details[1])
 
     def _gen_search_results_soup(self, semester, department):
-        '''
+        """
         Generates a 'BeautifulSoup' for each page in the results of
         searching through all the courses by semester and department.
         This is called by gen_courses().
-        '''
+        """
         url = 'https://selfservice.brown.edu/ss/hwwkcsearch.P_Main'
         payload = {
             'IN_TERM': SelfserviceSession._semester_to_value(semester),
@@ -207,15 +210,15 @@ class SelfserviceSession():
 
         r = self.s.post(url, data=payload, headers=headers)
         s = bs4.BeautifulSoup(r.content, 'html.parser')
-        # maxPage = len(s.select("#SearchResults")[0].select('a')) - 1
-        setResultsString = s.select('img[onload^=setResults2]')
-        if len(setResultsString) == 0:  # No Classes
+        # max_page = len(s.select("#SearchResults")[0].select('a')) - 1
+        set_results_string = s.select('img[onload^=setResults2]')
+        if len(set_results_string) == 0:  # No Classes
             return
-        setResultsString = setResultsString[0]['onload']
-        maxPage = int(setResultsString[12:-1].split(',')[0])
+        set_results_string = set_results_string[0]['onload']
+        max_page = int(set_results_string[12:-1].split(',')[0])
         yield s  # Page 1
         current += 1
-        while current <= maxPage:
+        while current <= max_page:
             requests.utils.add_dict_to_cookiejar(
                 self.s.cookies, {'L_PAGE887098': str(current)})
 
@@ -224,12 +227,13 @@ class SelfserviceSession():
             yield s
             current += 1
 
-    def _courses_on_page(self, page):
-        '''
+    @staticmethod
+    def _courses_on_page(page):
+        """
         Given a page (BeautifulSoup), this method parses out couses which
         appear on the page.
         Called by gen_courses.
-        '''
+        """
         courses = [c['onclick'] for c in
                    page.select('td[onclick^="Show_Detail"]')]
 
@@ -283,14 +287,16 @@ class SelfserviceSession():
         course_data.update(_extract_course_description(course_soup))
 
         course_data.update(_extract_course_instructors(course_soup))
-        # TODO: Test This
+
         course_data.update(_extract_course_prerequisites(course_soup))
-        # I thought there was exam location data? I can't seem to find it.
+
         course_data.update(_extract_course_exam_info(course_soup))
 
         course_data['critical_review'] = course_soup\
             .find_all('a', text="Critical Review")[0]['href']
+
         # TODO: course_data['books'] = []
+        #course_data.update(_extract_course_books(course_soup))
 
         return course_data
 
@@ -325,6 +331,7 @@ class SelfserviceSession():
         # return True  # Should probably handle exceptions here
         return None
 
+
 def _extract_course_seats(course_soup):
     seats_data = {}
     seats_split = course_soup.table.tbody.find_all('tr')[3].text.split(" ")
@@ -332,8 +339,10 @@ def _extract_course_seats(course_soup):
     seats_data['seats_total'] = seats_split[2]
     return seats_data
 
+
 def _extract_course_description(course_soup):
     return {'description': course_soup.select("#div_DESC")[0].text[2:]}
+
 
 def _extract_course_instructors(course_soup):
         instructor_data = course_soup.select('td.resultstable')[0]
@@ -343,7 +352,7 @@ def _extract_course_instructors(course_soup):
         contents = instructor_data.contents
         assert(len(contents) > 4)
         prof = {}
-        prof['name'] = contents[0].replace('(','').strip()
+        prof['name'] = contents[0].replace('(', '').strip()
         prof['email'] = contents[3]['href'][7:]
         prof['isPrimary'] = (contents[1].text == "P")
         ans.append(prof)
@@ -358,21 +367,24 @@ def _extract_course_instructors(course_soup):
                 ans.append(prof)
         return {'instructors': ans}
 
+
 def parse_schedule(schedule):
     words = schedule.split()[2:]
     days = words[:-5]
     time = ' '.join(words[-5:]).split(' - ')
-    return (days, time)
+    return days, time
+
 
 def parse_duration(duration):
     words = duration.split(' ')
-    return (words[1], words[3])
+    return words[1], words[3]
+
 
 def _extract_course_meeting(course_html):
-    '''
+    """
     :param course_html: The soup of the page
     :return: a list of all meeting times
-    '''
+    """
 
     data = course_html.find_all(text=re.compile("Primary Meeting:"))
     if len(data) == 0:
@@ -383,24 +395,39 @@ def _extract_course_meeting(course_html):
     while i < len(data):
         meeting = {}
         meeting['schedule'] = parse_schedule(data[i])
-        i+=1
+        i += 1
         meeting['duration'] = None
         if (data[i]).startswith('From:'):
             meeting['duration'] = parse_duration(data[i])
-            i+=1
+            i += 1
         meeting['location'] = str(data[i])
-        i+=1
+        i += 1
         ans.append(meeting)
     return {'meeting': ans}
 
+
 def _extract_course_prerequisites(course_soup):
-        reg = re.compile(r'Prerequisites')
-        prereq_elements = [e for e in course_soup.find_all('b') if reg.match(e.text)]
-        if len(prereq_elements) > 0:
-            return {'prerequisites': prereq_elements[0].parent.contents[2].strip()}
-        return {'prerequisites': None}
+    """
+    Extracts the prereqs for the given course
+    :param course_soup: the soup containing course info
+    :return: a dictionary containing a 'prerequisites' entry
+    """
+    reg = re.compile(r'Prerequisites')
+    prereq_elements = [e for e in course_soup.find_all('b') if reg.match(e.text)]
+    if len(prereq_elements) > 0:
+        return {'prerequisites': prereq_elements[0].parent.contents[2].strip()}
+    return {"prerequisites": None}
+
+def format_key(key):
+    return key.strip().replace(' ','_').replace(':','').lower()
 
 def _extract_course_exam_info(course_soup):
+    '''
+    Extracts exam date,time,group,location,etc. if present for the given course
+    :param course_soup: the soup containing course info
+    :return: a dictionary containing separate entries per exam info.
+            Location information is a single entry of a list of tuples
+    '''
     exam_data = {}
     reg = re.compile('Exam Information')
     exam_info = course_soup.find_all('b', text=reg)
@@ -411,39 +438,50 @@ def _extract_course_exam_info(course_soup):
             if "Please contact" not in exam_info.text and "Not Assigned" not in exam_info.text:
                 tds = exam_info.find_all('td')
                 for key, val in grouper(tds, 2):
-                    # TODO: Currently has keys like 'Exam Time' would we rather have 'exam_time'?
-                    exam_data[key.text[:-1]] = val.text
+                    exam_data[format_key(key.text)] = val.text
             else:
                 # Odd case where only the Exam Group is present
-                exam_data['Exam Group'] = exam_info.find('td').text.split(":")[1].strip()
+                exam_data['exam_group'] = exam_info.find('td').text.split(":")[1].strip()
         if len(res_tables) >=3:
+            # If exam location information present
             location_info = []
             more_exam_info_rows = res_tables[2].find_all('tr')[1:]
             for row in more_exam_info_rows:
                 location_info.append([entry.text for entry in row.find_all('td')])
-            exam_data['Exam Location'] = location_info
+            exam_data['exam_location'] = location_info
     return exam_data
+
 
 def main():
     '''
     Main Function
     '''
 
-    # Load up the username and password
-    username = secret.username
-    passwd = secret.password
+    parser = argparse.ArgumentParser(description='Scrape course information from Banner.')
+    parser.add_argument('--user-and-pass', nargs=2, metavar=('USER','PASS'), required=True)
+    parser.add_argument('--to-files', nargs=1, metavar='PATH',
+                        help='Save files in given directory; otherwise print to stdout.')
 
-    path = str(os.path.expanduser('~/Desktop/course_data/'))
+    args = parser.parse_args()
+
+    username = getattr(args, 'user_and_pass')[0]
+    passwd = getattr(args, 'user_and_pass')[1]
+
+    if args.to_files != None:
+        path = str(os.path.expanduser(os.path.join(args.to_files[0],'')))
 
     with SelfserviceSession(username, passwd) as s:
         for semester in SelfserviceSession.Semesters:
-        #for semester in ['Spring 2016']:
-            print("Current: "+semester)
-            os.makedirs(path+semester, exist_ok=True)
-            for department in tqdm(SelfserviceSession.Departments, unit="Depts."):
+            print("Current: "+semester, file=sys.stderr)
+            if args.to_files != None: os.makedirs(path+semester, exist_ok=True)
+            for department in tqdm(SelfserviceSession.Departments, unit="Departments"):
                 for course in s.gen_courses(semester, department):
-                    fpath = path + semester + '/' + course['number'] + '.txt'
-                    with open(fpath, 'w+') as fd:
-                        pprint(course, fd)
+                    if args.to_files != None:
+                        fpath = path + semester + '/' + course['number'] + '.txt'
+                        with open(fpath, 'w+') as fd:
+                            pprint(course, fd)
+                    else:
+                        pprint(course)
 
 main()
+
