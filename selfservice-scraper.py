@@ -322,8 +322,13 @@ class SelfserviceSession:
         }
         self.s = requests.Session()
         self.s.get(url)  # Get session id/cookies
-        self.s.post(login_url, data=payload, headers=headers,
+        res = self.s.post(login_url, data=payload, headers=headers,
                     allow_redirects=True)
+
+        if 'Invalid login information' in res.text:
+            print("FAILED LOGIN")
+            exit(0)
+
 
         return self
 
