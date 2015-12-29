@@ -12,7 +12,7 @@ import os
 import secret  # Passwords
 
 '''
-# Debugging HTTP Erros can be tough
+# Debugging HTTP Errors can be tough
 # Uncomment this to debug requests and see everything
 
 try:
@@ -405,24 +405,23 @@ def _extract_course_exam_info(course_soup):
     reg = re.compile('Exam Information')
     exam_info = course_soup.find_all('b', text=reg)
     if len(exam_info) > 0:
-
-        # TODO: Clean up these if statements, two logics going on here
-        exam_info = exam_info[0].parent.select('table.resultstable')
-        print(exam_info)
-        if len(exam_info) > 1:
-            exam_info = exam_info[1]
-        else:
-            return {}
-
-        if "Please contact" not in exam_info.text and "Not Assigned" not in exam_info.text:
-            tds = exam_info.find_all('td')
-            print(tds)
-            for key, val in grouper(tds, 2):
-                exam_data[key.text] = val.text
-            # TODO: Get values from the next results table. possibly 3 columns
-        else:
-            # Odd case where only the Exam Group is present
-            exam_data['Exam Group'] = exam_info.find('td').text.split(":")[1].strip()
+        res_tables = exam_info[0].parent.select('table.resultstable')
+        if len(res_tables) >= 2:
+            exam_info = res_tables[1]
+            if "Please contact" not in exam_info.text and "Not Assigned" not in exam_info.text:
+                tds = exam_info.find_all('td')
+                for key, val in grouper(tds, 2):
+                    # TODO: Currently has keys like 'Exam Time' would we rather have 'exam_time'?
+                    exam_data[key.text[:-1]] = val.text
+            else:
+                # Odd case where only the Exam Group is present
+                exam_data['Exam Group'] = exam_info.find('td').text.split(":")[1].strip()
+        if len(res_tables) >=3:
+            location_info = []
+            more_exam_info_rows = res_tables[2].find_all('tr')[1:]
+            for row in more_exam_info_rows:
+                location_info.append([entry.text for entry in row.find_all('td')])
+            exam_data['Exam Location'] = location_info
     return exam_data
 
 def main():
