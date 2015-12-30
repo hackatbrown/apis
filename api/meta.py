@@ -1,4 +1,5 @@
 from flask import jsonify, render_template, url_for, request, redirect
+from flask import send_from_directory
 from api import app, db
 from api.scripts.add_client import add_client_id
 from api.scripts.email_handler import send_id_email
@@ -14,6 +15,11 @@ clients = db.clients
 # Messages for success/failure during Client ID signup
 SUCCESS_MSG = "Your Client ID has been emailed to you!"
 FAILURE_MSG = "Your request could not be processed. Please email 'joseph_engelman@brown.edu' for manual registration."
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico')
 
 
 @app.route('/')

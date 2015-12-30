@@ -2,8 +2,10 @@ body {
   padding-top: 20px;
 }
 
-.navbar {
+.navbar-default {
   margin-bottom: 0px;
+  background-color: white;
+  border-color: white;
 }
 
 .navbar .brand { 
@@ -20,8 +22,13 @@ body {
 }
 
 a.navbar-link {
-  color: black;
-  font-style: bold;
+  color: black!important;
+  font-style: bold!important;
+}
+
+a.navbar-link:hover {
+  color: #1b8fb9!important;
+  font-style: bold!important;
 }
 
 .footer {
@@ -34,6 +41,17 @@ a.navbar-link {
 
 .footer a {
   color: white;
+  text-decoration: none;
+}
+
+.footer a:visited {
+  color: white;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #918f8c!important;
+  text-decoration: none;
 }
 
 .footer h3 {
