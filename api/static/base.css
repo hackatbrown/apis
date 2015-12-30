@@ -36,6 +36,7 @@ a.navbar-link:hover {
   color: white;
   position: absolute;
   bottom: -270px;
+  /*bottom: 0px;*/
   width: 100%;
 }
 

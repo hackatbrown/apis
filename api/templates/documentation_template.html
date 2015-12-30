@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='documentation.css') }}">
+{% endblock %}
+
+{% block title %}Brown APIs Docs{% endblock %}
+
+{% block contents %}
+
+<div class="container">
+  {% block docs %}
+  {% endblock %}
+</div>
+
+{% endblock %}

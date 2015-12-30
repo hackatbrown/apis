@@ -1,0 +1,22 @@
+{% extends "documentation_template.html" %}
+{% block docs %}
+
+<div class="container">
+  <div class="row">
+    <h2>Getting Started</h2>
+
+    <p>To make requests, you'll need a Client ID. <strong>You can request a Client
+      ID <a href="{{ url_for('signup') }}">here</a>.</strong> Your Client ID is used as the parameter 'client_id' in your GET requests. For instance:</p>
+    <div class="center">
+        <div class="codeblock">
+            <code>
+                https://api.students.brown.edu/dining/menu?<strong>client_id=01234567-89ab-cdef-0123-456789abcdef</strong>&amp;eatery=ratty
+            </code>
+        </div>
+    </div>
+    <p>Currently, all requests are specified as GET requests with URL encoded parameters.</p>
+  </div>
+
+</div>
+
+{% endblock %}

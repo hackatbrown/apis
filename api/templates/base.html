@@ -3,31 +3,32 @@
 
 <head>
 
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+  <!-- Custom Fonts -->
+  <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+  <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',
+  filename='base.css') }}">
+
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.0/jquery.scrollTo.min.js"></script>
   {% block head %}
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
-    <!-- Custom Fonts -->
-    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
-
-    <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',
-    filename='base.css') }}">
-
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.0/jquery.scrollTo.min.js"></script>
+  {% endblock %}
 
     <!--<script src="{{ url_for('static', filename='home.js') }}"></script>-->
 
@@ -38,13 +39,12 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  {% endblock %}
 
 </head>
 
   <body>
 
-    <div class="container">
+    <div class="container-fluid">
       <div class="header">
         <nav class="navbar navbar-default">
           <div class="container-fluid">
@@ -63,8 +63,8 @@
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
+                <li><a class="navbar-link" href="{{ url_for('about_us')}}">About Us</a></li>
                 <li><a class="navbar-link" href="{{ url_for('docs')}}">Docs</a></li>
-                <li><a class="navbar-link" href="{{ url_for('support')}}">Support</a></li>
                 <li><a class="navbar-link" href="{{ url_for('signup')}}">Sign Up</a></li>
               </ul>
             </div>
@@ -89,15 +89,6 @@
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Sign Up</a></li>
                 <li><a href="#">Join Our Team</a></li>
-                <li><a href="#">Twitter</a></li>
-              </ul>
-            </div>
-            <div class="col-md-4 col-sm-4">
-              <h3>SUPPORT</h3>
-              <ul>
-                <li><a href="#">Getting Started</a></li>
-                <li><a href="#">Resources</a></li>
-                <li><a href="#">Report an Issue</a></li>
               </ul>
             </div>
             <div class="col-md-4 col-sm-4">
@@ -110,11 +101,12 @@
                 <li><a href="#">Laundry</a></li>
               </ul>
             </div>
-            <div class="col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">
+            <div class="col-md-4 col-sm-4">
               <h3>COMMUNITY</h3>
               <ul>
                 <li><a href="#">Featured Apps</a></li>
                 <li><a href="#">Facebook</a></li>
+                <li><a href="#">Twitter</a></li>
               </ul>
             </div>
           </div>

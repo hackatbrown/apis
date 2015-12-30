@@ -42,23 +42,12 @@ def signup():
         return redirect(url_for('root', signedup='true'))
     return render_template('signup.html', form=form)
 
-@app.route('/docs', methods=['GET', 'POST'])
+@app.route('/docs', methods=['GET'])
 def docs():
-    if request.method == 'GET':
-        return render_template('signup.html')
-    else:
-        firstname = request.form['firstname'].strip()
-        lastname = request.form['lastname'].strip()
-        email = request.form['email'].strip()
-        client_id = add_client_id(email, firstname + " " + lastname)
-        if client_id:
-            send_id_email(email, firstname, client_id)
-            return redirect(url_for('root', signedup='true'))
-        else:
-            return redirect(url_for('root', signedup='false'))
+    return render_template('getting_started_documentation.html')
 
-@app.route('/support', methods=['GET', 'POST'])
-def support():
+@app.route('/about-us', methods=['GET', 'POST'])
+def about_us():
     if request.method == 'GET':
         return render_template('signup.html')
     else:
