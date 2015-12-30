@@ -74,3 +74,11 @@ hr {
   height: 6px;
   margin-top: 0;
 }
+
+.btn-primary {
+  background: #26a59f;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+    background: #186764;
+}

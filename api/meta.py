@@ -1,9 +1,9 @@
 from flask import jsonify, render_template, url_for, request, redirect
 from flask import send_from_directory
 from api import app, db
-from api.scripts.add_client import add_client_id
-from api.scripts.email_handler import send_id_email
 from api.scripts.stats import get_total_requests
+from forms import SignupForm
+
 
 '''
 DATABASE OBJECTS: View templates on the private, repository README.
@@ -27,9 +27,9 @@ def root():
     signed_up = request.args.get('signedup', '')
     # num_requests = get_total_requests()
     if signed_up == 'true':
-        return render_template('home.html', message=SUCCESS_MSG, num_requests=num_requests)
+        return render_template('home.html', message=SUCCESS_MSG)
     if signed_up == 'false':
-        return render_template('home.html', message=FAILURE_MSG, num_requests=num_requests)
+        return render_template('home.html', message=FAILURE_MSG)
     else:
         return render_template('home.html')
 
@@ -37,18 +37,10 @@ def root():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'GET':
-        return render_template('signup.html')
-    else:
-        firstname = request.form['firstname'].strip()
-        lastname = request.form['lastname'].strip()
-        email = request.form['email'].strip()
-        client_id = add_client_id(email, firstname + " " + lastname)
-        if client_id:
-            send_id_email(email, firstname, client_id)
-            return redirect(url_for('root', signedup='true'))
-        else:
-            return redirect(url_for('root', signedup='false'))
+    form = SignupForm()
+    if form.validate_on_submit():
+        return redirect(url_for('root', signedup='true'))
+    return render_template('signup.html', form=form)
 
 @app.route('/docs', methods=['GET', 'POST'])
 def docs():
