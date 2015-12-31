@@ -12,13 +12,13 @@
   <div class="row">
     {% block docs %}
     {% endblock %}
-    <div class="col-md-1">
-      <ul>
-        <li>test1</li>
-        <li>test1</li>
-        <li>test1</li>
-        <li>test1</li>
-      </ul>
+    <div class="col-md-2">
+      <h2> APIs</h2>
+      <div class="list-group">
+        {% for documentation in api_documentations %}
+        <a href="#" class="list-group-item">{{ documentation.name }}</a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>

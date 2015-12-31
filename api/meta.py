@@ -11,6 +11,7 @@ DATABASE OBJECTS: View templates on the private, repository README.
 
 # simplify collection names
 clients = db.clients
+api_documentations = db['api_documentations']
 
 # Messages for success/failure during Client ID signup
 SUCCESS_MSG = "Your Client ID has been emailed to you!"
@@ -44,7 +45,8 @@ def signup():
 
 @app.route('/docs', methods=['GET'])
 def docs():
-    return render_template('getting_started_documentation.html')
+    return render_template('getting_started_documentation.html',
+            api_documentations=api_documentations.find())
 
 @app.route('/about-us', methods=['GET', 'POST'])
 def about_us():
