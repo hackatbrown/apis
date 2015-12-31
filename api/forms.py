@@ -24,11 +24,13 @@ class SignupForm(Form):
 
 class DocumentationForm(Form):
     name = StringField('Name', validators=[DataRequired()])
+    urlname = StringField('URL Name', validators=[DataRequired()])
     contents = TextAreaField('Contents', validators=[DataRequired()])
 
     def validate(self):
         if Form.validate(self): 
-            documentation = add_documentation(self.contents.data, self.name.data)
+            documentation = add_documentation(self.contents.data,
+                    self.name.data, self.urlname.data)
             if documentation:
                 return True
             else:

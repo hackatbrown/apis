@@ -8,7 +8,10 @@
   <form method="POST" action="{{ url_for('add_documentation') }}">
     {{ form.hidden_tag() }}
     <div class="form-group">
-      {{ render_field(form.name, class="form-control", placeholder="Laundry")}}
+      {{ render_field(form.name, class="form-control", placeholder="Ratty Menu")}}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.urlname, class="form-control", placeholder="ratty-menu")}}
     </div>
     <div class="form-group">
       {{ render_field(form.contents, class="form-control", placeholder="This is how you use the api. This can be written in markdown")}}

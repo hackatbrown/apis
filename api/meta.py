@@ -3,6 +3,8 @@ from flask import send_from_directory
 from api import app, db
 from api.scripts.stats import get_total_requests
 from forms import SignupForm, DocumentationForm
+from flask import Markup
+import markdown
 
 
 '''
@@ -45,8 +47,17 @@ def signup():
 
 @app.route('/docs', methods=['GET'])
 def docs():
-    return render_template('getting_started_documentation.html',
-            api_documentations=api_documentations.find())
+    return redirect('/docs/getting-started') #TODO: Fix this part to use url_for
+
+@app.route('/docs/<docName>', methods=['GET'])
+def docs_for(docName):
+    api_documentation=api_documentations.find_one({'urlname': docName})
+    name=api_documentation['name']
+    contents=api_documentation['contents']
+    contents=Markup(markdown.markdown(contents))
+    return render_template('api_documentation.html',
+            api_documentations=api_documentations.find(),
+            name=name, contents=contents)
 
 @app.route('/about-us', methods=['GET', 'POST'])
 def about_us():
