@@ -2,7 +2,7 @@ from flask import jsonify, render_template, url_for, request, redirect
 from flask import send_from_directory
 from api import app, db
 from api.scripts.stats import get_total_requests
-from forms import SignupForm
+from forms import SignupForm, DocumentationForm
 
 
 '''
@@ -62,6 +62,15 @@ def about_us():
             return redirect(url_for('root', signedup='true'))
         else:
             return redirect(url_for('root', signedup='false'))
+
+@app.route('/admin/add-documentation', methods=['GET', 'POST'])
+def add_documentation():
+    form = DocumentationForm()
+    if form.validate_on_submit():
+        return redirect(url_for('root'))
+    return render_template('add_documentation.html', form=form)
+
+
 # Static responses
 
 INVALID_CLIENT_MSG = "invalid client id"
