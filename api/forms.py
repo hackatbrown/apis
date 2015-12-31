@@ -11,9 +11,9 @@ class SignupForm(Form):
     
     def validate(self):
         if Form.validate(self): 
-            client_id = add_client_id(self.name.data, self.email.data)
+            client_id = add_client_id(self.email.data, self.name.data)
             if client_id:
-                send_id_email(self.name.data, self.email.data, client_id)
+                send_id_email(self.email.data, self.name.data, client_id)
                 return True
             else:
                 self.email.errors.append("Client ID could not be created. Is your email correct?")
