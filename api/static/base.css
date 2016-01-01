@@ -2,6 +2,14 @@ body {
   padding-top: 20px;
 }
 
+.navbar-link.active-link {
+  color: #1b8fb9!important;
+}
+
+.navbar-link.active-link:hover {
+  color: #136786!important;
+}
+
 .navbar-default {
   margin-bottom: 0px;
   background-color: white;
@@ -39,6 +47,7 @@ a.navbar-link:hover {
   bottom: 0px;
   width: 100%;
   padding-bottom: 20px;
+  margin-top: 20px;
 }
 
 .footer a {

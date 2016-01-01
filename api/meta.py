@@ -39,36 +39,26 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         return redirect(url_for('root', signedup='true'))
-    return render_template('signup.html', form=form, api_documentations=api_documentations.find())
+    return render_template('signup.html', form=form, active="signup",
+            api_documentations=api_documentations.find())
 
 @app.route('/docs', methods=['GET'])
 def docs():
     return redirect('/docs/getting-started') #TODO: Fix this part to use url_for
 
 @app.route('/docs/<docName>', methods=['GET'])
-def docs_for(docName):
+def docs_for(docName="getting-started"):
     api_documentation=api_documentations.find_one({'urlname': docName})
     name=api_documentation['name']
     contents=api_documentation['contents']
     contents=Markup(markdown.markdown(contents))
     return render_template('documentation_template.html',
             api_documentations=api_documentations.find(),
-            name=name, contents=contents)
+            name=name, contents=contents, active="docs")
 
 @app.route('/about-us', methods=['GET', 'POST'])
 def about_us():
-    if request.method == 'GET':
-        return render_template('signup.html')
-    else:
-        firstname = request.form['firstname'].strip()
-        lastname = request.form['lastname'].strip()
-        email = request.form['email'].strip()
-        client_id = add_client_id(email, firstname + " " + lastname)
-        if client_id:
-            send_id_email(email, firstname, client_id)
-            return redirect(url_for('root', signedup='true'))
-        else:
-            return redirect(url_for('root', signedup='false'))
+    return redirect(url_for('root'))
 
 @app.route('/admin/add-documentation', methods=['GET', 'POST'])
 def add_documentation():

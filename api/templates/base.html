@@ -64,9 +64,21 @@
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
+                {% if active == "about" %}
+                <li><a class="navbar-link active-link" href="{{ url_for('about_us')}}">About Us</a></li>
+                {% else %}
                 <li><a class="navbar-link" href="{{ url_for('about_us')}}">About Us</a></li>
+                {% endif %}
+                {% if active == "docs" %}
+                <li><a class="navbar-link active-link" href="{{ url_for('docs')}}">Docs</a></li>
+                {% else %}
                 <li><a class="navbar-link" href="{{ url_for('docs')}}">Docs</a></li>
+                {% endif %}
+                {% if active == "signup" %}
+                <li><a class="navbar-link active-link" href="{{ url_for('signup')}}">Sign Up</a></li>
+                {% else %}
                 <li><a class="navbar-link" href="{{ url_for('signup')}}">Sign Up</a></li>
+                {% endif %}
               </ul>
             </div>
           </div>
