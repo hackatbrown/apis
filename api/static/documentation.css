@@ -5,3 +5,7 @@
 .list-group-item.active:hover {
   background: #136786;
 }
+
+img {
+  max-width: 100%;
+}

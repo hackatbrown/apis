@@ -34,7 +34,7 @@ a.navbar-link:hover {
 .footer {
   background-color: black;
   color: white;
-  position: absolute;
+  /*position: fixed;*/
   /*bottom: -270px;*/
   bottom: 0px;
   width: 100%;

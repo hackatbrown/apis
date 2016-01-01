@@ -29,12 +29,8 @@ def favicon():
 def root():
     signed_up = request.args.get('signedup', '')
     # num_requests = get_total_requests()
-    if signed_up == 'true':
-        return render_template('home.html', message=SUCCESS_MSG)
-    if signed_up == 'false':
-        return render_template('home.html', message=FAILURE_MSG)
-    else:
-        return render_template('home.html', api_documentations=api_documentations.find())
+    return render_template('home.html', 
+            api_documentations=api_documentations.find())
 
 
 
