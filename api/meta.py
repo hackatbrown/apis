@@ -55,7 +55,7 @@ def docs_for(docName):
     name=api_documentation['name']
     contents=api_documentation['contents']
     contents=Markup(markdown.markdown(contents))
-    return render_template('api_documentation.html',
+    return render_template('documentation_template.html',
             api_documentations=api_documentations.find(),
             name=name, contents=contents)
 
