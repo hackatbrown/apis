@@ -16,7 +16,7 @@
       <h2> APIs</h2>
       <div class="list-group">
         {% for documentation in api_documentations %}
-        <a href="#" class="list-group-item">{{ documentation.name }}</a>
+        <a href="/docs/{{ documentation.urlname }}" class="list-group-item">{{ documentation.name }}</a>
         {% endfor %}
       </div>
     </div>

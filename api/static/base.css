@@ -35,8 +35,8 @@ a.navbar-link:hover {
   background-color: black;
   color: white;
   position: absolute;
-  bottom: -270px;
-  /*bottom: 0px;*/
+  /*bottom: -270px;*/
+  bottom: 0px;
   width: 100%;
 }
 

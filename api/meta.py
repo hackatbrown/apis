@@ -34,7 +34,7 @@ def root():
     if signed_up == 'false':
         return render_template('home.html', message=FAILURE_MSG)
     else:
-        return render_template('home.html')
+        return render_template('home.html', api_documentations=api_documentations.find())
 
 
 
@@ -43,7 +43,7 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         return redirect(url_for('root', signedup='true'))
-    return render_template('signup.html', form=form)
+    return render_template('signup.html', form=form, api_documentations=api_documentations.find())
 
 @app.route('/docs', methods=['GET'])
 def docs():
