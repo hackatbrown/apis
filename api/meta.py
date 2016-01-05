@@ -30,7 +30,7 @@ def root():
     signed_up = request.args.get('signedup', '')
     # num_requests = get_total_requests()
     return render_template('home.html', 
-            api_documentations=api_documentations.find())
+            api_documentations=list(api_documentations.find()))
 
 
 
@@ -53,7 +53,7 @@ def docs_for(docName="getting-started"):
     contents=api_documentation['contents']
     contents=Markup(markdown.markdown(contents))
     return render_template('documentation_template.html',
-            api_documentations=api_documentations.find(),
+            api_documentations=list(api_documentations.find()),
             name=name, contents=contents, active="docs")
 
 @app.route('/about-us', methods=['GET', 'POST'])
