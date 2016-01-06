@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='about.css') }}">
+{% endblock %}
+
+{% block title %}About Brown APIs{% endblock %}
+
+{% block contents %}
+
+<div class="container">
+  <div class="row">
+    <h2>About Us</h2>
+  </div>
+  <div class="row">
+    <p>
+      Hack@Brown APIs is a Hack@Brown team dedicated to making data about Brown
+      University available to students so that they can create amazing apps,
+      websites, and more.
+    </p>
+  </div>
+  <div class="row">
+    <h2>Members</h2>
+  </div>
+  {% for member in members %}
+  <div class="row member-row">
+    <div class="col-md-2">
+      <img src="{{ member.image_url }}" class="img-rounded img-responsive img-member">
+    </div>
+    <div class="col-md-10">
+      <h3> {{ member.name }} </h3>
+      <p> {{ member.about }} </p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
