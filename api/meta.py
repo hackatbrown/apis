@@ -2,7 +2,7 @@ from flask import jsonify, render_template, url_for, request, redirect
 from flask import send_from_directory
 from api import app, db
 from api.scripts.stats import get_total_requests
-from forms import SignupForm, DocumentationForm
+from api.forms import SignupForm, DocumentationForm
 from flask import Markup
 import markdown
 
