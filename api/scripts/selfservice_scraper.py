@@ -4,16 +4,81 @@ import os
 import re
 import sys
 from copy import deepcopy
-from datetime import date
+from datetime import date,datetime
 from itertools import zip_longest
 from pprint import pprint
 from queue import Queue
 from threading import Thread
-from time import time
+# from time import time
 
 import bs4
 import requests
 from tqdm import *
+
+from api import db
+from mongoengine import *
+
+#TODO: Only local
+connect('brown')
+
+'''
+class CourseMeeting(EmbeddedDocument):
+    schedule = ListField(StringField(max_length=10))
+    duration = ListField(StringField())
+    location = StringField()
+
+
+class CourseInstructor(Document):
+    name = StringField()
+    email = StringField()
+    isPrimary = BooleanField()
+'''
+
+
+class BannerCourse(DynamicDocument):
+
+    '''
+    structure= {
+            'date_creation': datetime,
+            'number': unicode,
+            'title': unicode,
+            'seats_available': int,
+            'seats_total': int,
+            'meeting': [{
+                'schedule': [unicode],
+                'duration': [unicode, unicode],
+                'location': unicode
+                }],
+            'description': unicode,
+            'instructors': [{
+                'name': unicode,
+                'email': unicode,
+                'isPrimary': bool,
+                }],
+            'prerequisites': [unicode],
+            'exam_time': unicode,
+            'exam_date': unicode,
+            'exam_location': list,
+            'exam_group': unicode,
+            'critical_review': unicode
+            }
+    required_fields = ['number', 'title', 'description', 'critical_review']
+    default_values = {'date_creation': datetime.utcnow}
+    '''
+    number = StringField(required=True)
+    title = StringField(required=True)
+    seats_available = IntField()
+    seats_total = IntField()
+    #meeting = ListField(EmbeddedDocumentField(CourseMeeting))
+    description = StringField(required=True)
+    #instructors = ListField(ReferenceField(CourseInstructor))
+    prerequisites = ListField(StringField())
+    exam_time = StringField()
+    exam_date = StringField()
+    exam_location = StringField()
+    exam_group = StringField()
+    critical_rewview = StringField()
+
 
 '''
 # Debugging HTTP Errors can be tough
@@ -33,7 +98,6 @@ requests_log = logging.getLogger("requests.packages.urllib3")
 requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 '''
-
 
 def grouper(iterable, n, fillvalue=None):
     """
@@ -318,18 +382,18 @@ def _extract_course(ss, args):
 
     course_data.update(_extract_course_seats(course_soup))
 
-    course_data.update(_extract_course_meeting(course_soup))
+    # course_data.update(_extract_course_meeting(course_soup))
 
     course_data.update(_extract_course_description(course_soup))
 
-    course_data.update(_extract_course_instructors(course_soup))
+    # course_data.update(_extract_course_instructors(course_soup))
 
-    course_data.update(_extract_course_prerequisites(course_soup))
+    # course_data.update(_extract_course_prerequisites(course_soup))
 
-    course_data.update(_extract_course_exam_info(course_soup))
+    # course_data.update(_extract_course_exam_info(course_soup))
 
-    course_data['critical_review'] = course_soup\
-        .find_all('a', text="Critical Review")[0]['href']
+    # course_data['critical_review'] = course_soup\
+        # .find_all('a', text="Critical Review")[0]['href']
 
     # TODO: course_data['books'] = []
     #course_data.update(_extract_course_books(course_soup))
@@ -340,8 +404,8 @@ def _extract_course(ss, args):
 def _extract_course_seats(course_soup):
     seats_data = {}
     seats_split = course_soup.table.tbody.find_all('tr')[3].text.split(" ")
-    seats_data['seats_available'] = seats_split[0]
-    seats_data['seats_total'] = seats_split[2]
+    seats_data['seats_available'] = int(seats_split[0])
+    seats_data['seats_total'] = int(seats_split[2])
     return seats_data
 
 
@@ -374,6 +438,7 @@ def _extract_course_instructors(course_soup):
 
 
 def parse_schedule(schedule):
+    #TODO: Fix this to return a sub dictionary, that makes more sense
     words = schedule.split()[2:]
     days = words[:-5]
     time = ' '.join(words[-5:]).split(' - ')
@@ -478,8 +543,11 @@ class CourseExtractionWorker(Thread):
                 with open(fpath, 'w+') as fd:
                     pprint(course, fd)
             else:
-                pprint(course)
+                print(course)
+                courseObj = BannerCourse(**course)
+                courseObj.save()
             self.queue.task_done()
+
 
 def main():
     '''
