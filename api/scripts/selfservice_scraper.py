@@ -15,15 +15,15 @@ import bs4
 import requests
 from tqdm import *
 
-from api import db
 from mongoengine import *
 
-#TODO: Only local
+# TODO: Only local
 connect('brown')
 
-'''
+
+#TODO: Rename so it makes sense and possibly create new fields
 class CourseMeeting(EmbeddedDocument):
-    schedule = ListField(StringField(max_length=10))
+    schedule = ListField(ListField(StringField(max_length=10)))
     duration = ListField(StringField())
     location = StringField()
 
@@ -32,11 +32,10 @@ class CourseInstructor(Document):
     name = StringField()
     email = StringField()
     isPrimary = BooleanField()
-'''
+
 
 
 class BannerCourse(DynamicDocument):
-
     '''
     structure= {
             'date_creation': datetime,
@@ -69,10 +68,10 @@ class BannerCourse(DynamicDocument):
     title = StringField(required=True)
     seats_available = IntField()
     seats_total = IntField()
-    #meeting = ListField(EmbeddedDocumentField(CourseMeeting))
+    meeting = ListField(EmbeddedDocumentField(CourseMeeting))
     description = StringField(required=True)
     #instructors = ListField(ReferenceField(CourseInstructor))
-    prerequisites = ListField(StringField())
+    prerequisites = StringField()
     exam_time = StringField()
     exam_date = StringField()
     exam_location = StringField()
@@ -369,28 +368,31 @@ def _extract_course(ss, args):
 
     r = ss.s.post(url, data=payload, headers=headers)
     info = bs4.BeautifulSoup(r.content, 'html5lib')
-    course_data = {}
+    course = BannerCourse()
     course_soup = info.select("#CourseDetailx")[0]
 
     for shit in course_soup.select('img.headerImg'):
         shit.replace_with('')
 
-    course_data['number'] = course_soup.contents[0].contents[1]\
+    course['number'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all()[0].text
-    course_data['title'] = course_soup.contents[0].contents[1]\
+    course['title'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all('td')[1].text
 
-    course_data.update(_extract_course_seats(course_soup))
 
-    # course_data.update(_extract_course_meeting(course_soup))
+    add_dict(course, _extract_course_seats(course_soup))
 
-    course_data.update(_extract_course_description(course_soup))
+    res = _extract_course_meeting(course_soup)['meeting']
+    if res != None:
+        course.meeting = [CourseMeeting(**meeting) for meeting in res]
+
+    add_dict(course, _extract_course_description(course_soup))
 
     # course_data.update(_extract_course_instructors(course_soup))
 
-    # course_data.update(_extract_course_prerequisites(course_soup))
+    add_dict(course, _extract_course_prerequisites(course_soup))
 
-    # course_data.update(_extract_course_exam_info(course_soup))
+    add_dict(course, _extract_course_exam_info(course_soup))
 
     # course_data['critical_review'] = course_soup\
         # .find_all('a', text="Critical Review")[0]['href']
@@ -398,14 +400,22 @@ def _extract_course(ss, args):
     # TODO: course_data['books'] = []
     #course_data.update(_extract_course_books(course_soup))
 
-    return course_data
+    return course
+
+
+def add_dict(course, dict):
+    for k in dict.keys():
+        course[k] = dict[k]
 
 
 def _extract_course_seats(course_soup):
     seats_data = {}
     seats_split = course_soup.table.tbody.find_all('tr')[3].text.split(" ")
-    seats_data['seats_available'] = int(seats_split[0])
-    seats_data['seats_total'] = int(seats_split[2])
+    try:
+        seats_data['seats_available'] = int(seats_split[0])
+        seats_data['seats_total'] = int(seats_split[2])
+    except ValueError:
+        return {}
     return seats_data
 
 
@@ -455,7 +465,6 @@ def _extract_course_meeting(course_html):
     :param course_html: The soup of the page
     :return: a list of all meeting times
     """
-
     data = course_html.find_all(text=re.compile("Primary Meeting:"))
     if len(data) == 0:
         return {'meeting': None}
@@ -466,7 +475,7 @@ def _extract_course_meeting(course_html):
         meeting = {}
         meeting['schedule'] = parse_schedule(data[i])
         i += 1
-        meeting['duration'] = None
+        # meeting['duration'] = None
         if (data[i]).startswith('From:'):
             meeting['duration'] = parse_duration(data[i])
             i += 1
@@ -486,7 +495,7 @@ def _extract_course_prerequisites(course_soup):
     prereq_elements = [e for e in course_soup.find_all('b') if reg.match(e.text)]
     if len(prereq_elements) > 0:
         return {'prerequisites': prereq_elements[0].parent.contents[2].strip()}
-    return {"prerequisites": None}
+    return {}
 
 def format_key(key):
     return key.strip().replace(' ','_').replace(':','').lower()
@@ -543,9 +552,9 @@ class CourseExtractionWorker(Thread):
                 with open(fpath, 'w+') as fd:
                     pprint(course, fd)
             else:
-                print(course)
-                courseObj = BannerCourse(**course)
-                courseObj.save()
+                #print(course)
+                #courseObj = BannerCourse(**course)
+                course.save()
             self.queue.task_done()
 
 
