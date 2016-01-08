@@ -380,7 +380,7 @@ def _extract_course(ss, args):
     course['critical_review'] = course_soup\
         .find_all('a', text="Critical Review")[0]['href']
 
-    # Book data seems neigh impossible. Seldom is it present,
+    # Book data seems nigh impossible. Seldom is it present,
     # so I would need to write the scraper then.
     #course_data.update(_extract_course_books(course_soup))
 
