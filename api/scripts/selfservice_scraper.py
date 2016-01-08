@@ -21,49 +21,23 @@ from mongoengine import *
 connect('brown')
 
 
-#TODO: Rename so it makes sense and possibly create new fields
 class CourseMeeting(EmbeddedDocument):
-    schedule = ListField(ListField(StringField(max_length=10)))
+    days_of_week = ListField(StringField(max_length=1))
+    start_time = StringField()
+    end_time = StringField()
     duration = ListField(StringField())
     location = StringField()
 
 
-class CourseInstructor(Document):
+# TODO: What is the best way to do this? References?
+class CourseInstructor(EmbeddedDocument):
     name = StringField()
     email = StringField()
     isPrimary = BooleanField()
 
 
-
 class BannerCourse(DynamicDocument):
-    '''
-    structure= {
-            'date_creation': datetime,
-            'number': unicode,
-            'title': unicode,
-            'seats_available': int,
-            'seats_total': int,
-            'meeting': [{
-                'schedule': [unicode],
-                'duration': [unicode, unicode],
-                'location': unicode
-                }],
-            'description': unicode,
-            'instructors': [{
-                'name': unicode,
-                'email': unicode,
-                'isPrimary': bool,
-                }],
-            'prerequisites': [unicode],
-            'exam_time': unicode,
-            'exam_date': unicode,
-            'exam_location': list,
-            'exam_group': unicode,
-            'critical_review': unicode
-            }
-    required_fields = ['number', 'title', 'description', 'critical_review']
-    default_values = {'date_creation': datetime.utcnow}
-    '''
+    creation_date = DateTimeField()
     number = StringField(required=True)
     dept = StringField(required=True, min_length=4, max_length=4)
     title = StringField(required=True)
@@ -71,13 +45,18 @@ class BannerCourse(DynamicDocument):
     seats_total = IntField()
     meeting = ListField(EmbeddedDocumentField(CourseMeeting))
     description = StringField(required=True)
-    #instructors = ListField(ReferenceField(CourseInstructor))
+    instructors = ListField(EmbeddedDocumentField(CourseInstructor))
     prerequisites = StringField()
     exam_time = StringField()
     exam_date = StringField()
     exam_location = StringField()
     exam_group = StringField()
-    critical_rewview = StringField()
+    critical_review = StringField()
+
+    def save(self, *args, **kwargs):
+        if not self.creation_date:
+            self.creation_date = datetime.now()
+        return super(BannerCourse, self).save(*args, **kwargs)
 
 
 '''
@@ -390,16 +369,19 @@ def _extract_course(ss, args):
 
     add_dict(course, _extract_course_description(course_soup))
 
-    # course_data.update(_extract_course_instructors(course_soup))
+    res = _extract_course_instructors(course_soup)
+    if res != None:
+        course.instructors = [CourseInstructor(**instructor) for instructor in res]
 
     add_dict(course, _extract_course_prerequisites(course_soup))
 
     add_dict(course, _extract_course_exam_info(course_soup))
 
-    # course_data['critical_review'] = course_soup\
-        # .find_all('a', text="Critical Review")[0]['href']
+    course['critical_review'] = course_soup\
+        .find_all('a', text="Critical Review")[0]['href']
 
-    # TODO: course_data['books'] = []
+    # Book data seems neigh impossible. Seldom is it present,
+    # so I would need to write the scraper then.
     #course_data.update(_extract_course_books(course_soup))
 
     return course
@@ -428,7 +410,7 @@ def _extract_course_description(course_soup):
 def _extract_course_instructors(course_soup):
         instructor_data = course_soup.select('td.resultstable')[0]
         if 'TBA' in instructor_data.contents[1]:
-            return {'instructors': None}
+            return None
         ans = []
         contents = instructor_data.contents
         assert(len(contents) > 4)
@@ -446,15 +428,15 @@ def _extract_course_instructors(course_soup):
                 prof['email'] = group[1]['href'][7:]
                 prof['isPrimary'] = False
                 ans.append(prof)
-        return {'instructors': ans}
+        return ans
 
 
 def parse_schedule(schedule):
-    #TODO: Fix this to return a sub dictionary, that makes more sense
     words = schedule.split()[2:]
-    days = words[:-5]
+    days = [list(w) for w in words[:-5]]
+    days = [str(item) for sublist in days for item in sublist] # Flatten list
     time = ' '.join(words[-5:]).split(' - ')
-    return days, time
+    return {'days_of_week': days, 'start_time': time[0], 'end_time': time[1]}
 
 
 def parse_duration(duration):
@@ -475,7 +457,7 @@ def _extract_course_meeting(course_html):
     i = 0
     while i < len(data):
         meeting = {}
-        meeting['schedule'] = parse_schedule(data[i])
+        meeting.update(parse_schedule(data[i]))
         i += 1
         # meeting['duration'] = None
         if (data[i]).startswith('From:'):
