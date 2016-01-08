@@ -65,6 +65,7 @@ class BannerCourse(DynamicDocument):
     default_values = {'date_creation': datetime.utcnow}
     '''
     number = StringField(required=True)
+    dept = StringField(required=True, min_length=4, max_length=4)
     title = StringField(required=True)
     seats_available = IntField()
     seats_total = IntField()
@@ -376,6 +377,7 @@ def _extract_course(ss, args):
 
     course['number'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all()[0].text
+    course['dept'] = course['number'][:4]
     course['title'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all('td')[1].text
 
