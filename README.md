@@ -62,15 +62,15 @@ We use MongoDB to store various menus and schedules, as well as client informati
 - **DEPRECATED:** *client_name*: &lt;STRING&gt; **<-- replaced with _username_**
 
 ### db.api_documentations ###
-- *urlname*: &lt;STRING&lt;
+- *urlname*: &lt;STRING&gt;
 - *name*: &lt;STRING&lt;
-- *contents*: &lt;STRING&lt;
-- *image*: &lt;IMAGE&lt; Not yet implemented
+- *contents*: &lt;STRING&gt;
+- *image*: &lt;IMAGE&gt; Not yet implemented
 
 ### db.members ###
-- *name*: &lt;STRING&lt;
-- *image_url*: &lt;STRING&lt;
-- *about*: &lt;STRING&lt;
+- *name*: &lt;STRING&gt;
+- *image_url*: &lt;STRING&gt;
+- *about*: &lt;STRING&gt;
 
 ### db.dining\_menus ###
 
