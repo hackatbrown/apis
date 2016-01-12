@@ -61,6 +61,17 @@ We use MongoDB to store various menus and schedules, as well as client informati
 	* _endpoint_: &lt;STRING&gt; **<-- endpoint of request**
 - **DEPRECATED:** *client_name*: &lt;STRING&gt; **<-- replaced with _username_**
 
+### db.api_documentations ###
+- *urlname*: &lt;STRING&lt;
+- *name*: &lt;STRING&lt;
+- *contents*: &lt;STRING&lt;
+- *image*: &lt;IMAGE&lt; Not yet implemented
+
+### db.members ###
+- *name*: &lt;STRING&lt;
+- *image_url*: &lt;STRING&lt;
+- *about*: &lt;STRING&lt;
+
 ### db.dining\_menus ###
 
 - *eatery*: &lt;STRING&gt;,
