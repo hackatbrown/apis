@@ -63,7 +63,7 @@ We use MongoDB to store various menus and schedules, as well as client informati
 
 ### db.api_documentations ###
 - *urlname*: &lt;STRING&gt;
-- *name*: &lt;STRING&lt;
+- *name*: &lt;STRING&gt;
 - *contents*: &lt;STRING&gt;
 - *image*: &lt;IMAGE&gt; Not yet implemented
 
