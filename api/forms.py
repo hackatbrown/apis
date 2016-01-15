@@ -25,12 +25,13 @@ class SignupForm(Form):
 class DocumentationForm(Form):
     name = StringField('Name', validators=[DataRequired()])
     urlname = StringField('URL Name', validators=[DataRequired()])
+    imageurl = StringField('Image URL', validators=[DataRequired()])
     contents = TextAreaField('Contents', validators=[DataRequired()])
 
     def validate(self):
         if Form.validate(self): 
             documentation = add_documentation(self.contents.data,
-                    self.name.data, self.urlname.data)
+                    self.name.data, self.urlname.data, self.imageurl.data)
             if documentation:
                 return True
             else:

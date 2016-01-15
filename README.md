@@ -65,7 +65,7 @@ We use MongoDB to store various menus and schedules, as well as client informati
 - *urlname*: &lt;STRING&gt;
 - *name*: &lt;STRING&gt;
 - *contents*: &lt;STRING&gt;
-- *image*: &lt;IMAGE&gt; Not yet implemented
+- *imageurl*: &lt;IMAGE&gt;
 
 ### db.members ###
 - *name*: &lt;STRING&gt;
