@@ -1,5 +1,26 @@
-body {
-  padding-top: 20px;
+html, body {
+  height: 100%;
+}
+
+.header {
+  margin: 20px 40px 10px 40px;
+}
+
+.content-box {
+  min-height: 100%;
+  height: auto;
+  /* Negative indent footer by its height */
+  margin: 0 auto 0px;
+  /* Pad bottom by footer height */
+  padding: 0 0 150px;
+}
+
+.pulltab {
+  height: 42px;
+  width: auto;
+  display: block;
+  margin: -42px auto 0px auto;
+  cursor: pointer;
 }
 
 .navbar-link.active-link {
@@ -17,8 +38,8 @@ body {
 }
 
 .navbar .brand { 
-    max-height: 100%;
-    max-width: auto%; 
+  max-height: 100%;
+  max-width: auto%; 
 }
 
 .navbar-brand {
@@ -26,28 +47,27 @@ body {
 }
 
 .navbar-right {
-    font-size: 20pt;
+  font-size: 20pt;
+  font-weight: bold;
+  margin-right: -20px;
 }
 
 a.navbar-link {
   color: black!important;
-  font-style: bold!important;
 }
 
 a.navbar-link:hover {
   color: #1b8fb9!important;
-  font-style: bold!important;
 }
 
 .footer {
-  background-color: black;
+  background-color: white;
   color: white;
-  /*position: fixed;*/
-  /*bottom: -270px;*/
+  height: 200px;
   bottom: 0px;
   width: 100%;
-  padding-bottom: 20px;
-  margin-top: 20px;
+  padding-bottom: 0px;
+  margin-top: 0px;
 }
 
 .footer a {
@@ -69,6 +89,15 @@ a.navbar-link:hover {
   font-weight: bold;
 }
 
+.footer-content {
+  background-color: black;
+  height: 158px;
+  width: 100%;
+  margin: 0 0 0 0;
+  padding: 4px 160px 4px 160px;
+  text-align: center;
+}
+
 ul {
   list-style-type: none;
   padding-left: 0px;
@@ -82,8 +111,8 @@ ul {
 hr {
   border: 0 none;
   background-color: black;
-  height: 6px;
-  margin-top: 0;
+  height: 4px;
+  margin: 0px 40px 0px 40px;
 }
 
 .btn-primary {
