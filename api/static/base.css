@@ -12,7 +12,7 @@ html, body {
   /* Negative indent footer by its height */
   margin: 0 auto 0px;
   /* Pad bottom by footer height */
-  padding: 0 0 150px;
+  padding: 0 0 
 }
 
 .pulltab {
@@ -67,7 +67,7 @@ a.navbar-link:hover {
 .footer {
   background-color: white;
   color: white;
-  height: 200px;
+  height: auto;
   bottom: 0px;
   width: 100%;
   padding-bottom: 0px;
@@ -91,11 +91,12 @@ a.navbar-link:hover {
 
 .footer h3 {
   font-weight: bold;
+  font-size: 14px;
 }
 
 .footer-content {
   background-color: black;
-  height: 158px;
+  height: auto;
   width: 100%;
   margin: 0 0 0 0;
   padding: 4px 160px 4px 160px;
