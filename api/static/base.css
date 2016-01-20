@@ -1,22 +1,57 @@
+@font-face {
+  font-family: "Circular";
+  src: url('{{ url_for('static/fonts/circular', filename='lineto-circular-bold.ttf') }}'),
+  url('{{ url_for('static/fonts/circular', filename='lineto-circular-bold.ttf') }}'); /* IE */
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circular";
+  src: url('{{ url_for('static/fonts/circular', filename='lineto-circular-medium.ttf') }}'),
+  url('{{ url_for('static/fonts/circular', filename='lineto-circular-medium.ttf') }}'); /* IE */
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circular";
+  src: url('{{ url_for('static/fonts/circular', filename='lineto-circular-book.ttf') }}'),
+  url('{{ url_for('static/fonts/circular', filename='lineto-circular-book.ttf') }}'); /* IE */
+  font-weight: 400;
+  font-style: normal;
+}
+
 html, body {
   height: 100%;
+  font-family: 'Circular', sans-serif;
 }
 
 .header {
-  margin: 20px 40px 10px 40px;
+  margin: 20px 40px 0px 40px;
+}
+
+.header-component {
+  min-height: 80px;
 }
 
 .content-box {
   min-height: 100%;
+  max-width: 1000px;
   height: auto;
   /* Negative indent footer by its height */
   margin: 0 auto 0px;
   /* Pad bottom by footer height */
-  padding: 0 0 
+  padding: 0 0;
+}
+
+.container {
+  max-width: 100%;
+  padding: 0px 40px 0px 40px;
 }
 
 .pulltab {
-  height: 42px;
+  height: 36px;
   width: auto;
   display: block;
   margin: -42px auto 0px auto;
@@ -40,8 +75,8 @@ html, body {
 }
 
 .navbar .brand { 
-  max-height: 100%;
-  max-width: auto%; 
+  height: 100%;
+  width: auto; 
 }
 
 .navbar-brand {
@@ -51,7 +86,7 @@ html, body {
 .navbar-right {
   font-size: 20pt;
   font-weight: bold;
-  margin-right: -20px;
+  margin: 38px 0px 0px -20px;
 }
 
 a.navbar-link {
@@ -89,18 +124,21 @@ a.navbar-link:hover {
   text-decoration: none;
 }
 
-.footer h3 {
-  font-weight: bold;
-  font-size: 14px;
-}
-
 .footer-content {
   background-color: black;
+  min-height: 150px;
   height: auto;
   width: 100%;
   margin: 0 0 0 0;
   padding: 4px 160px 4px 160px;
   text-align: center;
+  font-weight: 400; /* BOOK */
+  font-size: 14px;
+}
+
+.footer h3 {
+  font-weight: bold;
+  font-size: 16px;
 }
 
 ul {
@@ -117,7 +155,7 @@ hr {
   border: 0 none;
   background-color: black;
   height: 4px;
-  margin: 0px 40px 0px 40px;
+  margin: 0px 0px 0px 0px;
 }
 
 .btn-primary {
