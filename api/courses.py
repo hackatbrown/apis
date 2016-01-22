@@ -1,54 +1,126 @@
-from flask import request, jsonify
-from api import app, db, make_json_error, limiter, RATE_LIMIT, support_jsonp
-from meta import is_valid_client, log_client, INVALID_CLIENT_MSG
+from flask import request, jsonify, Response
+from api import app, db, make_json_error, support_jsonp, cache
+from api.meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 
 from datetime import datetime, date, timedelta
 
+import json
+import urllib
 
+from api.scripts.coursemodels import *
+
+
+# Created Index with: db.banner_course.createIndex( { "instructors.name": 1})
+
+connect('brown')
+
+DEFAULT_LIMIT = 10
 
 @app.route('/courses')
-@limiter.shared_limit(RATE_LIMIT, 'courses')
 @support_jsonp
 def courses_index():
-	client_id = request.args.get('client_id', 'missing_client')
-	if is_valid_client(client_id):
-		log_client(client_id, '/courses', str(datetime.now()))
-	else:
-		return make_json_error(INVALID_CLIENT_MSG)
-	return make_json_error('No method specified. See documentation for endpoints.')
+    '''
+    client_id = request.args.get('client_id', 'missing_client')
+    if is_valid_client(client_id):
+            log_client(client_id, '/courses', str(datetime.now()))
+    else:
+            return make_json_error(INVALID_CLIENT_MSG)
+    '''
+    offset = request.args.get('offset', '')
+    limit = int(request.args.get('limit', '1'))
+    assert(limit > 0)
+    # total = len(BannerCourse.objects)
+    if offset != '':
+        res = BannerCourse.objects(id__gt=offset)[:limit+1]
+    else:
+        res = BannerCourse.objects()[:limit+1]
+    next_url = "null"
+    if len(res) == limit+1:
+        next_url = request.base_url + "?" + urllib.parse.urlencode({"limit": limit, "offset": res[limit- 1].id})
+    ans = {"href": request.url,
+            "items": [json.loads(elm.to_json()) for elm in res],
+            "limit": limit,
+            "next": next_url,
+            "offset": offset}
+    return jsonify(ans)
 
 
-
-@app.route('/courses/find')
-@limiter.shared_limit(RATE_LIMIT, 'courses')
+@app.route('/courses/<course_id>')
 @support_jsonp
-def req_courses_count():
-	''' Endpoint for all courses find requests (see public docs for documentation) '''
-	client_id = request.args.get('client_id', 'missing_client')
-	if is_valid_client(client_id):
-		log_client(client_id, '/wifi/count', str(datetime.now()))
-	else:
-		return make_json_error(INVALID_CLIENT_MSG)
+def req_courses_id(course_id):
+    ''' Endpoint for all courses find requests (see public docs for documentation) '''
+    '''
+    client_id = request.args.get('client_id', 'missing_client')
+    if is_valid_client(client_id):
+            log_client(client_id, '/wifi/count', str(datetime.now()))
+    else:
+            return make_json_error(INVALID_CLIENT_MSG)
+    '''
+    offset = request.args.get('offset', '')
+    limit = int(request.args.get('limit', '1'))
+    assert(limit > 0)
 
-	course_id = request.args.get('id', '')
+    if "-" in course_id:
+        # Particular section or lab specificied
+        res = BannerCourse.objects(full_number=course_id).first()
+        if res == None:
+            return make_json_error("No section found.") #TODO: Standardize error messages
+        return jsonify(json.loads(res.to_json()))
+    else:
+        # Get all sections and labs
+        if offset != '':
+            res = BannerCourse.objects(number=course_id, id__gt=offset)[:limit+1]
+        else:
+            res = BannerCourse.objects(number=course_id)[:limit+1]
+        next_url = "null"
+        if len(res) == limit+1:
+            next_url = request.base_url + "?" + urllib.parse.urlencode({"limit": limit, "offset": res[limit - 1].id})
+        ans = {"href": request.url,
+                "items": [json.loads(elm.to_json()) for elm in res],
+                "limit": limit,
+                "next": next_url,
+                "offset": offset}
+        return jsonify(ans)
 
-	if len(course_id) == 0:
-		return jsonify(error="No course ID provided.")
+@app.route('/instructors')
+@support_jsonp
+def instructors_index():
+    ''' Endpoint for all instructors '''
+    # TODO: Query Semester Limitations, perhaps abstract this?
+    res = BannerCourse.objects().distinct("instructors.name")
+    return jsonify(items=res)
 
-	# TODO find course information for the given ID and return it
-	example_course = {'department_code': 'CSCI',
-					  'department_name': 'Computer Science',
-					  'course_number:': 0170,
-					  'professor': 'Amy Greenwald'}
-	course = example_course
+@app.route('/instructors/<instructor_name>')
+@support_jsonp
+def instructors_specified(instructor_name):
+    ''' Endpoint for all instructors '''
+    # TODO: Query Semester Limitations, perhaps abstract this?
+    offset = request.args.get('offset', '')
+    limit = int(request.args.get('limit', DEFAULT_LIMIT))
+    if offset != '':
+        res = BannerCourse.objects(id__gt=offset, instructors__name=instructor_name)[:limit+1]
+    else:
+        res = BannerCourse.objects(instructors__name=instructor_name)[:limit+1]
 
-	# The double asterisks automatically unpack the course dictionary
-	# (e.g. "**course:" => "department_code='CSCI', department_name='Computer Science', etc")
-	return jsonify(**course)
-
-
+    next_url = "null"
+    if len(res) == limit+1:
+        next_url = request.base_url + "?" + urllib.parse.urlencode({"limit": limit, "offset": res[limit- 1].id})
+    ans = {"href": request.url,
+            "items": [json.loads(elm.to_json()) for elm in res],
+            "limit": limit,
+            "next": next_url,
+            "offset": offset}
+    return jsonify(ans)
 
 
 # Helper methods
 
 # TODO add any helper methods (methods that might be useful for multiple endpoints) here
+
+
+def jsonify_mongoengine(json_data):
+    rv = Response(
+        (json_data,
+         '\n'),
+        mimetype='application/json')
+    return rv

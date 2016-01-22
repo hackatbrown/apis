@@ -10,53 +10,19 @@ from pprint import pprint
 from queue import Queue
 from threading import Thread
 # from time import time
+from collections import defaultdict
+import json
 
 import bs4
 import requests
 from tqdm import *
 
-from mongoengine import *
+# from mongoengine import *
+from api.scripts.coursemodels import *
 
 # TODO: Only local
 connect('brown')
 
-
-class CourseMeeting(EmbeddedDocument):
-    days_of_week = ListField(StringField(max_length=1))
-    start_time = StringField()
-    end_time = StringField()
-    duration = ListField(StringField())
-    location = StringField()
-
-
-# TODO: What is the best way to do this? References?
-class CourseInstructor(EmbeddedDocument):
-    name = StringField()
-    email = StringField()
-    isPrimary = BooleanField()
-
-
-class BannerCourse(DynamicDocument):
-    creation_date = DateTimeField()
-    number = StringField(required=True)
-    dept = StringField(required=True, min_length=4, max_length=4)
-    title = StringField(required=True)
-    seats_available = IntField()
-    seats_total = IntField()
-    meeting = ListField(EmbeddedDocumentField(CourseMeeting))
-    description = StringField(required=True)
-    instructors = ListField(EmbeddedDocumentField(CourseInstructor))
-    prerequisites = StringField()
-    exam_time = StringField()
-    exam_date = StringField()
-    exam_location = StringField()
-    exam_group = StringField()
-    critical_review = StringField()
-
-    def save(self, *args, **kwargs):
-        if not self.creation_date:
-            self.creation_date = datetime.now()
-        return super(BannerCourse, self).save(*args, **kwargs)
 
 
 '''
@@ -144,18 +110,87 @@ def generate_semesters(n):
         return semesters
 
 Semesters = generate_semesters(3)
-Departments = ['AFRI', 'AMST', 'ANTH', 'APMA', 'ARAB', 'ARCH', 'ASYR',
-               'BEO', 'BIOL', 'CATL', 'CHEM', 'CHIN', 'CLAS', 'CLPS',
-               'COLT', 'CROL', 'CSCI', 'CZCH', 'DEVL', 'EAST', 'ECON',
-               'EDUC', 'EGYT', 'EINT', 'ENGL', 'ENGN', 'ENVS', 'ERLY',
-               'ETHN', 'FREN', 'GEOL', 'GNSS', 'GREK', 'GRMN', 'HIAA',
-               'HISP', 'HIST', 'HMAN', 'HNDI', 'INTL', 'ITAL', 'JAPN',
-               'JUDS', 'KREA', 'LAST', 'LATN', 'LING', 'LITR', 'MATH',
-               'MCM', 'MDVL', 'MED', 'MES', 'MGRK', 'MUSC', 'NEUR', 'PHIL',
-               'PHP', 'PHYS', 'PLCY', 'PLME', 'PLSH', 'POBS', 'POLS',
-               'PRSN', 'RELS', 'REMS', 'RUSS', 'SANS', 'SCSO', 'SIGN',
-               'SLAV', 'SOC', 'SWED', 'TAPS', 'TKSH', 'UNIV', 'URBN',
-               'VISA']
+Departments = [
+('AFRI','Africana Studies'),
+('AMST','American Studies'),
+('ANTH','Anthropology'),
+('APMA','Applied Mathematics'),
+('ARAB','Arabic'),
+('ARCH','Archaeology and Ancient World'),
+('ASYR','Assyriology'),
+('BEO','Business, Entrep. and Organ.'),
+('BIOL','Biology'),
+('CATL','Catalan'),
+('CHEM','Chemistry'),
+('CHIN','Chinese'),
+('CLAS','Classics'),
+('CLPS','Cognitive, Linguistic, Psych Sci'),
+('COLT','Comparative Literature'),
+('CROL','Haitian-Creole'),
+('CSCI','Computer Science'),
+('CZCH','Czech'),
+('DEVL','Developement Studies'),
+('EAST','East Asian Studies'),
+('ECON','Economics'),
+('EDUC','Education'),
+('EGYT','Egyptology'),
+('EINT','English for Internationls'),
+('ENGL','English'),
+('ENGN','Engineering'),
+('ENVS','Enviornmental Studies'),
+('ERLY','Early Cultures'),
+('ETHN','Ethnic Studies'),
+('FREN','French'),
+('GEOL','Geology'),
+('GNSS','Gender and Sexuality Studies'),
+('GREK','Greek'),
+('GRMN','German Studies'),
+('HIAA','Hist of Art and Architecture'),
+('HISP','Hispanic Studies'),
+('HIST','History'),
+('HMAN','Humanities'),
+('HNDI','Hindi-Urdu'),
+('INTL','International Relations'),
+('ITAL','Italian'),
+('JAPN','Japanese'),
+('JUDS','Judaic Studies'),
+('KREA','Korean'),
+('LANG','Language Studies'),
+('LAST','Latin American Studies'),
+('LATN','Latin'),
+('LING','Linguistics'),
+('LITR','Literary Arts'),
+('MATH','Mathematics'),
+('MCM','Modern Culture and Media'),
+('MDVL','Medieval Studies'),
+('MED','Medical Education'),
+('MES','Middle East Studies'),
+('MGRK','Modern Greek'),
+('MUSC','Music'),
+('NEUR','BioMed-Neuroscience'),
+('PHIL','Philosophy'),
+('PHP','Public Health'),
+('PHYS','Physics'),
+('PLCY','Public Policy'),
+('PLME','Program in Liberal Med. Educ.'),
+('PLSH','Polish'),
+('POBS','Portuguese and Brazilian Studies'),
+('POLS','Political Science'),
+('PRSN','Persian'),
+('RELS','Religious Studies'),
+('REMS','Renaissance and Early Modern Sudies'),
+('RUSS','Russian'),
+('SANS','Sanskrit'),
+('SCSO','Science and Society'),
+('SIGN','American Sign Language'),
+('SLAV','Slavic'),
+('SOC','Sociology'),
+('SWED','Swedish'),
+('TAPS','Theatre Arts, Performance Study'),
+('TKSH','Turkish'),
+('UNIV','University Courses'),
+('URBN','Urban Studies'),
+('VISA','Visual Arts')]
 
 def _semester_to_value(semester_string):
     """
@@ -354,8 +389,9 @@ def _extract_course(ss, args):
     for shit in course_soup.select('img.headerImg'):
         shit.replace_with('')
 
-    course['number'] = course_soup.contents[0].contents[1]\
+    course['full_number'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all()[0].text
+    course['number'] = course['full_number'].split("-")[0]
     course['dept'] = course['number'][:4]
     course['title'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all('td')[1].text
@@ -534,7 +570,7 @@ class CourseExtractionWorker(Thread):
                 # Save Course
                 fpath = path + semester + '/' + course['number'] + '.txt'
                 with open(fpath, 'w+') as fd:
-                    pprint(course, fd)
+                    pprint(course['meeting_time'], fd)
             else:
                 #print(course)
                 #courseObj = BannerCourse(**course)

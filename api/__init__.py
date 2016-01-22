@@ -62,5 +62,6 @@ else:
 import api.meta
 import api.dining
 import api.wifi
+import api.courses
 
 __all__ = ['api', ]
