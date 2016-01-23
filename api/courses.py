@@ -1,5 +1,5 @@
 from flask import request, jsonify, Response
-from api import app, db, make_json_error, support_jsonp, cache
+from api import app, db, make_json_error, support_jsonp
 from api.meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 
 from datetime import datetime, date, timedelta
@@ -47,7 +47,7 @@ def courses_index():
 
 @app.route('/courses/<course_id>')
 @support_jsonp
-def req_courses_id(course_id):
+def course_specified(course_id):
     ''' Endpoint for all courses find requests (see public docs for documentation) '''
     '''
     client_id = request.args.get('client_id', 'missing_client')
@@ -112,6 +112,10 @@ def instructors_specified(instructor_name):
             "offset": offset}
     return jsonify(ans)
 
+@app.route('/departments')
+@support_jsonp
+def departments_index():
+    return ""
 
 # Helper methods
 
