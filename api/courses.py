@@ -124,8 +124,22 @@ def departments_index():
 @support_jsonp
 def departments_specified(dept_code):
     ''' Endpoint for a given department '''
-    #res = BannerCourse.objects(dept
-    return ""
+    dept_code = dept_code.upper()
+    offset = request.args.get('offset', '')
+    limit = int(request.args.get('limit', DEFAULT_LIMIT))
+    if offset != '':
+        res = BannerCourse.objects(id__gt=offset, dept__code=dept_code)[:limit+1]
+    else:
+        res = BannerCourse.objects(dept__code=dept_code)[:limit+1]
+    next_url = "null"
+    if len(res) == limit+1:
+        next_url = request.base_url + "?" + urllib.parse.urlencode({"limit": limit, "offset": res[limit- 1].id})
+    ans = {"href": request.url,
+            "items": [json.loads(elm.to_json()) for elm in res],
+            "limit": limit,
+            "next": next_url,
+            "offset": offset}
+    return jsonify(ans)
 
 # Helper methods
 
