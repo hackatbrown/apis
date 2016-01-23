@@ -93,7 +93,7 @@ def instructors_index():
 @app.route('/instructors/<instructor_name>')
 @support_jsonp
 def instructors_specified(instructor_name):
-    ''' Endpoint for all instructors '''
+    ''' Endpoint for a given instructor '''
     # TODO: Query Semester Limitations, perhaps abstract this?
     offset = request.args.get('offset', '')
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
@@ -115,10 +115,17 @@ def instructors_specified(instructor_name):
 @app.route('/departments')
 @support_jsonp
 def departments_index():
-    # db.banner_course.aggregate([{$group: {"_id": {dept: "$dept"}}}])
+    # MONGO CMD: db.banner_course.aggregate([{$group: {"_id": {dept: "$dept"}}}])
     res = BannerCourse._get_collection().aggregate([{"$group": {"_id": "$dept"}}])
     val = [elm.get('_id') for elm in res]
-    return jsonify(val)
+    return jsonify(items=val)
+
+@app.route('/departments/<dept_code>')
+@support_jsonp
+def departments_specified(dept_code):
+    ''' Endpoint for a given department '''
+    #res = BannerCourse.objects(dept
+    return ""
 
 # Helper methods
 

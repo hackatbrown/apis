@@ -392,7 +392,7 @@ def _extract_course(ss, args):
     course['full_number'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all()[0].text
     course['number'] = course['full_number'].split("-")[0]
-    course['dept'] = course['number'][:4]
+    # course['dept'] = course['number'][:4]
     course['title'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all('td')[1].text
 
@@ -564,8 +564,14 @@ class CourseExtractionWorker(Thread):
     def run(self):
         while True:
             # Get the work from the queue and expand the tuple?
-            path, semester, course_details = self.queue.get()
+            path, semester, department, course_details = self.queue.get()
             course = _extract_course(self.session, course_details)
+            course['semester'] = semester
+            dept = BannerDepartment()
+            dept.code = department[0]
+            dept.desc = department[1]
+            course['dept'] = dept
+            # course['full_dept'] = [department[0], department[1]]
             if self.to_files:
                 # Save Course
                 fpath = path + semester + '/' + course['number'] + '.txt'
@@ -609,7 +615,7 @@ def main():
         if args.to_files != None: os.makedirs(path+semester, exist_ok=True)
         for department in tqdm(Departments, unit="Departments"):
             for course in gen_courses(s, semester, department):
-                queue.put((path, semester, course))
+                queue.put((path, semester, department, course))
     queue.join()
 
 main()
