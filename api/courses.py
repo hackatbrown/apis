@@ -27,7 +27,7 @@ def courses_index():
             return make_json_error(INVALID_CLIENT_MSG)
     '''
     offset = request.args.get('offset', '')
-    limit = int(request.args.get('limit', '1'))
+    limit = int(request.args.get('limit', DEFAULT_LIMIT))
     assert(limit > 0)
     # total = len(BannerCourse.objects)
     if offset != '':
@@ -115,7 +115,10 @@ def instructors_specified(instructor_name):
 @app.route('/departments')
 @support_jsonp
 def departments_index():
-    return ""
+    # db.banner_course.aggregate([{$group: {"_id": {dept: "$dept"}}}])
+    res = BannerCourse._get_collection().aggregate([{"$group": {"_id": "$dept"}}])
+    val = [elm.get('_id') for elm in res]
+    return jsonify(val)
 
 # Helper methods
 
