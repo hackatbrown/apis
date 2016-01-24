@@ -4,7 +4,7 @@ import os
 import re
 import sys
 from copy import deepcopy
-from datetime import date,datetime
+from datetime import date,datetime,time
 from itertools import zip_longest
 from pprint import pprint
 from queue import Queue
@@ -471,8 +471,13 @@ def parse_schedule(schedule):
     words = schedule.split()[2:]
     days = [list(w) for w in words[:-5]]
     days = [str(item) for sublist in days for item in sublist] # Flatten list
-    time = ' '.join(words[-5:]).split(' - ')
-    return {'days_of_week': days, 'start_time': time[0], 'end_time': time[1]}
+    times = ' '.join(words[-5:]).split(' - ')
+    datetimes = []
+    for t in times:
+        dt = datetime.strptime(t.upper(),"%I:%M %p")
+        delta = dt - datetime.combine(dt.date(), time(0))
+        datetimes.append(delta.seconds)
+    return {'days_of_week': days, 'start_time': datetimes[0], 'end_time': datetimes[1]}
 
 
 def parse_duration(duration):

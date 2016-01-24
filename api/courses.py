@@ -141,6 +141,26 @@ def departments_specified(dept_code):
             "offset": offset}
     return jsonify(ans)
 
+
+@app.route('/schedule')
+@support_jsonp
+def schedule_time():
+    day = request.args.get('day','')
+    time = request.args.get('time','')
+    return check_against_time(day, time, time)
+
+
+def check_against_time(concurrent=True, day, stime, etime):
+    # print(time)
+    # res = BannerCourse.objects(meeting__start_time__lte=time, meeting__end_time__gte=time, days_of_week=day)
+    if concurrent:
+        res = BannerCourse.objects().filter(meeting__days_of_week=day, meeting__match={"start_time__lte": etime, "end_time__gte": stime})
+    else:
+        res = BannerCourse.objects().filter(meeting__days_of_week=day, meeting__match={"start_time__gte": etime, "end_time__lte": stime})
+    return jsonify(items=[json.loads(elm.to_json()) for elm in res])
+
+
+
 # Helper methods
 
 # TODO add any helper methods (methods that might be useful for multiple endpoints) here
