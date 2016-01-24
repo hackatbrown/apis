@@ -467,17 +467,14 @@ def _extract_course_instructors(course_soup):
         return ans
 
 
-def parse_schedule(schedule):
-    words = schedule.split()[2:]
-    days = [list(w) for w in words[:-5]]
-    days = [str(item) for sublist in days for item in sublist] # Flatten list
+def parse_schedule(words):
     times = ' '.join(words[-5:]).split(' - ')
-    datetimes = []
+    seconds = []
     for t in times:
         dt = datetime.strptime(t.upper(),"%I:%M %p")
         delta = dt - datetime.combine(dt.date(), time(0))
-        datetimes.append(delta.seconds)
-    return {'days_of_week': days, 'start_time': datetimes[0], 'end_time': datetimes[1]}
+        seconds.append(delta.seconds)
+    return {'start_time': seconds[0], 'end_time': seconds[1]}
 
 
 def parse_duration(duration):
@@ -497,16 +494,25 @@ def _extract_course_meeting(course_html):
     ans = []
     i = 0
     while i < len(data):
-        meeting = {}
-        meeting.update(parse_schedule(data[i]))
+        schedule = data[i]
+        words = schedule.split()[2:]
+        days = [list(w) for w in words[:-5]]
+        days = [str(item) for sublist in days for item in sublist] # Flatten list
         i += 1
-        # meeting['duration'] = None
+        tmp_duration = None
         if (data[i]).startswith('From:'):
-            meeting['duration'] = parse_duration(data[i])
+            tmp_duration = parse_duration(data[i])
             i += 1
-        meeting['location'] = str(data[i])
+        tmp_location = str(data[i])
         i += 1
-        ans.append(meeting)
+        for day in days:
+            meeting = {"day_of_week": day,
+                    "location": tmp_location}
+            # if not tmp_duration is None:
+            #     meeting["duration"] = tmp_duration
+            meeting.update(parse_schedule(words))
+            # meeting['duration'] = None
+            ans.append(meeting)
     return {'meeting': ans}
 
 

@@ -1,10 +1,10 @@
 from mongoengine import *
 
 class CourseMeeting(EmbeddedDocument):
-    days_of_week = ListField(StringField(max_length=1))
+    day_of_week = StringField(max_length=1)
     start_time = IntField(min_value=0, max_value=86400)
     end_time = IntField(min_value=0, max_value=86400)
-    duration = ListField(StringField())
+    # duration = ListField(StringField())
     location = StringField()
 
 
