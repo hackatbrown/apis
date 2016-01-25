@@ -467,7 +467,7 @@ def _extract_course_instructors(course_soup):
         return ans
 
 
-def parse_schedule(words):
+def parse_meeting_time(words):
     times = ' '.join(words[-5:]).split(' - ')
     seconds = []
     for t in times:
@@ -494,8 +494,7 @@ def _extract_course_meeting(course_html):
     ans = []
     i = 0
     while i < len(data):
-        schedule = data[i]
-        words = schedule.split()[2:]
+        words = data[i].split()[2:]
         days = [list(w) for w in words[:-5]]
         days = [str(item) for sublist in days for item in sublist] # Flatten list
         i += 1
@@ -508,10 +507,10 @@ def _extract_course_meeting(course_html):
         for day in days:
             meeting = {"day_of_week": day,
                     "location": tmp_location}
+            # NOTE: We are not currently using the duration field
             # if not tmp_duration is None:
             #     meeting["duration"] = tmp_duration
-            meeting.update(parse_schedule(words))
-            # meeting['duration'] = None
+            meeting.update(parse_meeting_time(words))
             ans.append(meeting)
     return {'meeting': ans}
 
