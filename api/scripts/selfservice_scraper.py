@@ -392,6 +392,8 @@ def _extract_course(ss, args):
     course['full_number'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all()[0].text
     course['number'] = course['full_number'].split("-")[0]
+    course['crn'] = course_soup.contents[0].contents[1]\
+            .contents[2].find('td').text[4:]
     # course['dept'] = course['number'][:4]
     course['title'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all('td')[1].text

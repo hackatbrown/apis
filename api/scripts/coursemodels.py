@@ -26,6 +26,7 @@ class BannerCourse(DynamicDocument):
     semester = StringField(required=True)
     number = StringField(required=True)
     full_number = StringField(required=True)
+    crn = StringField(required=True)
     dept = EmbeddedDocumentField(BannerDepartment, required=True)
     title = StringField(required=True)
     seats_available = IntField()
