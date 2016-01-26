@@ -86,13 +86,16 @@ def non_conflicting():
     courses = request.args.get('courses','').split(",")
     if collision_calc_event.is_set():
         print("FANCY TABLE")
-        ans = None
+        available_set = None
         for course_number in courses:
             course = BannerCourse.objects(full_number=course_number).first().id
-            if ans is None:
-                ans = set(BannerCourse.objects().filter(id__in=CTable[course]))
+            if available_set is None:
+                # ans = set(BannerCourse.objects().filter(id__in=CTable[course]))
+                available_set = set(CTable[course])
             else:
-                ans = set.intersection(ans, set(BannerCourse.objects().filter(id__in=CTable[course])))
+                # ans = set.intersection(ans, set(BannerCourse.objects().filter(id__in=CTable[course])))
+                available_set = set.intersection(available_set, CTable[course])
+        query_args = {"id__in": list(available_set)}
     else:
         # 4.9s
         print("OLD WAY")
@@ -103,8 +106,11 @@ def non_conflicting():
                 res = check_against_time(m.day_of_week, m.start_time, m.end_time)
                 conflicting_list.update(res)
 
-        ans = BannerCourse.objects().filter(id__nin=[c.id for c in conflicting_list]) 
-    return jsonify(items=[json.loads(elm.to_json()) for elm in ans])
+        query_args = {"id__nin": [c.id for c in conflicting_list]}
+        # ans = BannerCourse.objects().filter(id__nin=[c.id for c in conflicting_list]) 
+    ans = paginate(query_args)
+    #return jsonify(items=[json.loads(elm.to_json()) for elm in ans])
+    return jsonify(ans)
 
 
 
