@@ -1,5 +1,6 @@
 from mongoengine import *
 
+
 class CourseMeeting(EmbeddedDocument):
     day_of_week = StringField(max_length=1)
     start_time = IntField(min_value=0, max_value=86400)
@@ -13,6 +14,7 @@ class CourseInstructor(EmbeddedDocument):
     name = StringField()
     email = StringField()
     isPrimary = BooleanField()
+
 
 # This is pretty dumb, but it beats hard coding these values in the
 # databaes I suppose.
@@ -40,5 +42,3 @@ class BannerCourse(DynamicDocument):
     exam_location = StringField()
     exam_group = StringField()
     critical_review = StringField()
-
-
