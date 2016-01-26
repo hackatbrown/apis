@@ -4,12 +4,11 @@ from api.meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 
 from datetime import datetime, date, timedelta
 
-import threading,sys
+import threading
 
 import json
 import urllib
 from collections import defaultdict
-from tqdm import *
 
 from api.scripts.coursemodels import *
 
@@ -19,7 +18,7 @@ from api.scripts.coursemodels import *
 connect('brown')
 
 PAGINATION_LIMIT = 10
-PAGINATION_MAX = 42 #TODO: Make this do something.
+PAGINATION_MAX = 42 
 
 @app.route('/courses')
 @support_jsonp
@@ -85,38 +84,32 @@ def schedule_time():
 def non_conflicting():
     courses = request.args.get('courses','').split(",")
     if collision_calc_event.is_set():
-        print("FANCY TABLE")
+        # Precomputed faster method, .07 seconds
         available_set = None
         for course_number in courses:
             course = BannerCourse.objects(full_number=course_number).first().id
             if available_set is None:
-                # ans = set(BannerCourse.objects().filter(id__in=CTable[course]))
                 available_set = set(CTable[course])
             else:
-                # ans = set.intersection(ans, set(BannerCourse.objects().filter(id__in=CTable[course])))
                 available_set = set.intersection(available_set, CTable[course])
         query_args = {"id__in": list(available_set)}
+
     else:
-        # 4.9s
-        print("OLD WAY")
+        # Slower method, a couple of seconds
         conflicting_list = set()
         for c_id in courses:
             course = BannerCourse.objects(full_number=c_id).first()
             for m in course.meeting:
                 res = check_against_time(m.day_of_week, m.start_time, m.end_time)
                 conflicting_list.update(res)
-
         query_args = {"id__nin": [c.id for c in conflicting_list]}
-        # ans = BannerCourse.objects().filter(id__nin=[c.id for c in conflicting_list]) 
+
     ans = paginate(query_args, {"courses": request.args.get('courses','')})
-    #return jsonify(items=[json.loads(elm.to_json()) for elm in ans])
     return jsonify(ans)
 
 
 
 def check_against_time(day, stime, etime):
-    # print(time)
-    # res = BannerCourse.objects(meeting__start_time__lte=time, meeting__end_time__gte=time, days_of_week=day)
     res = BannerCourse.objects().filter(meeting__day_of_week=day, meeting__match={"start_time__lte": etime, "end_time__gte": stime})
     return res
 
@@ -130,7 +123,6 @@ collision_calc_event = threading.Event()
 CTable = defaultdict(list) #Ends up being a ~50kb
 
 def calculate_collisions(event):
-    # Experimental: Warning
     
     def is_collision(o1,o2):
         for m1 in o1.meeting:
@@ -141,17 +133,17 @@ def calculate_collisions(event):
                     if not(m1.start_time <= m2.end_time and m1.end_time >= m2.start_time):
                         return False
         return True
+
     objs = BannerCourse.objects()
-    for obj1 in tqdm(objs):
+    for obj1 in objs:
         for obj2 in objs:
             if obj1 != obj2 and not is_collision(obj1, obj2):
                 CTable[obj1.id].append(obj2.id)
                 CTable[obj2.id].append(obj1.id)
-    print(sys.getsizeof(CTable))
+    print("[COMPLETE] Course conflict calcuations")
     event.set()
 
 collision_thread = threading.Thread(target=calculate_collisions, args=(collision_calc_event,))
-
 collision_thread.start()
 
 def paginate(query_args, params=None):
@@ -161,7 +153,7 @@ def paginate(query_args, params=None):
     '''
     offset = request.args.get('offset', None)
     limit = int(request.args.get('limit', PAGINATION_LIMIT))
-    if limit <=0: limit = PAGINATION_LIMIT
+    limit = min(max(limit,1), PAGINATION_MAX)
     if offset is not None:
         query_args['id__gt'] = offset
     res = BannerCourse.objects(**query_args)[:limit+1]
