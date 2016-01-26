@@ -108,7 +108,7 @@ def non_conflicting():
 
         query_args = {"id__nin": [c.id for c in conflicting_list]}
         # ans = BannerCourse.objects().filter(id__nin=[c.id for c in conflicting_list]) 
-    ans = paginate(query_args)
+    ans = paginate(query_args, {"courses": request.args.get('courses','')})
     #return jsonify(items=[json.loads(elm.to_json()) for elm in ans])
     return jsonify(ans)
 
@@ -127,7 +127,7 @@ def check_against_time(day, stime, etime):
 # TODO add any helper methods (methods that might be useful for multiple endpoints) here
 
 collision_calc_event = threading.Event()
-CTable = defaultdict(list)
+CTable = defaultdict(list) #Ends up being a ~50kb
 
 def calculate_collisions(event):
     # Experimental: Warning
@@ -154,7 +154,7 @@ collision_thread = threading.Thread(target=calculate_collisions, args=(collision
 
 collision_thread.start()
 
-def paginate(query_args):
+def paginate(query_args, params=None):
     '''
     Paginates the reuslts of a mongoengine query,
     query_args:: A dictionary of kwargs to include in the query
@@ -168,6 +168,8 @@ def paginate(query_args):
     next_url = "null"
     if len(res) == limit+1:
         next_url = request.base_url + "?" + urllib.parse.urlencode({"limit": limit, "offset": res[limit- 1].id})
+        if params is not None:
+            next_url = next_url+"&"+urllib.parse.urlencode(params)
     ans = {"href": request.url,
             "items": [json.loads(elm.to_json()) for elm in res],
             "limit": limit,
