@@ -9,6 +9,8 @@ from collections import defaultdict
 
 from api.scripts.coursemodels import *
 
+from datetime import date
+
 
 # =INDEXES=
 # Created Index with: db.banner_course.createIndex( { "instructors.name": 1})
@@ -168,7 +170,7 @@ def precalculate_nonconflicting_table(event):
     event.set()  # Synchronize with the end-point
 
 collision_thread = threading.Thread(
-    target=calculate_collisions,
+    target=precalculate_nonconflicting_table,
     args=(collision_calc_event,))
 collision_thread.start()
 
