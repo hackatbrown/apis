@@ -42,3 +42,8 @@ class BannerCourse(DynamicDocument):
     exam_location = StringField()
     exam_group = StringField()
     critical_review = StringField()
+
+class NonconflictEntry(DynamicDocument):
+    course_id = ObjectIdField(required=True)
+    non_conflicting = ListField(ObjectIdField())
+

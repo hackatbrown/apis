@@ -3,22 +3,22 @@ import argparse
 import os
 import re
 import sys
+import fcntl
 from copy import deepcopy
-from datetime import date,datetime,time
+from datetime import date, datetime, time
 from itertools import zip_longest
 from pprint import pprint
 from queue import Queue
 from threading import Thread
 # from time import time
-from collections import defaultdict
-import json
 
 import bs4
 import requests
-from tqdm import *
+from tqdm import tqdm
+import api.courses
 
-# from mongoengine import *
-from api.scripts.coursemodels import *
+from mongoengine import connect
+from api.scripts.coursemodels import BannerCourse, BannerDepartment, CourseMeeting, NonconflictEntry, CourseInstructor
 
 # TODO: Only local
 connect('brown')
@@ -592,9 +592,59 @@ class CourseExtractionWorker(Thread):
             else:
                 #print(course)
                 #courseObj = BannerCourse(**course)
+                assert(BannerCourse.objects(full_number=course['full_number'], semester=course['semester']).count() <= 1)
+                existing_course = BannerCourse.objects(full_number=course['full_number'], semester=course['semester']).first()
+                if existing_course is not None:
+                    course.id = existing_course.id
+                else:
+                    print("New Course: " + course['full_number'] + ": " + course['title'])
                 course.save()
             self.queue.task_done()
 
+
+def precalculate_nonconflicting_table():
+    '''
+    Calculates and records all non-conflicting courses in the
+    CTable variable defined above. This is a map of
+    course_id --> list(course_id which don't have scheduling conflicts)
+    '''
+
+    def is_collision(o1, o2):
+        # Helper method, given two courses
+        # True -- if conflict
+        # False -- if non-conflicting
+        for m1 in o1.meeting:
+            for m2 in o2.meeting:
+                if m1.day_of_week == m2.day_of_week:
+                    # Now if times collide
+                    # No Collision if
+                    if not(m1.start_time <= m2.end_time and
+                            m1.end_time >= m2.start_time):
+                        return False
+        return True
+
+    it1 = BannerCourse.objects()
+    it2 = BannerCourse.objects()
+    for obj1 in tqdm(it1):
+        nonconflicting = list()
+        for obj2 in it2:
+            exists_collision = is_collision(obj1, obj2)
+            if obj1 != obj2:
+                if not exists_collision:
+                    nonconflicting.append(obj2.id)
+                    # NonconflictEntry._get_collection().update({"_id":obj1.id}, {"$addToSet": {"non_conflicting": obj2.id}})
+                    # NonconflictEntry._get_collection().update({"_id":obj2.id}, {"$addToSet": {"non_conflicting": obj1.id}})
+                    # CTable[obj1.id].append(obj2.id)
+                    # CTable[obj2.id].append(obj1.id)
+                    # NonconflictEntry._get_collection().update({"_id":obj1.id}, {"$pull": {"non_conflicting": obj2.id}})
+                    # NonconflictEntry._get_collection().update({"_id":obj2.id}, {"$pull": {"non_conflicting": obj1.id}})
+        entry = NonconflictEntry.objects(course_id=obj1.id).first()
+        if entry is None:
+            entry = NonconflictEntry()
+            entry.course_id = obj1.id
+        entry.non_conflicting = nonconflicting
+        entry.save()
+    print("[COMPLETE] Course conflict calcuations")
 
 def main():
     '''
@@ -616,6 +666,7 @@ def main():
         path = str(os.path.expanduser(os.path.join(args.to_files[0],'')))
     s = SelfserviceSession(username, passwd)
 
+    '''
     queue = Queue()
     for x in range(8):
         worker = CourseExtractionWorker(queue, s, (args.to_files != None))
@@ -629,6 +680,21 @@ def main():
             for course in gen_courses(s, semester, department):
                 queue.put((path, semester, department, course))
     queue.join()
+    '''
 
-main()
+    # Compute non-conflicting
+    precalculate_nonconflicting_table()
+
+
+
+
+pid_file = 'selfservice_scraper.pid'
+fp = open(pid_file, 'w')
+try:
+    fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    main()
+except IOError:
+    # another instance is running
+    print("Another instance of scraper running. Exiting")
+    sys.exit(0)
 

@@ -6,6 +6,7 @@ import threading
 import json
 import urllib
 from collections import defaultdict
+import random
 
 from api.scripts.coursemodels import *
 
@@ -112,6 +113,7 @@ def schedule_time():
 @support_jsonp
 def non_conflicting():
     courses = request.args.get('courses', '').split(",")
+    '''
     if collision_calc_event.is_set():
         # Precomputed faster method, .07 seconds
         available_set = None
@@ -122,17 +124,16 @@ def non_conflicting():
             else:
                 available_set = set.intersection(available_set, CTable[course])
         query_args = {"id__in": list(available_set)}
-
-    else:
-        # Slower method, a couple of seconds
-        conflicting_list = set()
-        for c_id in courses:
-            course = BannerCourse.objects(full_number=c_id).first()
-            for m in course.meeting:
-                res = check_against_time(
-                    m.day_of_week, m.start_time, m.end_time)
-                conflicting_list.update(res)
-        query_args = {"id__nin": [c.id for c in conflicting_list]}
+        '''
+    # Slower method, a couple of seconds
+    conflicting_list = set()
+    for c_id in courses:
+        course = BannerCourse.objects(full_number=c_id).first()
+        for m in course.meeting:
+            res = check_against_time(
+                m.day_of_week, m.start_time, m.end_time)
+            conflicting_list.update(res)
+    query_args = {"id__nin": [c.id for c in conflicting_list]}
 
     ans = paginate(query_args, {"courses": request.args.get('courses', '')})
     return jsonify(ans)
@@ -146,45 +147,6 @@ def check_against_time(day, stime, etime):
     return res
 
 # Helper methods
-
-collision_calc_event = threading.Event()
-CTable = defaultdict(list)  # Ends up being approx 50kb
-
-
-def precalculate_nonconflicting_table(event):
-    '''
-    Calculates and records all non-conflicting courses in the
-    CTable variable defined above. This is a map of
-    course_id --> list(course_id which don't have scheduling conflicts)
-    '''
-
-    def is_collision(o1, o2):
-        # Helper method, given two courses
-        # True -- if conflict
-        # False -- if non-conflicting
-        for m1 in o1.meeting:
-            for m2 in o2.meeting:
-                if m1.day_of_week == m2.day_of_week:
-                    # Now if times collide
-                    # No Collision if
-                    if not(m1.start_time <= m2.end_time and
-                            m1.end_time >= m2.start_time):
-                        return False
-        return True
-
-    objs = BannerCourse.objects()
-    for obj1 in objs:
-        for obj2 in objs:
-            if obj1 != obj2 and not is_collision(obj1, obj2):
-                CTable[obj1.id].append(obj2.id)
-                CTable[obj2.id].append(obj1.id)
-    print("[COMPLETE] Course conflict calcuations")
-    event.set()  # Synchronize with the end-point
-
-collision_thread = threading.Thread(
-    target=precalculate_nonconflicting_table,
-    args=(collision_calc_event,))
-collision_thread.start()
 
 
 def paginate(query, params=None, raw=False):
