@@ -27,7 +27,13 @@ connect('brown')
 def courses_index():
     '''
     Returns all courses
+    or
+    Returns the sections ids specified
     '''
+    numbers = request.args.get('numbers',None)
+    if numbers is not None:
+        numbers = numbers.split(",")
+        return jsonify(paginate(filter_semester({"$or": [{"full_number": {"$in": [numbers[0]]}}, {"number": {"$in": [numbers[1]]}}]}),raw=True))
     return jsonify(paginate(filter_semester({})))
 
 
@@ -175,7 +181,7 @@ collision_thread = threading.Thread(
 collision_thread.start()
 
 
-def paginate(query_args, params=None):
+def paginate(query_args, params=None, raw=False):
     '''
     Paginates the reuslts of a mongoengine query,
     query_args:: A dictionary of kwargs to include in the query
@@ -183,9 +189,14 @@ def paginate(query_args, params=None):
     offset = request.args.get('offset', None)
     limit = int(request.args.get('limit', PAGINATION_LIMIT))
     limit = min(max(limit, 1), PAGINATION_MAX)
-    if offset is not None:
-        query_args['id__gt'] = offset
-    res = BannerCourse.objects(**query_args)[:limit+1]
+    if raw:
+        if offset is not None:
+            query_args['id'] = {'$gt': offset}
+        res = BannerCourse.objects(__raw__=query_args)[:limit+1]
+    else:
+        if offset is not None:
+            query_args['id__gt'] = offset
+        res = BannerCourse.objects(**query_args)[:limit+1]
     next_url = "null"
 
     if len(res) == limit+1:
