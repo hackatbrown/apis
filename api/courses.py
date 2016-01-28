@@ -10,6 +10,8 @@ import random
 
 from api.scripts.coursemodels import *
 
+import bson
+
 from datetime import date
 
 
@@ -113,8 +115,8 @@ def schedule_time():
 @support_jsonp
 def non_conflicting():
     courses = request.args.get('courses', '').split(",")
-    '''
-    if collision_calc_event.is_set():
+    if False:
+    # if BannerCourse.objects().count() == NonconflictEntry.objects().count():
         # Precomputed faster method, .07 seconds
         available_set = None
         for course_number in courses:
@@ -124,16 +126,16 @@ def non_conflicting():
             else:
                 available_set = set.intersection(available_set, CTable[course])
         query_args = {"id__in": list(available_set)}
-        '''
-    # Slower method, a couple of seconds
-    conflicting_list = set()
-    for c_id in courses:
-        course = BannerCourse.objects(full_number=c_id).first()
-        for m in course.meeting:
-            res = check_against_time(
-                m.day_of_week, m.start_time, m.end_time)
-            conflicting_list.update(res)
-    query_args = {"id__nin": [c.id for c in conflicting_list]}
+    else:
+        # Slower method, a couple of seconds
+        conflicting_list = set()
+        for c_id in courses:
+            course = BannerCourse.objects(full_number=c_id).first()
+            for m in course.meeting:
+                res = check_against_time(
+                    m.day_of_week, m.start_time, m.end_time)
+                conflicting_list.update(res)
+        query_args = {"id__nin": [c.id for c in conflicting_list]}
 
     ans = paginate(query_args, {"courses": request.args.get('courses', '')})
     return jsonify(ans)
@@ -160,7 +162,9 @@ def paginate(query, params=None, raw=False):
     if not raw:  # Make Raw
         query = BannerCourse.objects(**query)._query
     if offset is not None:
-        query['id'] = {'$gt': offset}
+        if '_id' not in query:
+            query['_id'] = {}
+        query['_id']['$gt'] = bson.objectid.ObjectId(offset)
     res = BannerCourse.objects(__raw__=query)[:limit+1]
 
     next_url = "null"
@@ -171,6 +175,7 @@ def paginate(query, params=None, raw=False):
         if params is not None:
             next_url = next_url+"&"+urllib.parse.urlencode(params)
 
+    if offset is None: offset = "null"
     ans = {"href": request.url,
            "items": [json.loads(elm.to_json()) for elm in res],
            "limit": limit,
