@@ -69,7 +69,8 @@ def add_documentation():
     form = DocumentationForm()
     if form.validate_on_submit():
         return redirect(url_for('root'))
-    return render_template('add_documentation.html', form=form)
+    return render_template('add_documentation.html', form=form,
+            api_documentations=list(api_documentations.find()))
 
 @app.route('/admin/add-member', methods=['GET', 'POST'])
 @requires_auth
@@ -77,7 +78,8 @@ def add_member():
     form = MemberForm()
     if form.validate_on_submit():
         return redirect(url_for('root'))
-    return render_template('add_member.html', form=form)
+    return render_template('add_member.html', form=form,
+            api_documentations=list(api_documentations.find()))
 
 # Static responses
 
