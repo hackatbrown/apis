@@ -72,6 +72,7 @@ def add_documentation():
     return render_template('add_documentation.html', form=form)
 
 @app.route('/admin/add-member', methods=['GET', 'POST'])
+@requires_auth
 def add_member():
     form = MemberForm()
     if form.validate_on_submit():
