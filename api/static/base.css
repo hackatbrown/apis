@@ -27,6 +27,10 @@ html, body {
   font-family: 'Circular', sans-serif;
 }
 
+.home-container {
+  margin-top: 20px;
+}
+
 .header {
   margin: 20px -40px 0px 5px;
 }
