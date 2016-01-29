@@ -32,7 +32,7 @@ html, body {
 }
 
 .header {
-  margin: 20px 40px 0px 40px;
+  margin: 20px -40px 0px 5px;
 }
 
 .header-component {
@@ -63,7 +63,7 @@ html, body {
 }
 
 .navbar-link.active-link {
-  background: -webkit-linear-gradient(#F9D423, #FF4E50);
+  background: -webkit-linear-gradient(-45deg, #26a59f, #D9499A);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -98,7 +98,7 @@ a.navbar-link {
 }
 
 a.navbar-link:hover {
-  background: -webkit-linear-gradient(#F9D423, #FF4E50);
+  background: -webkit-linear-gradient(-45deg, #26a59fe, #D9499A);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
