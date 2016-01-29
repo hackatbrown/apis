@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired, Email
 from api.scripts.add_client import add_client_id
 from api.scripts.email_handler import send_id_email
 from api.scripts.add_documentation import add_documentation
+from api.scripts.add_member import add_member
 
 class SignupForm(Form):
     name = StringField('Name', validators=[DataRequired()])
@@ -36,6 +37,23 @@ class DocumentationForm(Form):
                 return True
             else:
                 self.name.errors.append("Client ID could not be created.")
+                return False
+        else:
+            return False
+
+class MemberForm(Form):
+    name = StringField('Name', validators=[DataRequired()])
+    imageurl = StringField('Image URL', validators=[DataRequired()])
+    about = TextAreaField('Contents', validators=[DataRequired()])
+
+    def validate(self):
+        if Form.validate(self): 
+            member = add_member(self.about.data,
+                    self.name.data, self.imageurl.data)
+            if member:
+                return True
+            else:
+                self.name.errors.append("Member could not be created.")
                 return False
         else:
             return False
