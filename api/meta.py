@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import jsonify, render_template, url_for, request, redirect
 from flask import send_from_directory
-from api import app, db
+from api import app, db, requires_auth
 from api.scripts.stats import get_total_requests
 from api.forms import SignupForm, DocumentationForm
 from flask import Markup
@@ -63,12 +63,13 @@ def about_us():
             api_documentations=list(api_documentations.find()),
             active="about", members=members.find())
 
-# @app.route('/admin/add-documentation', methods=['GET', 'POST'])
-# def add_documentation():
-    # form = DocumentationForm()
-    # if form.validate_on_submit():
-        # return redirect(url_for('root'))
-    # return render_template('add_documentation.html', form=form)
+@app.route('/admin/add-documentation', methods=['GET', 'POST'])
+@requires_auth
+def add_documentation():
+    form = DocumentationForm()
+    if form.validate_on_submit():
+        return redirect(url_for('root'))
+    return render_template('add_documentation.html', form=form)
 
 
 # Static responses
