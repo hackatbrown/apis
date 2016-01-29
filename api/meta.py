@@ -3,7 +3,7 @@ from flask import jsonify, render_template, url_for, request, redirect
 from flask import send_from_directory
 from api import app, db, requires_auth
 from api.scripts.stats import get_total_requests
-from api.forms import SignupForm, DocumentationForm
+from api.forms import SignupForm, DocumentationForm, MemberForm
 from flask import Markup
 import markdown
 
@@ -71,6 +71,12 @@ def add_documentation():
         return redirect(url_for('root'))
     return render_template('add_documentation.html', form=form)
 
+@app.route('/admin/add-member', methods=['GET', 'POST'])
+def add_member():
+    form = MemberForm()
+    if form.validate_on_submit():
+        return redirect(url_for('root'))
+    return render_template('add_member.html', form=form)
 
 # Static responses
 
