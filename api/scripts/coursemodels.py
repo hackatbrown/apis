@@ -1,49 +1,49 @@
-from mongoengine import *
+import mongoengine as me
 
 
-class CourseMeeting(EmbeddedDocument):
-    day_of_week = StringField(max_length=1)
-    start_time = IntField(min_value=0, max_value=86400)
-    end_time = IntField(min_value=0, max_value=86400)
+class CourseMeeting(me.EmbeddedDocument):
+    day_of_week = me.StringField(max_length=1)
+    start_time = me.IntField(min_value=0, max_value=86400)
+    end_time = me.IntField(min_value=0, max_value=86400)
     # duration = ListField(StringField())
-    location = StringField()
+    location = me.StringField()
 
 
 # TODO: What is the best way to do this? References?
-class CourseInstructor(EmbeddedDocument):
-    name = StringField()
-    email = StringField()
-    isPrimary = BooleanField()
+class CourseInstructor(me.EmbeddedDocument):
+    name = me.StringField()
+    email = me.StringField()
+    isPrimary = me.BooleanField()
 
 
 # This is pretty dumb, but it beats hard coding these values in the
 # databaes I suppose.
-class BannerDepartment(EmbeddedDocument):
-    code = StringField(required=True, min_length=3, max_length=4)
-    desc = StringField(required=True)
+class BannerDepartment(me.EmbeddedDocument):
+    code = me.StringField(required=True, min_length=3, max_length=4)
+    desc = me.StringField(required=True)
 
 
-class BannerCourse(DynamicDocument):
-    creation_date = DateTimeField()
-    semester = StringField(required=True)
-    number = StringField(required=True)
-    full_number = StringField(required=True)
-    crn = StringField(required=True)
-    dept = EmbeddedDocumentField(BannerDepartment, required=True)
-    title = StringField(required=True)
-    seats_available = IntField()
-    seats_total = IntField()
-    meeting = ListField(EmbeddedDocumentField(CourseMeeting))
-    description = StringField(required=True)
-    instructors = ListField(EmbeddedDocumentField(CourseInstructor))
-    prerequisites = StringField()
-    exam_time = StringField()
-    exam_date = StringField()
-    exam_location = StringField()
-    exam_group = StringField()
-    critical_review = StringField()
+class BannerCourse(me.DynamicDocument):
+    creation_date = me.DateTimeField()
+    semester = me.StringField(required=True)
+    number = me.StringField(required=True)
+    full_number = me.StringField(required=True)
+    crn = me.StringField(required=True)
+    dept = me.EmbeddedDocumentField(BannerDepartment, required=True)
+    title = me.StringField(required=True)
+    seats_available = me.IntField()
+    seats_total = me.IntField()
+    meeting = me.ListField(me.EmbeddedDocumentField(CourseMeeting))
+    description = me.StringField(required=True)
+    instructors = me.ListField(me.EmbeddedDocumentField(CourseInstructor))
+    prerequisites = me.StringField()
+    exam_time = me.StringField()
+    exam_date = me.StringField()
+    exam_location = me.StringField()
+    exam_group = me.StringField()
+    critical_review_website = me.StringField()
 
-class NonconflictEntry(DynamicDocument):
-    course_id = ObjectIdField(required=True)
-    non_conflicting = ListField(ObjectIdField())
 
+class NonconflictEntry(me.DynamicDocument):
+    course_id = me.ObjectIdField(required=True)
+    non_conflicting = me.ListField(me.ObjectIdField())
