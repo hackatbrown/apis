@@ -120,19 +120,27 @@ def schedule_time():
 @support_jsonp
 def non_conflicting():
     courses = request.args.get('numbers', '').split(",")
-    if False:
-    # if BannerCourse.objects().count() == NonconflictEntry.objects().count():
-        # Precomputed faster method, .07 seconds
+    if BannerCourse.objects().count() == NonconflictEntry.objects().count():
+        # Precomputed faster method,
         available_set = None
         for course_number in courses:
-            course = BannerCourse.objects(full_number=course_number).first().id
-            if course not in CTable:
-                return make_json_error("Invalid course section/lab/conference:
-                                       "+course)
+            res = BannerCourse.objects(full_number=course_number)
+            if len(res) <= 0:
+                return make_json_error(\
+                    "Invalid course section/lab/conference:"\
+                    +course_number)
+            course = res.first().id
+            non_conflicting_list = NonconflictEntry.objects(course_id=course)
+            if len(non_conflicting_list) <= 0:
+                return make_json_error(\
+                        "Error with course section/lab/conference:"\
+                        +course_number)
+            non_conflicting_list = non_conflicting_list.first().non_conflicting
             if available_set is None:
-                available_set = set(CTable[course])
+                available_set = set(non_conflicting_list)
             else:
-                available_set = set.intersection(available_set, CTable[course])
+                available_set = set.intersection(available_set,
+                        non_conflicting_list)
         query_args = {"id__in": list(available_set)}
     else:
         # Slower method, a couple of seconds
@@ -145,7 +153,7 @@ def non_conflicting():
                 conflicting_list.update(res)
         query_args = {"id__nin": [c.id for c in conflicting_list]}
 
-    ans = paginate(query_args, {"courses": request.args.get('courses', '')})
+    ans = paginate(query_args, {"numbers": request.args.get('numbers', '')})
     return jsonify(ans)
 
 
