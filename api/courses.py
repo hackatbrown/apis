@@ -1,17 +1,14 @@
 from flask import request, jsonify
 from api import app, make_json_error, support_jsonp
 from api.meta import is_valid_client, log_client, INVALID_CLIENT_MSG
-
+from mongoengine import connect
 import threading
 import json
 import urllib
 from collections import defaultdict
 import random
-
 from api.scripts.coursemodels import *
-
 import bson
-
 from datetime import date
 
 
@@ -105,22 +102,33 @@ def departments_specified(dept_code):
 @support_jsonp
 def schedule_time():
     '''Endpoint for courses ocurring during a given time'''
-    day = request.args.get('day', '')
-    time = int(request.args.get('time', ''))
-    res = check_against_time(day, time, time)
-    return jsonify(items=[json.loads(elm.to_json()) for elm in res])
+    day = request.args.get('day', None)
+    if day is None:
+        return make_json_error("Missing parameter: day")
+    time = int(request.args.get('time', '-1'))
+    if time < 0:
+        return make_json_error("Invalid or Missing parameter: time")
+    # res = check_against_time(day, time, time)
+    query_args = {'meeting.day_of_week':day,
+            "meeting.start_time": {'$lte': time},
+            "meeting.end_time": {'$gte': time}}
+    return jsonify(paginate(query_args, params={'day': day, 'time': time}, raw=True))
+    # return jsonify(items=[json.loads(elm.to_json()) for elm in res])
 
 
 @app.route(PREFIX + '/non-conflicting')
 @support_jsonp
 def non_conflicting():
-    courses = request.args.get('courses', '').split(",")
+    courses = request.args.get('numbers', '').split(",")
     if False:
     # if BannerCourse.objects().count() == NonconflictEntry.objects().count():
         # Precomputed faster method, .07 seconds
         available_set = None
         for course_number in courses:
             course = BannerCourse.objects(full_number=course_number).first().id
+            if course not in CTable:
+                return make_json_error("Invalid course section/lab/conference:
+                                       "+course)
             if available_set is None:
                 available_set = set(CTable[course])
             else:
@@ -165,8 +173,7 @@ def paginate(query, params=None, raw=False):
         if '_id' not in query:
             query['_id'] = {}
         query['_id']['$gt'] = bson.objectid.ObjectId(offset)
-    res = BannerCourse.objects(__raw__=query)[:limit+1]
-
+    res = list(BannerCourse.objects(__raw__=query)[:limit+1])
     next_url = "null"
     if len(res) == limit+1:
         next_url = request.base_url + "?" +\
@@ -174,6 +181,7 @@ def paginate(query, params=None, raw=False):
                                     "offset": res[limit - 1].id})
         if params is not None:
             next_url = next_url+"&"+urllib.parse.urlencode(params)
+        res.pop()
 
     if offset is None: offset = "null"
     ans = {"href": request.url,
