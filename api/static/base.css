@@ -52,6 +52,7 @@ html, body {
 .container {
   max-width: 100%;
   padding: 0px 40px 0px 40px;
+  margin-bottom: 80px;
 }
 
 .pulltab {
@@ -63,7 +64,7 @@ html, body {
 }
 
 .navbar-link.active-link {
-  background: -webkit-linear-gradient(-45deg, #26a59f, #D9499A);
+  background: -webkit-linear-gradient(-45deg, #6a59fe, #D9499A);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -98,7 +99,7 @@ a.navbar-link {
 }
 
 a.navbar-link:hover {
-  background: -webkit-linear-gradient(-45deg, #26a59fe, #D9499A);
+  background: -webkit-linear-gradient(-45deg, #6a59fe, #D9499A);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -160,6 +161,10 @@ hr {
   background-color: black;
   height: 4px;
   margin: 0px 0px 0px 0px;
+}
+
+.form-control {
+  max-width: 300px;
 }
 
 .btn-primary {
