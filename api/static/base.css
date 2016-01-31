@@ -1,0 +1,176 @@
+@font-face {
+  font-family: "Circular";
+  src: url('{{ url_for('static/fonts/circular', filename='lineto-circular-bold.ttf') }}'),
+  url('{{ url_for('static/fonts/circular', filename='lineto-circular-bold.ttf') }}'); /* IE */
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circular";
+  src: url('{{ url_for('static/fonts/circular', filename='lineto-circular-medium.ttf') }}'),
+  url('{{ url_for('static/fonts/circular', filename='lineto-circular-medium.ttf') }}'); /* IE */
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circular";
+  src: url('{{ url_for('static/fonts/circular', filename='lineto-circular-book.ttf') }}'),
+  url('{{ url_for('static/fonts/circular', filename='lineto-circular-book.ttf') }}'); /* IE */
+  font-weight: 400;
+  font-style: normal;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Circular', sans-serif;
+}
+
+.home-container {
+  margin-top: 20px;
+}
+
+.header {
+  margin: 20px -40px 0px 5px;
+}
+
+.header-component {
+  min-height: 80px;
+}
+
+.content-box {
+  min-height: 100%;
+  max-width: 1000px;
+  height: auto;
+  /* Negative indent footer by its height */
+  margin: 0 auto 0px;
+  /* Pad bottom by footer height */
+  padding: 0 0;
+}
+
+.container {
+  max-width: 100%;
+  padding: 0px 40px 0px 40px;
+  margin-bottom: 80px;
+}
+
+.pulltab {
+  height: 36px;
+  width: auto;
+  display: block;
+  margin: -42px auto 0px auto;
+  cursor: pointer;
+}
+
+.navbar-link.active-link {
+  background: -webkit-linear-gradient(-45deg, #6a59fe, #D9499A);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.navbar-link.active-link:hover {
+  color: #136786!important;
+}
+
+.navbar-default {
+  margin-bottom: 0px;
+  background-color: white;
+  border-color: white;
+}
+
+.navbar .brand { 
+  height: 100%;
+  width: auto; 
+}
+
+.navbar-brand {
+  padding: 0px;
+}
+
+.navbar-right {
+  font-size: 20pt;
+  font-weight: bold;
+  margin: 38px 0px 0px -20px;
+}
+
+a.navbar-link {
+  color: black!important;
+}
+
+a.navbar-link:hover {
+  background: -webkit-linear-gradient(-45deg, #6a59fe, #D9499A);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.footer {
+  background-color: white;
+  color: white;
+  height: auto;
+  bottom: 0px;
+  width: 100%;
+  padding-bottom: 0px;
+  margin-top: 0px;
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer a:visited {
+  color: white;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #918f8c!important;
+  text-decoration: none;
+}
+
+.footer-content {
+  background-color: black;
+  min-height: 150px;
+  height: auto;
+  width: 100%;
+  margin: 0 0 0 0;
+  padding: 4px 160px 4px 160px;
+  text-align: center;
+  font-weight: 400; /* BOOK */
+  font-size: 14px;
+}
+
+.footer h3 {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+.main {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+hr {
+  border: 0 none;
+  background-color: black;
+  height: 4px;
+  margin: 0px 0px 0px 0px;
+}
+
+.form-control {
+  max-width: 300px;
+}
+
+.btn-primary {
+  background: #26a59f;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+    background: #186764;
+}

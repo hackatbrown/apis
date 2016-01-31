@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='documentation.css') }}">
+{% endblock %}
+
+{% block title %}Brown APIs Docs{% endblock %}
+
+{% block contents %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <h1>{{ name }}</h1>
+
+      <p>{{ contents|safe }}</p>
+
+    </div>
+    <div class="col-md-2">
+      <h2> APIs</h2>
+      <div class="list-group">
+        {% for documentation in api_documentations %}
+        {% if documentation.name == name %}
+        <a href="/docs/{{ documentation.urlname }}" class="list-group-item active">{{ documentation.name }}</a>
+        {% else %}
+        <a href="/docs/{{ documentation.urlname }}" class="list-group-item">{{ documentation.name }}</a>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
