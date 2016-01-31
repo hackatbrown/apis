@@ -8,21 +8,18 @@ from copy import deepcopy
 from datetime import date, datetime, time
 from itertools import zip_longest
 from pprint import pprint
-from queue import Queue
 from threading import Thread
-# from time import time
+from queue import Queue
 
 import bs4
 import requests
-from tqdm import tqdm
-import api.courses
 
 from mongoengine import connect
-from api.scripts.coursemodels import BannerCourse, BannerDepartment, CourseMeeting, NonconflictEntry, CourseInstructor
+from api.scripts.coursemodels import BannerCourse, BannerDepartment,\
+    CourseMeeting, NonconflictEntry, CourseInstructor
 
 # TODO: Only local
 connect('brown')
-
 
 
 '''
@@ -43,6 +40,7 @@ requests_log = logging.getLogger("requests.packages.urllib3")
 requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
 '''
+
 
 def grouper(iterable, n, fillvalue=None):
     """
@@ -111,93 +109,94 @@ def generate_semesters(n):
 
 Semesters = generate_semesters(3)
 Departments = [
-('AFRI','Africana Studies'),
-('AMST','American Studies'),
-('ANTH','Anthropology'),
-('APMA','Applied Mathematics'),
-('ARAB','Arabic'),
-('ARCH','Archaeology and Ancient World'),
-('ASYR','Assyriology'),
-('BEO','Business, Entrep. and Organ.'),
-('BIOL','Biology'),
-('CATL','Catalan'),
-('CHEM','Chemistry'),
-('CHIN','Chinese'),
-('CLAS','Classics'),
-('CLPS','Cognitive, Linguistic, Psych Sci'),
-('COLT','Comparative Literature'),
-('CROL','Haitian-Creole'),
-('CSCI','Computer Science'),
-('CZCH','Czech'),
-('DEVL','Developement Studies'),
-('EAST','East Asian Studies'),
-('ECON','Economics'),
-('EDUC','Education'),
-('EGYT','Egyptology'),
-('EINT','English for Internationls'),
-('ENGL','English'),
-('ENGN','Engineering'),
-('ENVS','Enviornmental Studies'),
-('ERLY','Early Cultures'),
-('ETHN','Ethnic Studies'),
-('FREN','French'),
-('GEOL','Geology'),
-('GNSS','Gender and Sexuality Studies'),
-('GREK','Greek'),
-('GRMN','German Studies'),
-('HIAA','Hist of Art and Architecture'),
-('HISP','Hispanic Studies'),
-('HIST','History'),
-('HMAN','Humanities'),
-('HNDI','Hindi-Urdu'),
-('INTL','International Relations'),
-('ITAL','Italian'),
-('JAPN','Japanese'),
-('JUDS','Judaic Studies'),
-('KREA','Korean'),
-('LANG','Language Studies'),
-('LAST','Latin American Studies'),
-('LATN','Latin'),
-('LING','Linguistics'),
-('LITR','Literary Arts'),
-('MATH','Mathematics'),
-('MCM','Modern Culture and Media'),
-('MDVL','Medieval Studies'),
-('MED','Medical Education'),
-('MES','Middle East Studies'),
-('MGRK','Modern Greek'),
-('MUSC','Music'),
-('NEUR','BioMed-Neuroscience'),
-('PHIL','Philosophy'),
-('PHP','Public Health'),
-('PHYS','Physics'),
-('PLCY','Public Policy'),
-('PLME','Program in Liberal Med. Educ.'),
-('PLSH','Polish'),
-('POBS','Portuguese and Brazilian Studies'),
-('POLS','Political Science'),
-('PRSN','Persian'),
-('RELS','Religious Studies'),
-('REMS','Renaissance and Early Modern Sudies'),
-('RUSS','Russian'),
-('SANS','Sanskrit'),
-('SCSO','Science and Society'),
-('SIGN','American Sign Language'),
-('SLAV','Slavic'),
-('SOC','Sociology'),
-('SWED','Swedish'),
-('TAPS','Theatre Arts, Performance Study'),
-('TKSH','Turkish'),
-('UNIV','University Courses'),
-('URBN','Urban Studies'),
-('VISA','Visual Arts')]
+    ('AFRI', 'Africana Studies'),
+    ('AMST', 'American Studies'),
+    ('ANTH', 'Anthropology'),
+    ('APMA', 'Applied Mathematics'),
+    ('ARAB', 'Arabic'),
+    ('ARCH', 'Archaeology and Ancient World'),
+    ('ASYR', 'Assyriology'),
+    ('BEO', 'Business, Entrep. and Organ.'),
+    ('BIOL', 'Biology'),
+    ('CATL', 'Catalan'),
+    ('CHEM', 'Chemistry'),
+    ('CHIN', 'Chinese'),
+    ('CLAS', 'Classics'),
+    ('CLPS', 'Cognitive, Linguistic, Psych Sci'),
+    ('COLT', 'Comparative Literature'),
+    ('CROL', 'Haitian-Creole'),
+    ('CSCI', 'Computer Science'),
+    ('CZCH', 'Czech'),
+    ('DEVL', 'Developement Studies'),
+    ('EAST', 'East Asian Studies'),
+    ('ECON', 'Economics'),
+    ('EDUC', 'Education'),
+    ('EGYT', 'Egyptology'),
+    ('EINT', 'English for Internationls'),
+    ('ENGL', 'English'),
+    ('ENGN', 'Engineering'),
+    ('ENVS', 'Enviornmental Studies'),
+    ('ERLY', 'Early Cultures'),
+    ('ETHN', 'Ethnic Studies'),
+    ('FREN', 'French'),
+    ('GEOL', 'Geology'),
+    ('GNSS', 'Gender and Sexuality Studies'),
+    ('GREK', 'Greek'),
+    ('GRMN', 'German Studies'),
+    ('HIAA', 'Hist of Art and Architecture'),
+    ('HISP', 'Hispanic Studies'),
+    ('HIST', 'History'),
+    ('HMAN', 'Humanities'),
+    ('HNDI', 'Hindi-Urdu'),
+    ('INTL', 'International Relations'),
+    ('ITAL', 'Italian'),
+    ('JAPN', 'Japanese'),
+    ('JUDS', 'Judaic Studies'),
+    ('KREA', 'Korean'),
+    ('LANG', 'Language Studies'),
+    ('LAST', 'Latin American Studies'),
+    ('LATN', 'Latin'),
+    ('LING', 'Linguistics'),
+    ('LITR', 'Literary Arts'),
+    ('MATH', 'Mathematics'),
+    ('MCM', 'Modern Culture and Media'),
+    ('MDVL', 'Medieval Studies'),
+    ('MED', 'Medical Education'),
+    ('MES', 'Middle East Studies'),
+    ('MGRK', 'Modern Greek'),
+    ('MUSC', 'Music'),
+    ('NEUR', 'BioMed-Neuroscience'),
+    ('PHIL', 'Philosophy'),
+    ('PHP', 'Public Health'),
+    ('PHYS', 'Physics'),
+    ('PLCY', 'Public Policy'),
+    ('PLME', 'Program in Liberal Med. Educ.'),
+    ('PLSH', 'Polish'),
+    ('POBS', 'Portuguese and Brazilian Studies'),
+    ('POLS', 'Political Science'),
+    ('PRSN', 'Persian'),
+    ('RELS', 'Religious Studies'),
+    ('REMS', 'Renaissance and Early Modern Sudies'),
+    ('RUSS', 'Russian'),
+    ('SANS', 'Sanskrit'),
+    ('SCSO', 'Science and Society'),
+    ('SIGN', 'American Sign Language'),
+    ('SLAV', 'Slavic'),
+    ('SOC', 'Sociology'),
+    ('SWED', 'Swedish'),
+    ('TAPS', 'Theatre Arts, Performance Study'),
+    ('TKSH', 'Turkish'),
+    ('UNIV', 'University Courses'),
+    ('URBN', 'Urban Studies'),
+    ('VISA', 'Visual Arts')]
+
 
 def _semester_to_value(semester_string):
     """
     Converts a Semester String to its numeric representation.
 
-    [SelfserviceSession._semester_to_value(s) for s in ['Spring 2015', 'Summer 2015',
-                                          'Fall 2015', 'Spring 2016']]
+    [SelfserviceSession._semester_to_value(s) for s in ['Spring 2015',
+        'Summer 2015', 'Fall 2015', 'Spring 2016']]
     [201420, 201500, 201510, 201520]
     """
     words = semester_string.split(' ')
@@ -215,10 +214,12 @@ def _semester_to_value(semester_string):
         print("ERROR: Unidentified Semester")
     return res
 
+
 def _value_to_semester(value):
     """
     Converts a numeric representation of a semester to a String.
-    >>> [ SelfserviceSession._value_to_semester(v) for v in [201420, 201500, 201510, 201520]]
+    >>> [ SelfserviceSession._value_to_semester(v) for v in\
+            [201420, 201500, 201510, 201520]]
     ['Spring 2015', 'Summer 2015', 'Fall 2015', 'Spring 2016']
     """
     year = int(value[:4])  # Get Year
@@ -231,7 +232,6 @@ def _value_to_semester(value):
         return str(year + 1) + " Spring"
     else:
         print("ERROR: Unidentified Semester")
-
 
 
 class SelfserviceSession:
@@ -279,14 +279,14 @@ class SelfserviceSession:
         self.s = requests.Session()
         self.s.get(url)  # Get session id/cookies
         res = self.s.post(login_url, data=payload, headers=headers,
-                    allow_redirects=True)
+                          allow_redirects=True)
 
         if 'Invalid login information' in res.text:
             return False
         return True
 
 
-def gen_courses( ss, semester, dept):
+def gen_courses(ss, semester, dept):
     """
     A generator for courses of a particular semester and department
     :return: course details to be processed by other threads
@@ -295,7 +295,6 @@ def gen_courses( ss, semester, dept):
     for results_page in _gen_search_results_soup(ss, semester, dept):
         for course_details in _courses_on_page(results_page):
             if not course_details[1] in visited:
-                #yield _extract_course(ss, course_details)
                 yield course_details
                 visited.add(course_details[1])
 
@@ -350,6 +349,7 @@ def _gen_search_results_soup(ss, semester, department):
         yield s
         current += 1
 
+
 def _courses_on_page(page):
     """
     Given a page (BeautifulSoup), this method parses out couses which
@@ -361,6 +361,7 @@ def _courses_on_page(page):
 
     args = [c[13:-3].split("','") for c in courses]
     return args
+
 
 def _extract_course(ss, args):
     '''
@@ -393,34 +394,33 @@ def _extract_course(ss, args):
         .contents[0].find_all()[0].text
     course['number'] = course['full_number'].split("-")[0]
     course['crn'] = course_soup.contents[0].contents[1]\
-            .contents[2].find('td').text[4:]
-    # course['dept'] = course['number'][:4]
+        .contents[2].find('td').text[4:]
     course['title'] = course_soup.contents[0].contents[1]\
         .contents[0].find_all('td')[1].text
-
 
     add_dict(course, _extract_course_seats(course_soup))
 
     res = _extract_course_meeting(course_soup)['meeting']
-    if res != None:
+    if res is not None:
         course.meeting = [CourseMeeting(**meeting) for meeting in res]
 
     add_dict(course, _extract_course_description(course_soup))
 
     res = _extract_course_instructors(course_soup)
-    if res != None:
-        course.instructors = [CourseInstructor(**instructor) for instructor in res]
+    if res is not None:
+        course.instructors = [CourseInstructor(**instructor)
+                              for instructor in res]
 
     add_dict(course, _extract_course_prerequisites(course_soup))
 
     add_dict(course, _extract_course_exam_info(course_soup))
 
-    course['critical_review'] = course_soup\
+    course['critical_review_website'] = course_soup\
         .find_all('a', text="Critical Review")[0]['href']
 
     # Book data seems nigh impossible. Seldom is it present,
     # so I would need to write the scraper then.
-    #course_data.update(_extract_course_books(course_soup))
+    # course_data.update(_extract_course_books(course_soup))
 
     return course
 
@@ -458,7 +458,7 @@ def _extract_course_instructors(course_soup):
         prof['isPrimary'] = (contents[1].text == "P")
         ans.append(prof)
         if contents[4] != '\n':
-            for group in grouper(contents[4:],2):
+            for group in grouper(contents[4:], 2):
                 if group[0] == '\n' or group[1] == '\n':
                     break
                 prof = {}
@@ -473,7 +473,7 @@ def parse_meeting_time(words):
     times = ' '.join(words[-5:]).split(' - ')
     seconds = []
     for t in times:
-        dt = datetime.strptime(t.upper(),"%I:%M %p")
+        dt = datetime.strptime(t.upper(), "%I:%M %p")
         delta = dt - datetime.combine(dt.date(), time(0))
         seconds.append(delta.seconds)
     return {'start_time': seconds[0], 'end_time': seconds[1]}
@@ -498,17 +498,17 @@ def _extract_course_meeting(course_html):
     while i < len(data):
         words = data[i].split()[2:]
         days = [list(w) for w in words[:-5]]
-        days = [str(item) for sublist in days for item in sublist] # Flatten list
+        days = [str(item) for sublist in days for item in sublist]  # Flatten
         i += 1
-        tmp_duration = None
+        # tmp_duration = None  #May use in the future
         if (data[i]).startswith('From:'):
-            tmp_duration = parse_duration(data[i])
+            # tmp_duration = parse_duration(data[i])
             i += 1
         tmp_location = str(data[i])
         i += 1
         for day in days:
             meeting = {"day_of_week": day,
-                    "location": tmp_location}
+                       "location": tmp_location}
             # NOTE: We are not currently using the duration field
             # if not tmp_duration is None:
             #     meeting["duration"] = tmp_duration
@@ -524,13 +524,16 @@ def _extract_course_prerequisites(course_soup):
     :return: a dictionary containing a 'prerequisites' entry
     """
     reg = re.compile(r'Prerequisites')
-    prereq_elements = [e for e in course_soup.find_all('b') if reg.match(e.text)]
+    prereq_elements = [e for e in course_soup.find_all('b')
+                       if reg.match(e.text)]
     if len(prereq_elements) > 0:
         return {'prerequisites': prereq_elements[0].parent.contents[2].strip()}
     return {}
 
+
 def format_key(key):
-    return key.strip().replace(' ','_').replace(':','').lower()
+    return key.strip().replace(' ', '_').replace(':', '').lower()
+
 
 def _extract_course_exam_info(course_soup):
     '''
@@ -546,19 +549,22 @@ def _extract_course_exam_info(course_soup):
         res_tables = exam_info[0].parent.select('table.resultstable')
         if len(res_tables) >= 2:
             exam_info = res_tables[1]
-            if "Please contact" not in exam_info.text and "Not Assigned" not in exam_info.text:
+            if "Please contact" not in exam_info.text and\
+               "Not Assigned" not in exam_info.text:
                 tds = exam_info.find_all('td')
                 for key, val in grouper(tds, 2):
                     exam_data[format_key(key.text)] = val.text
             else:
                 # Odd case where only the Exam Group is present
-                exam_data['exam_group'] = exam_info.find('td').text.split(":")[1].strip()
-        if len(res_tables) >=3:
+                exam_data['exam_group'] = exam_info.find('td').text.\
+                    split(":")[1].strip()
+        if len(res_tables) >= 3:
             # If exam location information present
             location_info = []
             more_exam_info_rows = res_tables[2].find_all('tr')[1:]
             for row in more_exam_info_rows:
-                location_info.append([entry.text for entry in row.find_all('td')])
+                location_info.append([entry.text
+                                      for entry in row.find_all('td')])
             exam_data['exam_location'] = location_info
     return exam_data
 
@@ -590,14 +596,16 @@ class CourseExtractionWorker(Thread):
                 with open(fpath, 'w+') as fd:
                     pprint(course['meeting_time'], fd)
             else:
-                #print(course)
-                #courseObj = BannerCourse(**course)
-                assert(BannerCourse.objects(full_number=course['full_number'], semester=course['semester']).count() <= 1)
-                existing_course = BannerCourse.objects(full_number=course['full_number'], semester=course['semester']).first()
+                # print(course)
+                # courseObj = BannerCourse(**course)
+                assert(BannerCourse.objects(full_number=course['full_number'],
+                       semester=course['semester']).count() <= 1)
+                existing_course = BannerCourse.objects(
+                    full_number=course['full_number'],
+                    semester=course['semester']).first()
+
                 if existing_course is not None:
                     course.id = existing_course.id
-                else:
-                    print("New Course: " + course['full_number'] + ": " + course['title'])
                 course.save()
             self.queue.task_done()
 
@@ -625,19 +633,13 @@ def precalculate_nonconflicting_table():
 
     it1 = BannerCourse.objects()
     it2 = BannerCourse.objects()
-    for obj1 in tqdm(it1):
+    for obj1 in it1:
         nonconflicting = list()
         for obj2 in it2:
             exists_collision = is_collision(obj1, obj2)
             if obj1 != obj2:
                 if not exists_collision:
                     nonconflicting.append(obj2.id)
-                    # NonconflictEntry._get_collection().update({"_id":obj1.id}, {"$addToSet": {"non_conflicting": obj2.id}})
-                    # NonconflictEntry._get_collection().update({"_id":obj2.id}, {"$addToSet": {"non_conflicting": obj1.id}})
-                    # CTable[obj1.id].append(obj2.id)
-                    # CTable[obj2.id].append(obj1.id)
-                    # NonconflictEntry._get_collection().update({"_id":obj1.id}, {"$pull": {"non_conflicting": obj2.id}})
-                    # NonconflictEntry._get_collection().update({"_id":obj2.id}, {"$pull": {"non_conflicting": obj1.id}})
         entry = NonconflictEntry.objects(course_id=obj1.id).first()
         if entry is None:
             entry = NonconflictEntry()
@@ -646,15 +648,23 @@ def precalculate_nonconflicting_table():
         entry.save()
     print("[COMPLETE] Course conflict calcuations")
 
+
 def main():
     '''
     Main Function
     '''
 
-    parser = argparse.ArgumentParser(description='Scrape course information from Banner.')
-    parser.add_argument('--user-and-pass', nargs=2, metavar=('USER','PASS'), required=True)
-    parser.add_argument('--to-files', nargs=1, metavar='PATH',
-                        help='Save files in given directory; otherwise print to stdout.')
+    parser = argparse.ArgumentParser(
+        description='Scrape course information from Banner.')
+    parser.add_argument('--user-and-pass',
+                        nargs=2,
+                        metavar=('USER', 'PASS'),
+                        required=True)
+    parser.add_argument('--to-files',
+                        nargs=1,
+                        metavar='PATH',
+                        help='Save files in given directory;\
+                                otherwise print to stdout.')
 
     args = parser.parse_args()
 
@@ -662,30 +672,27 @@ def main():
     passwd = getattr(args, 'user_and_pass')[1]
 
     path = ""
-    if args.to_files != None:
-        path = str(os.path.expanduser(os.path.join(args.to_files[0],'')))
+    if args.to_files is not None:
+        path = str(os.path.expanduser(os.path.join(args.to_files[0], '')))
     s = SelfserviceSession(username, passwd)
 
-    '''
     queue = Queue()
     for x in range(8):
-        worker = CourseExtractionWorker(queue, s, (args.to_files != None))
+        worker = CourseExtractionWorker(queue, s, (args.to_files is not None))
         worker.daemon = True
         worker.start()
 
     for semester in Semesters:
         print("Current: "+semester, file=sys.stderr)
-        if args.to_files != None: os.makedirs(path+semester, exist_ok=True)
-        for department in tqdm(Departments, unit="Departments"):
+        if args.to_files is not None:
+            os.makedirs(path+semester, exist_ok=True)
+        for department in Departments:
             for course in gen_courses(s, semester, department):
                 queue.put((path, semester, department, course))
     queue.join()
-    '''
 
     # Compute non-conflicting
     precalculate_nonconflicting_table()
-
-
 
 
 pid_file = 'selfservice_scraper.pid'
@@ -697,4 +704,3 @@ except IOError:
     # another instance is running
     print("Another instance of scraper running. Exiting")
     sys.exit(0)
-
