@@ -187,6 +187,15 @@
             };
 
 
+            var laundryPage = function() {
+                if ($('#body').find('.laundry.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/laundry.html") }}');
+                    var obj = {};
+                    history.pushState(obj, 'Laundry', '/documentation/laundry');
+                }
+                $.scrollTo(0, 400);
+            };
+
             $(document).ready(function() {
                 setupTeddy();
                 setupArrow();
@@ -212,6 +221,8 @@
                 $('body').on('click', 'a.dining', loadSimpleDocPage.bind(this, 'dining', 'Dining'));
                 $('body').on('click', 'a.shuttle', loadSimpleDocPage.bind(this, 'shuttle', 'Shuttle'));
                 $('body').on('click', 'a.wifi', loadSimpleDocPage.bind(this, 'wifi', 'WiFi'));
+
+                $('.laundry').on('click', laundryPage);
 
                 {% if num_requests %}
                     function numberWithCommas(x) {
@@ -270,7 +281,7 @@
                     <a class="item shuttle">Shuttle</a>
                     <!-- <a class="item" href="/docs/criticalreview">Critical Review</a> -->
                     <a class="item wifi">WiFi</a>
-                    <!-- <a class="item" href="/docs/laundry">Laundry</a> -->
+                    <a class="item laundry">Laundry</a>
                 </div>
             </div>
         </div><!-- End Footer -->

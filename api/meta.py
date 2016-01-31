@@ -23,22 +23,18 @@ FAILURE_MSG = ("Your request could not be processed. "
 
 @app.route('/')
 def root():
-    return dispatch('home')
-
-@app.route('/<page>', methods=['GET'])
-def dispatch(page):
-    print("Dispatching page in response to request: ", page)
-
+    signed_up = request.args.get('signedup', '')
     num_requests = get_total_requests()
-    return render_template('index.html', page=page, num_requests=num_requests)
-
-
-@app.route('/bugreport_submit', methods=['POST'])
-def bug_report():
-    bug_description = request.form['description']
-    print("Processing bug report:\n\t", bug_description, "\n------ End of bug report ------")
-    send_alert_email(bug_description, urgent=True)
-    return dispatch('bugreport_success')
+    if signed_up == 'true':
+        return render_template('documentation.html',
+                               message=SUCCESS_MSG,
+                               num_requests=num_requests)
+    if signed_up == 'false':
+        return render_template('documentation.html',
+                               message=FAILURE_MSG,
+                               num_requests=num_requests)
+    else:
+        return render_template('documentation.html', num_requests=num_requests)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -51,9 +47,9 @@ def signup():
         client_id = add_client_id(email, firstname + " " + lastname)
         if client_id:
             send_id_email(email, firstname, client_id)
-            return redirect(url_for('root', page='home', signedup='true'))
+            return redirect(url_for('root', signedup='true'))
         else:
-            return redirect(url_for('root', page='home', signedup='false'))
+            return redirect(url_for('root', signedup='false'))
 
 
 # Static responses
