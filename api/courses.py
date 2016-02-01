@@ -12,13 +12,10 @@ import bson
 from datetime import date
 
 
-# =INDEXES=
-# Created Index with: db.banner_course.createIndex( { "instructors.name": 1})
-# Created Index with: db.banner_course.createIndex( { "meeting.start_time": 1, "meeting.end_time": 1, "meeting.day_of_week": 1})
-
 PREFIX = "/academic"
 PAGINATION_LIMIT = 10
 PAGINATION_MAX = 42
+#TODO: Maybe there's some way to use the same connection as given by 'db'.
 connect('brown')
 
 
