@@ -143,7 +143,7 @@ haven't yet fleshed out how filter_semester() and paginate() interact.
 
 The academic API currently makes use of the following files:
 * /api/scripts/selfservice_scraper.py
-* /api/scripts/course_models.py
+* /api/scripts/coursemodels.py
 * /api/courses.py
 
 **Paging**
@@ -175,4 +175,80 @@ overwrite any '\_id' specification essential to the query.
 
 
 **Implementation of non-conflicting**
-Oh god, I thought I had fixed this part, one sec.
+
+This method has two modes.
+
+1. The fast mode uses a precomputed list of non-conflicting courses. Given a
+   course we can get a list of courses which don't collide with it. This is
+   stored in the nonconflict_entry collection in mongo. These are written by the
+   selfservice scraper. The answer for the list of given courses is simply the
+   set intersection of all the courses.
+2. The slower mode doesn't rely on precomputation, but instead finds a set of
+   courses which conflict with each course, performs a set union, and finally
+   takes the difference from the universe (of courses). This is notably slower.
+
+When the api is just starting up it won't have the necessary nonconflict_entries
+to perform the first method. While this happens the api will default to the
+second option. This will almost never happen, but this way we don't have to
+worry about it. The only other time this matters if when a new course is added
+mid-semester. Once the new course is added to the database, this endpoint will
+revert to the old method until conflicts are recalculated.
+
+###The Scraper
+
+This is where 90% of the work is done. It's pretty nasty. 
+
+From a computer with a running Mongo instance and appropriate MONGO_URI variable, run:
+```
+(venv)$ python3 -m api.scripts.selfservice_scraper.py --user-and-pass <Username> <Password>
+```
+
+Running multiple times will update the existing courses. Courses are uniquely
+defined by full\_number and semester fields. 
+
+
+**High Level Overview**: The scraper does a number of things:
+
+1. Access Banner using a given username and password
+2. Iterate through the next two or three semesters
+3. Iterate through all departments
+4. Visit each course on each page of results for the given department and
+   semester
+5. Extract information from the page and place it into a BannerCourse object
+6. Perform some last minute field filling from given informaiton
+7. Save it to the database.
+
+This is all done with beautifulsoup4 and requests. The requests Session object
+handles credentials and cookies. bs4 handles parsing. Beware, Banner is a mess.
+I've done my best to ensure this code doesn't break, but be warned. 
+
+To make the whole process faster we use python threads and a work Queue. The
+main thread adds each course to the work queue and the worker threads request
+course pages and extract content. (If you're wondering about the Global
+Interpreter Lock, it doesn't bottleneck us in this case because our work is IO
+bound. Otherwise ignore this parenthetical.) 
+
+Finally, in an utterly expected bit of garbage we have a quadruply nested for
+loop to determine course conflicts. Each course receives it's own entry in a
+separate document whose sole purpose is to store this information.
+
+**Some Bits of Code in More Detail**
+
+**File Lock**
+At the bottom of the file we use fcntl.lockf() to establish a lock on an
+arbitrary file called 'selfservice_scraper.pid'. We do this to ensure that only
+one version of the scraper is run at a time. Concurrent instances may lead to
+duplicate courses in the database due to the scripts ability to add or update
+existing documents.
+
+**CourseExtractionWorker**
+From the days of yore I included an option to download the data to files or add
+to mongo. Some information is passed into the worker, but most is extracted with
+the _extract_course() function which returns a BannerCourse object.
+
+###Course Models
+Two Documents:
+BannerCourse - what is given to the user
+NonconflictEntry - used to track conflicting courses (stores precomputation)
+
+The rest are embedded documents in BannerCourse
