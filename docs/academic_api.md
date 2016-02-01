@@ -49,12 +49,16 @@ Optional Parameter: `semester`, defaults to the current semester
 If Course Number is 'CSCI1380' then all sections/labs/conferences/etc. for
 CSCI1380 are returned in a list.
 
-```/courses/CSCI1380```
+```
+/courses/CSCI1380
+```
 
 If Course Number contains a dash as in 'CSCI1380-S01' then only that particular
 section is returned.
 
-```/courses/CSCI1380-S01```
+```
+/courses/CSCI1380-S01
+```
 
 Optional Parameter: `semester`, defaults to the current semester
 
