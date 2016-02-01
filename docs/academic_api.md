@@ -116,15 +116,14 @@ looks like:
 | next | A pre-built url which will return the next page using the same limit|
 
 Max limit value: 42
+
 Min limit value: 1
 
 An invalid limit is changed to the nearest valid one.
 
 When no more results are available the next field is "null"
 
-Right now I don't specify a sort order of results. I think we should in case the
-sort order changes between pages. I haven't checked for uniqueness in page
-entries, but currently we don't have that guarantee.
+Update: The results are now sorted by the \_id field.
 
 
 **Specifying Semester**

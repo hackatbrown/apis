@@ -2,7 +2,6 @@ from flask import request, jsonify
 from api import app, make_json_error, support_jsonp
 from api.meta import is_valid_client, log_client, INVALID_CLIENT_MSG
 from mongoengine import connect
-import threading
 import json
 import urllib
 from collections import defaultdict
@@ -178,7 +177,7 @@ def paginate(query, params=None, raw=False):
         if '_id' not in query:
             query['_id'] = {}
         query['_id']['$gt'] = bson.objectid.ObjectId(offset)
-    res = list(BannerCourse.objects(__raw__=query)[:limit+1])
+    res = list(BannerCourse.objects(__raw__=query).order_by('_id')[:limit+1])
     next_url = "null"
     if len(res) == limit+1:
         next_url = request.base_url + "?" +\
@@ -199,9 +198,22 @@ def paginate(query, params=None, raw=False):
 
 def filter_semester(query_args):
     ''' Given a query dictionary, modifies it for the current semester'''
-    if "semester" not in query_args:
+
+    def is_valid(v):
+        if v is None:
+            return False
+        words = v.split(" ")
+        if words[0] not in ['Spring', 'Summer', 'Fall']:
+            return False
+        if int(words[1]) < 2000 or int(words[1]) > 2050:
+            return False
+        return True
+
+    pvalue = request.args.get('semester', None)
+    if is_valid(pvalue):
+        query_args['semester'] = pvalue
+    else:
         query_args['semester'] = gen_current_semester()
-        return query_args
     return query_args
 
 

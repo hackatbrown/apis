@@ -29,13 +29,8 @@ class TestNonConflictingEndpoint(unittest.TestCase):
                         return False
             return True
 
-        r = requests.get(base+"/non-conflicting", params={'numbers': mycourse})
-        data = r.json()
-        while True:
-            check_items(self, check_course, data['items'])
-            if data['next'] == "null":
-                break
-            data = requests.get(data['next']).json()
+        check_pages(self, check_course, requests.get(
+            base+"/non-conflicting", params={'numbers': mycourse}))
 
 
 class TestPagination(unittest.TestCase):
@@ -76,9 +71,38 @@ class TestPagination(unittest.TestCase):
         pass
 
 
-def check_items(t, f, items):
-    for item in items:
-        t.assertTrue(f(item))
+class TestSemesterFilter(unittest.TestCase):
+
+    def test_default_semester(self):
+
+        def check_course(item):
+            if item['semester'] == 'Spring 2016':
+                return True
+            return False
+
+        check_pages(self, check_course, requests.get(base+"/courses"))
+
+    def test_alternative_semester(self):
+
+        def check_course(item):
+            if item['semester'] == 'Summer 2016':
+                return True
+            print(item)
+            return False
+
+        check_pages(self, check_course, requests.get(
+            base+'/courses',
+            params={"semester": "Summer 2016"}))
+
+
+def check_pages(t, f, r):
+    data = r.json()
+    while True:
+        for item in data['items']:
+            t.assertTrue(f(item))
+        if data['next'] == "null":
+            break
+        data = requests.get(data['next']).json()
 
 if __name__ == '__main__':
     unittest.main()
