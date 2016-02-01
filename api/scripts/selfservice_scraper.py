@@ -13,6 +13,7 @@ from queue import Queue
 
 import bs4
 import requests
+from pymongo import ASCENDING
 
 from mongoengine import connect
 from api.scripts.coursemodels import BannerCourse, BannerDepartment,\
@@ -646,7 +647,7 @@ def precalculate_nonconflicting_table():
             entry.course_id = obj1.id
         entry.non_conflicting = nonconflicting
         entry.save()
-    print("[COMPLETE] Course conflict calcuations")
+    print("[COMPLETE] Course conflict calcuations", file=sys.stderr)
 
 
 def main():
@@ -683,13 +684,22 @@ def main():
         worker.start()
 
     for semester in Semesters:
-        print("Current: "+semester, file=sys.stderr)
+        print("Scraping: "+semester + "...", end="", flush=True,
+              file=sys.stderr)
         if args.to_files is not None:
             os.makedirs(path+semester, exist_ok=True)
         for department in Departments:
             for course in gen_courses(s, semester, department):
                 queue.put((path, semester, department, course))
+        print("Done.", file=sys.stderr)
     queue.join()
+
+    # Create indexes (if they don't exist)
+    BannerCourse._get_collection().create_index("instructors.name")
+    BannerCourse._get_collection().create_index([
+        ("meeting.start_time", ASCENDING),
+        ("meeting.end_time", ASCENDING),
+        ("meeting.day_of_week", ASCENDING)])
 
     # Compute non-conflicting
     precalculate_nonconflicting_table()
