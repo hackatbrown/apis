@@ -1,6 +1,5 @@
 # The Academic API
-*Everything you need to know about the courses endpoint*
--- Harrison Pincket (hpincket) 2016-01-31
+*Everything you need to know about the academic endpoints* 2016-02-01
 
 1. Usage Notes
 2. Implementation Notes
