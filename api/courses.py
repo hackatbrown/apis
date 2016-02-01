@@ -104,12 +104,10 @@ def schedule_time():
     time = int(request.args.get('time', '-1'))
     if time < 0:
         return make_json_error("Invalid or Missing parameter: time")
-    # res = check_against_time(day, time, time)
     query_args = {'meeting.day_of_week':day,
             "meeting.start_time": {'$lte': time},
             "meeting.end_time": {'$gte': time}}
-    return jsonify(paginate(query_args, params={'day': day, 'time': time}, raw=True))
-    # return jsonify(items=[json.loads(elm.to_json()) for elm in res])
+    return jsonify(paginate(filter_semester(query_args), params={'day': day, 'time': time}, raw=True))
 
 
 @app.route(PREFIX + '/non-conflicting')
@@ -149,7 +147,7 @@ def non_conflicting():
                 conflicting_list.update(res)
         query_args = {"id__nin": [c.id for c in conflicting_list]}
 
-    ans = paginate(query_args, {"numbers": request.args.get('numbers', '')})
+    ans = paginate(filter_semester(query_args), {"numbers": request.args.get('numbers', '')})
     return jsonify(ans)
 
 
@@ -210,6 +208,8 @@ def filter_semester(query_args):
         return True
 
     pvalue = request.args.get('semester', None)
+    if pvalue == "all":
+        pass
     if is_valid(pvalue):
         query_args['semester'] = pvalue
     else:

@@ -5,9 +5,6 @@
 1. Usage Notes
 2. Implementation Notes
 
-Note: If I refer to the academic API as the courses API it is because I'm not
-sure which name we will use. Sorry for any confusion.
-
 The academic API will provide access to Brown University course data as seen on
 selfservice.banner.edu, as well as Critical Review data (provided to us by Guo).
 
@@ -46,19 +43,28 @@ ex: /courses?numbers=CSCI1380-S01,CSCI1670-S01,CSCI0160
 Notice how both sections and courses are allowed. If the course number lacks a
 dash then all sections/labs/conferences are included in the results.
 
+Optional Parameter: `semester`, defaults to the current semester
 
 **Endpoint: /courses/{Course Number}**
 
 If Course Number is 'CSCI1380' then all sections/labs/conferences/etc. for
 CSCI1380 are returned in a list.
 
+```/courses/CSCI1380```
+
 If Course Number contains a dash as in 'CSCI1380-S01' then only that particular
 section is returned.
+
+```/courses/CSCI1380-S01```
+
+Optional Parameter: `semester`, defaults to the current semester
 
 **Endpoint: /instructors**
 
 Newline separated. As of now this returns all instructors found in all courses
 of the database, regardless of semester.
+
+Note: `semester` has no effect on this endpoint.
 
 **Endpoint: /instructors/{Instructor Name}**
 
@@ -68,16 +74,22 @@ urllib2. "Broseph Carberry" --> Broseph%20Carberry"
 
 Should default to current semester
 
+Optional Parameter: `semester`, defaults to the current semester
+
 **Endpoint: /departments**
 
 Pretty straightforward. I include the description in the results because the
 department codes aren't immediately obvious and this will let app builders make
 nice menus.
 
+Note: `semester` has no effect on this endpoint.
+
 **Endpoint: /departments/{Department Code}**
 
 ex:
 /departments/CSCI
+
+Optional Parameter: `semester`, defaults to the current semester
 
 **Endpoint: /during**
 
@@ -85,23 +97,24 @@ params:
 day: a single character representing the day {MTWRFSU}
 time: time in seconds since midnight
 
-I thought this might be handy. 
+Optional Parameter: `semester`, defaults to the current semester
 
 I really tried to use DateTimeField, but it's just not built for 'time of day'.
 Number of seconds is pretty usable, but let me know if you have a better way.
 
 **Endpoint: /non-conflicting**
 
-I think this endpoint is pretty neat. Users make a request with a list of
-sections and retrieve a list of courses with any courses which conflict
-excluded:
+Users make a request with a list of sections and retrieve a list of courses with
+any courses which conflict excluded:
 
 /non-conflicting?numbers=CSCI1380-S01,CSCI1760-S01,APMA1650-S02
+
+Optional Parameter: `semester`, defaults to the current semester
 
 Note: I think CSCI1380 (instead of CSCI1380-S01) should return an error since
 we're not sure if we should exclude S01 or S02. Some classes have ~14 sections.
 
-**Paging, wut's dis**
+**Paging, wut dis**
 
 We're going to have a lot of information and we don't want to transfer it all
 across at once (otherwise we could just provide a db dump). So here's what it
@@ -115,27 +128,25 @@ looks like:
 | offset | this is actually the mongoid last returned (more on this later). As a user you won't mess with this|
 | next | A pre-built url which will return the next page using the same limit|
 
-Max limit value: 42
+Max limit value: 42. limit = 9001 becomes limit = 42.
 
-Min limit value: 1
-
-An invalid limit is changed to the nearest valid one.
+Min limit value: 1. limit = -1 becomes limit 1.
 
 When no more results are available the next field is "null"
 
 Update: The results are now sorted by the \_id field.
 
+TODO: We can add a `previous` field to contains the previous url, but this
+requires an extra call to the database to determine the offset. I don't think a
+previous field is necessary, but it is possible.
 
 **Specifying Semester**
 
 The default is to only return course object offered in the 'current_semester'.
-Right now users can specify another semester in some of the endpoints, but I
-haven't added this to all of them. Semesters are currently in the form we used
-for the scraper i.e. "Spring 2016", "Summer 2016", "Fall 2017". We also should
-add an 'all' option in case users want access regardless of semester. This
-can probably be done in the /api/courses.py: filter_semester(). I'll admit I
-haven't yet fleshed out how filter_semester() and paginate() interact.
-
+Endpoints which return courses provide the option of filtering the results.
+Semesters are currently in the form "Season YYYY". i.e. "Spring 2016",
+"Summer 2016", "Fall 2017".  Setting `semester` to 'all' does exactly what you
+think.
 
 
 ##Implementation
@@ -155,9 +166,10 @@ evidence to the contrary.
 
 So we instead offset by id value. (If we sort the results, then we should offset
 by that value). This makes for ugly urls, but provides a better runtime. The
-user won't ever have to build one of these urls because it doesn't make sense to
-request the 25th-50th courses. You see? They really just want some or all of
-them.
+user won't ever have to build one of these urls because we provide a next field,
+and it doesn't make sense to request a particular offset. We answer the
+question, "What are the next 10 courses?" instead of "What are courses 30-39?"
+You see? They really just want some or all of them.
 
 Paging is implemented in /api/courses.py in paginate(). Briefly,
 * `query_args` is by default a mongoengine query dictionary. This can be unpacked
