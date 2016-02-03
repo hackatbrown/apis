@@ -1,11 +1,11 @@
-from flask import render_template, url_for, request, redirect
 from functools import wraps
-from api import make_json_error
-from api import app, db
-from api.scripts.add_client import add_client_id
-from api.scripts.email_handler import send_id_email
+from flask import jsonify, render_template, url_for, request, redirect
+from flask import send_from_directory
+from api import app, db, requires_auth
 from api.scripts.stats import get_total_requests
-from datetime import datetime
+from api.forms import SignupForm, DocumentationForm, MemberForm
+from flask import Markup
+import markdown
 
 '''
 DATABASE OBJECTS: View templates on the private, repository README.
@@ -13,6 +13,8 @@ DATABASE OBJECTS: View templates on the private, repository README.
 
 # simplify collection names
 clients = db.clients
+api_documentations = db['api_documentations']
+members = db['members']
 
 # Messages for success/failure during Client ID signup
 SUCCESS_MSG = "Your Client ID has been emailed to you!"
@@ -20,38 +22,63 @@ FAILURE_MSG = ("Your request could not be processed. "
                "Please email 'joseph_engelman@brown.edu' for "
                "manual registration.")
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico')
+
 
 @app.route('/')
 def root():
-    signed_up = request.args.get('signedup', '')
-    num_requests = get_total_requests()
-    if signed_up == 'true':
-        return render_template('documentation.html',
-                               message=SUCCESS_MSG,
-                               num_requests=num_requests)
-    if signed_up == 'false':
-        return render_template('documentation.html',
-                               message=FAILURE_MSG,
-                               num_requests=num_requests)
-    else:
-        return render_template('documentation.html', num_requests=num_requests)
-
+    # num_requests = get_total_requests()
+    return render_template('home.html', 
+            api_documentations=list(api_documentations.find().sort("_id",1)))
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'GET':
-        return render_template('signup.html')
-    else:
-        firstname = request.form['firstname'].strip()
-        lastname = request.form['lastname'].strip()
-        email = request.form['email'].strip()
-        client_id = add_client_id(email, firstname + " " + lastname)
-        if client_id:
-            send_id_email(email, firstname, client_id)
-            return redirect(url_for('root', signedup='true'))
-        else:
-            return redirect(url_for('root', signedup='false'))
+    form = SignupForm()
+    if form.validate_on_submit():
+        return redirect(url_for('root', signedup='true'))
+    return render_template('signup.html', form=form, active="signup",
+            api_documentations=list(api_documentations.find().sort("_id",1)))
 
+@app.route('/docs', methods=['GET'])
+def docs():
+    return redirect('/docs/getting-started') #TODO: Fix this part to use url_for
+
+@app.route('/docs/<docName>', methods=['GET'])
+def docs_for(docName="getting-started"):
+    api_documentation=api_documentations.find_one({'urlname': docName})
+    name=api_documentation['name']
+    contents=api_documentation['contents']
+    contents=Markup(markdown.markdown(contents))
+    return render_template('documentation_template.html',
+            api_documentations=list(api_documentations.find().sort("_id",1)),
+            name=name, contents=contents, active="docs")
+
+@app.route('/about-us', methods=['GET', 'POST'])
+def about_us():
+    return render_template('about-us.html',
+            api_documentations=list(api_documentations.find().sort("_id",1)),
+            active="about", members=members.find())
+
+@app.route('/admin/add-documentation', methods=['GET', 'POST'])
+@requires_auth
+def add_documentation():
+    form = DocumentationForm()
+    if form.validate_on_submit():
+        return redirect(url_for('root'))
+    return render_template('add_documentation.html', form=form,
+            api_documentations=list(api_documentations.find().sort("_id",1)))
+
+@app.route('/admin/add-member', methods=['GET', 'POST'])
+@requires_auth
+def add_member():
+    form = MemberForm()
+    if form.validate_on_submit():
+        return redirect(url_for('root'))
+    return render_template('add_member.html', form=form,
+            api_documentations=list(api_documentations.find().sort("_id",1)))
 
 # Static responses
 

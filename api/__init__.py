@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, current_app
+from flask import Flask, jsonify, request, current_app, Response
 from werkzeug.exceptions import default_exceptions
 from werkzeug.exceptions import HTTPException
 from functools import wraps
@@ -35,7 +35,6 @@ def support_jsonp(f):
             return f(*args, **kwargs)
     return decorated_function
 
-
 # initialize the app and allow an instance configuration file
 app = Flask(__name__, instance_relative_config=True)
 try:
@@ -59,8 +58,42 @@ elif 'MONGO_URI' in os.environ:
 else:
     print("The database URI's environment variable was not found.")
 
+
+
+# BASIC AUTH
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+    if 'DASHBOARD_PASS' in app.config:
+        correct_password = app.config['DASHBOARD_PASS']
+    elif 'DASHBOARD_PASS' in os.environ:
+        correct_password = os.environ['DASHBOARD_PASS']
+    else:
+        print("The dashboard password's environment variable was not found.")
+    return username == 'admin' and password == correct_password
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
+
+
 import api.meta
 import api.dining
 import api.wifi
+import api.laundry
 
 __all__ = ['api', ]

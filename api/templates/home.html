@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Brown APIs{% endblock %}
+
+{% block contents %}
+
+<div class="container home-container">
+  <!--<div class="jumbotron hidden-xs">-->
+    <!--<h1>Data Viz Here!</h1>-->
+    <!--<p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>-->
+    <!--<p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>-->
+  <!--</div>-->
+  <div class="row">
+    {% for documentation in api_documentations %}
+    <a href="/docs/{{ documentation.urlname }}" class="onhomepage">
+      <div class="col-md-4 col-sm-4">
+        <img src="{{ documentation.imageurl }}" class="img-responsive">
+        <h1></h1>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

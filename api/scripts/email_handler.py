@@ -4,10 +4,10 @@ import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-ERROR_RECEPIENT = "7172159174@vtext.com"
+URGENT_RECEPIENT = "7172159174@vtext.com"
 ALERT_RECEPIENT = "joseph_engelman@brown.edu"
 
-def send_id_email(address, firstname, client_id):
+def send_id_email(address, name, client_id):
 	# me == my email address
 	# you == recipient's email address
 	me = os.environ['GMAIL_USER']
@@ -19,7 +19,7 @@ def send_id_email(address, firstname, client_id):
 	msg['To'] = address
 
 	# Create the body of the message (a plain-text and an HTML version).
-	text = "Hi, " + firstname + "! Welcome to the Brown APIs developer community.\nYour Client ID is: " + client_id + ". Be sure to include it in every request!) You can use this Client ID for multiple projects. There is currently a maximum of one Client ID per student, but exceptions can be made on a case-by-case basis.\n\nBrown APIs are currently in beta. This means functionality may be added, removed, or modified at any time (however, this is very rare). To keep up-to-date on any changes, be sure to join the developer community on Facebook: https://www.facebook.com/groups/brown.apis/\n\nHappy developing!\nThe Brown APIs Team\n"
+	text = "Hi, " + name + "! Welcome to the Brown APIs developer community.\nYour Client ID is: " + client_id + ". Be sure to include it in every request!) You can use this Client ID for multiple projects. There is currently a maximum of one Client ID per student, but exceptions can be made on a case-by-case basis.\n\nBrown APIs are currently in beta. This means functionality may be added, removed, or modified at any time (however, this is very rare). To keep up-to-date on any changes, be sure to join the developer community on Facebook: https://www.facebook.com/groups/brown.apis/\n\nHappy developing!\nThe Brown APIs Team\n"
 	html = """\
 	<html>
 	  <head>
@@ -34,7 +34,7 @@ def send_id_email(address, firstname, client_id):
 		</style>
 	  </head>
 	  <body>
-	    <h2 class="center">Hi, """ + firstname + """! Welcome to the Brown APIs developer community.</h2>
+	    <h2 class="center">Hi, """ + name + """! Welcome to the Brown APIs developer community.</h2>
 	    <p>Your Client ID is: <em>""" + client_id + """</em>.</p>
 	    <p>Be sure to include your Client ID with every request you make! You can use this Client ID for multiple projects. Currently, there is a maximum of one Client ID per student, but exceptions can be made on a case-by-case basis.</p>
 	    <p>Brown APIs are currently in beta. This means functionality may be added, removed, or modified at any time (however, this is very rare). To keep up-to-date on any changes, be sure to join our <a href="https://www.facebook.com/groups/brown.apis/">community of developers</a> on Facebook.</p>
@@ -71,11 +71,11 @@ def send_alert_email(message, urgent=False):
 	# me == my email address
 	me = os.environ['GMAIL_USER']
 	# recepient's email address depends on how urgent the alert is
-	recepient = ERROR_RECEPIENT if urgent else ALERT_RECEPIENT
+	recepient = URGENT_RECEPIENT if urgent else ALERT_RECEPIENT
 
 	# Create message container - the correct MIME type is multipart/alternative.
 	msg = MIMEMultipart('alternative')
-	msg['Subject'] = "Brown APIs Error!" if urgent else "Brown APIs Alert!"
+	msg['Subject'] = "Brown APIs - Urgent Alert!" if urgent else "Brown APIs - System Error"
 	msg['From'] = me
 	msg['To'] = recepient
 

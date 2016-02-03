@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Brown APIs</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+
+        <meta name="description" content="Build better apps for Brown!">
+        <meta name="keywords" content="brown apis">
+
+        <!-- Fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
+
+        <!-- Styles -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/semantic.min.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/brownapis.css') }}" />
+
+        <!-- Scripts -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="{{ url_for('static', filename='js/semantic.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery.scrollTo.min.js') }}"></script>
+
+        <script>
+            var setupTeddy = function() {
+                $('#teddy').hover(
+                    function() {
+                        $('#teddy').attr('src', "{{ url_for('static', filename='img/teddy_bear.svg') }}");
+                    },
+                    function() {
+                        $('#teddy').attr('src', "{{ url_for('static', filename='img/teddy_bear_happy.svg') }}");
+                    }
+                );
+            };
+
+            var setupArrow = function() {
+                $('#arrow').on('click', function() {
+                    $.scrollTo($('.brownAPIsFooter').offset().top, 400);
+                });
+            };
+
+            var homePage = function() {
+                if ($('#body').find('.home.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/home.html") }}', 0, function() {
+                        setupTeddy();
+                        setupArrow();
+                    });
+                    var obj = {};
+                    history.pushState(obj, 'Home', '/');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var jobsPage = function() {
+                if ($('#body').find('.jobs.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/jobs.html") }}', 0, function() {
+                        setupArrow();
+                        $('.apply').hover(function() {
+                            $('.apply').toggleClass('shadow');
+                        });
+                        $('.apply').click(function() {
+                            $('#body').load('{{ url_for("static", filename="html/apply.html") }}', 0, function() {
+                                setupArrow();
+                                var obj = {};
+                                history.pushState(obj, 'Apply', '/apply');
+                            });
+                        });
+                    });
+                    var obj = {};
+                    history.pushState(obj, 'Join Our Team', '/jobs');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var supportPage = function() {
+                if ($('#body').find('.support.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/support.html") }}', 0, function() {
+                        setupArrow();
+                        $('.bugreport').on('click', function() {
+                            $('#body').load('{{ url_for("static", filename="html/bugreport.html") }}', 0, function() {
+                                setupArrow();
+                                $('.report').on('click', function() {
+                                    var failureCallback = function() {
+                                        $('#body').load('{{ url_for("static", filename="html/bugreport_failure.html") }}', 0 , function() {
+                                                setupArrow();
+                                                var obj = {};
+                                                history.pushState(obj, 'Oh dear', '/bugreport/failure');
+                                            });
+                                    };
+                                    $.post('bugreport_submit', { description: $('#description').val() }, function(response) {
+                                        if (response == 'ok') {
+                                            $('#body').load('{{ url_for("static", filename="html/bugreport_success.html") }}', 0 , function() {
+                                                setupArrow();
+                                                var obj = {};
+                                                history.pushState(obj, 'Bug Reported!', '/bugreport/success');
+                                            });
+                                        } else {
+                                            failureCallback();
+                                        }
+                                    }).fail(function() {
+                                        failureCallback();
+                                    });
+                                });
+                                var obj = {};
+                                history.pushState(obj, 'Report a Bug', '/bugreport');
+                            });
+                        });
+                        var obj = {};
+                        history.pushState(obj, 'Support', '/support');
+                    });
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var startPage = function() {
+                if ($('#body').find('.start.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/start.html") }}', 0, function() {
+                        setupArrow();
+
+                        $('.sign_up').click(function() {
+                            alert("Not implemented.");
+                        });
+
+                        $('.resources').click(function() {
+                            resourcesPage();
+                        });
+
+                        $('.examples').click(function() {
+                            alert("Not implemented.");
+                        });
+
+                        $('.support').click(function() {
+                            supportPage();
+                        });
+
+                        $(window).scroll(function() {
+                            var scrollBottom = $(document).scrollTop() + $(window).height();
+                            if (scrollBottom < $('#footer').offset().top) {
+                                $('#arrow').css("position", "fixed");
+                            } else {
+                                $('#arrow').css("position", "absolute");
+                            }
+                        });
+                        $('#footer').css("top", $("#body").height());
+                    });
+                    var obj = {};
+                    history.pushState(obj, 'Start', '/documentation/start');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var examplesPage = function() {
+                if ($('#body').find('.examples.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/examples.html") }}');
+                    var obj = {};
+                    history.pushState(obj, 'Examples', '/documentation/examples');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var resourcesPage = function() {
+                if ($('#body').find('.resources.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/resources.html") }}');
+
+                    var obj = {};
+                    history.pushState(obj, 'Resources', '/documentation/resources');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var featuredPage = function() {
+                if ($('#body').find('.featured.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/featured.html") }}');
+                    var obj = {};
+                    history.pushState(obj, 'Featured', '/documentation/featured');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            var loadSimpleDocPage = function(slug, name) {
+                if ($('#body').find('.'+slug+'.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/") }}' + slug + '.html');
+                    history.pushState({}, name, '/documentation/'+slug);
+                }
+                $.scrollTo(0, 400);
+            };
+
+
+            var laundryPage = function() {
+                if ($('#body').find('.laundry.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/laundry.html") }}');
+                    var obj = {};
+                    history.pushState(obj, 'Laundry', '/documentation/laundry');
+                }
+                $.scrollTo(0, 400);
+            };
+
+            $(document).ready(function() {
+                setupTeddy();
+                setupArrow();
+
+                /*****************************************
+                 * Links to dynamically load other pages *
+                 *****************************************/
+
+                $('.home').on('click', homePage);
+
+                $('.jobs').on('click', jobsPage);
+
+                $('.support').on('click', supportPage);
+
+                $('.start').on('click', startPage);
+
+                $('.examples').on('click', examplesPage);
+
+                $('.resources').on('click', resourcesPage);
+
+                $('.featured').on('click', featuredPage);
+
+                $('body').on('click', 'a.dining', loadSimpleDocPage.bind(this, 'dining', 'Dining'));
+                $('body').on('click', 'a.shuttle', loadSimpleDocPage.bind(this, 'shuttle', 'Shuttle'));
+                $('body').on('click', 'a.wifi', loadSimpleDocPage.bind(this, 'wifi', 'WiFi'));
+
+                $('.laundry').on('click', laundryPage);
+
+                {% if num_requests %}
+                    function numberWithCommas(x) {
+                        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                    requests = numberWithCommas({{num_requests}});
+                    $('#requests').html('<em>' + requests + ' requests so far!</em>');
+                {% endif %}
+
+                {% if page %}
+                    $('.{{ page}}').trigger('click');
+                {% endif %}
+            });
+        </script>
+    </head>
+
+    <body>
+        <!-- Body -->
+        <div id="body" class="ui vertical segment" style="background: #ffffff; min-height: 100%; position: relative;">
+            <div class="home page"></div>
+
+            <img id="teddy" src="{{ url_for('static', filename='img/teddy_bear_happy.svg') }}" class="ui small image centered" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto;" />
+            <img id="arrow" src="{{ url_for('static', filename='img/arrow.svg') }}" style="position: absolute; width: 48px; bottom: 24px; left: 0; right: 0; margin: auto; cursor: pointer;" />
+        </div><!-- End Body -->
+
+        <!-- Footer -->
+        <div id="footer" class="brownAPIsFooter ui stackable page three column grid" style="background-color: #CC0000;">
+            <div class="column" style="text-align: center;">
+                <h5 class="ui header">Organization</h5>
+                <div class="ui link list">
+                    <a class="item" id="home">Home</a>
+                    <!-- <a class="item" id="blog">Blog</a> -->
+                    <a class="item jobs">Join Our Team</a>
+                    <a class="item support">Support</a>
+                    <a class="item" href="https://twitter.com/BrownAPIs">Twitter</a>
+                </div>
+            </div>
+            <div class="column" style="text-align: center;">
+                <h5 class="ui header">Documentation</h5>
+                <div class="ui link list">
+                    <a class="item start">Getting Started</a>
+                    <!-- <a class="item" id="examples">Examples</a> -->
+                    <a class="item resources">Resources</a>
+                </div>
+
+                <h5 class="ui header">Community</h5>
+                <div class="ui link list">
+                    <!-- <a class="item" id="featured">Featured Apps</a> -->
+                    <a class="item" href="https://www.facebook.com/groups/brown.apis">Facebook</a>
+                </div>
+            </div>
+            <div class="column" style="text-align: center;">
+                <h5 class="ui header" style="text-transform: none;">APIs</h5>
+                <div class="ui link list">
+                    <a class="item dining">Dining</a>
+                    <a class="item shuttle">Shuttle</a>
+                    <!-- <a class="item" href="/docs/criticalreview">Critical Review</a> -->
+                    <a class="item wifi">WiFi</a>
+                    <a class="item laundry">Laundry</a>
+                </div>
+            </div>
+        </div><!-- End Footer -->
+        <div id="requests"></div>
+    </body>
+
+</html>

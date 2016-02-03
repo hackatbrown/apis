@@ -69,6 +69,17 @@ We use MongoDB to store various menus and schedules, as well as client informati
 	* _endpoint_: &lt;STRING&gt; **<-- endpoint of request**
 - **DEPRECATED:** *client_name*: &lt;STRING&gt; **<-- replaced with _username_**
 
+### db.api_documentations ###
+- *urlname*: &lt;STRING&gt;
+- *name*: &lt;STRING&gt;
+- *contents*: &lt;STRING&gt;
+- *imageurl*: &lt;IMAGE&gt;
+
+### db.members ###
+- *name*: &lt;STRING&gt;
+- *image_url*: &lt;STRING&gt;
+- *about*: &lt;STRING&gt;
+
 ### db.dining\_menus ###
 
 - *eatery*: &lt;STRING&gt;,
@@ -99,3 +110,12 @@ We use MongoDB to store various menus and schedules, as well as client informati
 
 - *eatery*: &lt;STRING&gt;,
 - *food*: [ &lt;STRING&gt;, &lt;STRING&gt;, ... ]
+
+
+### db.laundry ###
+- *room*
+    - *name*: &lt;STRING&gt;
+    - *id*: &lt;INT&gt;
+    - *machines*: list of objects with:
+        - *id*: &lt;INT&gt;
+        - *type*: &lt;STRING&gt; (one of `washFL`, `washNdry`, `dry`)
