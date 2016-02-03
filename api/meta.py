@@ -60,7 +60,7 @@ def docs_for(docName="getting-started"):
 def about_us():
     return render_template('about-us.html',
             api_documentations=list(api_documentations.find().sort("_id",1)),
-            active="about", members=members.find())
+            active="about", members=members.find().sort("name",1))
 
 @app.route('/admin/add-documentation', methods=['GET', 'POST'])
 @requires_auth
