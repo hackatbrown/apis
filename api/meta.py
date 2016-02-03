@@ -32,7 +32,7 @@ def favicon():
 def root():
     # num_requests = get_total_requests()
     return render_template('home.html', 
-            api_documentations=list(api_documentations.find()))
+            api_documentations=list(api_documentations.find().sort("_id",1)))
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -40,7 +40,7 @@ def signup():
     if form.validate_on_submit():
         return redirect(url_for('root', signedup='true'))
     return render_template('signup.html', form=form, active="signup",
-            api_documentations=api_documentations.find())
+            api_documentations=list(api_documentations.find().sort("_id",1)))
 
 @app.route('/docs', methods=['GET'])
 def docs():
@@ -53,13 +53,13 @@ def docs_for(docName="getting-started"):
     contents=api_documentation['contents']
     contents=Markup(markdown.markdown(contents))
     return render_template('documentation_template.html',
-            api_documentations=list(api_documentations.find()),
+            api_documentations=list(api_documentations.find().sort("_id",1)),
             name=name, contents=contents, active="docs")
 
 @app.route('/about-us', methods=['GET', 'POST'])
 def about_us():
     return render_template('about-us.html',
-            api_documentations=list(api_documentations.find()),
+            api_documentations=list(api_documentations.find().sort("_id",1)),
             active="about", members=members.find())
 
 @app.route('/admin/add-documentation', methods=['GET', 'POST'])
@@ -69,7 +69,7 @@ def add_documentation():
     if form.validate_on_submit():
         return redirect(url_for('root'))
     return render_template('add_documentation.html', form=form,
-            api_documentations=list(api_documentations.find()))
+            api_documentations=list(api_documentations.find().sort("_id",1)))
 
 @app.route('/admin/add-member', methods=['GET', 'POST'])
 @requires_auth
@@ -78,7 +78,7 @@ def add_member():
     if form.validate_on_submit():
         return redirect(url_for('root'))
     return render_template('add_member.html', form=form,
-            api_documentations=list(api_documentations.find()))
+            api_documentations=list(api_documentations.find().sort("_id",1)))
 
 # Static responses
 
