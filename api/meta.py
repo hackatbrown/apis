@@ -44,7 +44,7 @@ def signup():
 
 @app.route('/docs', methods=['GET'])
 def docs():
-    return redirect('/docs/getting-started') #TODO: Fix this part to use url_for
+    return redirect('https://api.students.brown.edu/docs/getting-started') #TODO: Fix this part to use url_for
 
 @app.route('/docs/<docName>', methods=['GET'])
 def docs_for(docName="getting-started"):
