@@ -1,0 +1,133 @@
+<!-- Dynamically inserted content begins here -->
+<div class="dining page"></div>
+
+<h1 class="ui center aligned header" style="font-size: 6rem; font-family: 'Amatic SC', cursive; color: #CC0000;">Dining API</h1>
+
+<article>
+    <p>The Dining API provides information about dining hall hours and menus. The eatery names are <em>ratty</em> and <em>vdub</em>. Currently, only the Ratty and VDub are supported.</p>
+
+    <p><em>Note:</em> All arguments are required unless denoted otherwise.</p>
+
+    <p style="font-size: 3rem; font-weight: bold;">Get Menus by Date</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/dining/menu</em></li>
+        <li><strong>Arguments:</strong>
+            <ul>
+                <li><em>eatery</em> &lt;string&gt;: either 'ratty' or 'vdub'</li>
+                <li><em>year</em> &lt;integer&gt; (optional): defaults to current year</li>
+                <li><em>month</em> &lt;integer&gt; (optional): defaults to current month</li>
+                <li><em>day</em> &lt;integer&gt; (optional): defaults to current day</li>
+                <li><em>hour</em> &lt;integer&gt; (optional): defaults to current hour</li>
+                <li><em>minute</em> &lt;integer&gt; (optional): defaults to current minute</li>
+            </ul>
+        </li>
+        <li><strong>Returns:</strong> The list of menus satisfying the given arguments and their count in the form:
+            <pre style="font-size: 1rem;">
+    {'num_results': INTEGER, 
+     'menus': [{'eatery': STRING, 
+               'year': INTEGER, 
+               'month': INTEGER, 
+               'day': INTEGER, 
+               'start_hour': INTEGER, 
+               'start_minute': INTEGER, 
+               'end_hour': INTEGER, 
+               'end_minute': INTEGER, 
+               menu_section1: [STRING, STRING, ...],
+               menu_section2: [STRING, STRING, ...],
+               ...},
+              ...]}
+            </pre>
+        </li>
+        <li><em>Note:</em> Each eatery has different menu sections (e.g. "Bistro", "Main Menu", etc) each of which contains a list of foods in that section.</li>
+    </ul>
+
+    <p style="font-size: 3rem; font-weight: bold;">Get Menus by Food</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/dining/find</em></li>
+        <li><strong>Arguments:</strong>
+            <ul>
+                <li><em>food</em> &lt;string&gt;: name of the food item (e.g. "pulled%pork%20sandwich")</li>
+            </ul>
+        </li>
+        <li><strong>Returns:</strong> A list of menus containing the given food in the form:
+            <pre style="font-size: 1rem;">
+    {'food': STRING, 
+     'menus': [menu1, menu2, ...]}
+            </pre>
+        </li>
+        <li><em>Note:</em> Each menu is a dictionary laid out exactly like in the response to "<em>/dining/menu</em>" requests.</li>
+        <li><em>Note:</em> The given food may be autocorrected to match a similar food.</li>
+    </ul>
+
+    <p style="font-size: 3rem; font-weight: bold;">Get Hours</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/dining/hours</em></li>
+        <li><strong>Arguments:</strong>
+            <ul>
+                <li><em>eatery</em> &lt;string&gt;: either 'ratty' or 'vdub'</li>
+                <li><em>year</em> &lt;integer&gt; (optional): defaults to current year</li>
+                <li><em>month</em> &lt;integer&gt; (optional): defaults to current month</li>
+                <li><em>day</em> &lt;integer&gt; (optional): defaults to current day</li>
+            </ul>
+        </li>
+        <li><strong>Returns:</strong> The list of hours satisfying the given arguments and their count in the form:
+            <pre style="font-size: 1rem;">
+    {'num_results': INTEGER, 
+     'hours': [{'eatery': STRING, 
+               'year': INTEGER, 
+               'month': INTEGER, 
+               'day': INTEGER, 
+               'open_hour': INTEGER, 
+               'open_minute': INTEGER, 
+               'close_hour': INTEGER, 
+               'close_minute': INTEGER }
+              ...]}
+            </pre>
+        </li>
+        <li><em>Note:</em> Because they close/reopen throughout the day, some eateries may have multiple results per day.</li>
+    </ul>
+
+    <p style="font-size: 3rem; font-weight: bold;">Find Open Eateries</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/dining/open</em></li>
+        <li><strong>Arguments:</strong>
+            <ul>
+                <li><em>year</em> &lt;integer&gt; (optional): defaults to current year</li>
+                <li><em>month</em> &lt;integer&gt; (optional): defaults to current month</li>
+                <li><em>day</em> &lt;integer&gt; (optional): defaults to current day</li>
+                <li><em>hour</em> &lt;integer&gt; (optional): defaults to current hour</li>
+                <li><em>minute</em> &lt;integer&gt; (optional): defaults to current minute</li>
+            </ul>
+        </li>
+        <li><strong>Returns:</strong> A list of hours objects, each of which is the same as a response from <em>/dining/hours</em> requests.
+            <pre style="font-size: 1rem;">
+    {'open_eateries': [hours_1, hours_2, ...]}
+            </pre>
+        </li>
+    </ul>
+
+    <p style="font-size: 3rem; font-weight: bold;">Find All Food Ever Served at an Eatery</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/dining/all_food</em></li>
+        <li><strong>Arguments:</strong>
+            <ul>
+                <li><em>eatery</em> &lt;string&gt;: the eatery to get all food ever served at</li>
+            </ul>
+        </li>
+        <li><strong>Returns:</strong> A list of all the food ever served at that eatery.
+            <pre style="font-size: 1rem;">
+    {'eatery': STRING,
+     'food': [STRING, STRING, STRING, ...]}
+            </pre>
+        </li>
+        <li><em>Note:</em> This is especially useful for searching for specific food names with the <em>/dining/find</em> endpoint.</li>
+    </ul>
+</article>
+
+<br />
+<br />
+<br />
+<br />
+
+<img id="arrow" src="/static/img/arrow.svg" style="position: fixed; width: 48px; bottom: 24px; left: 0; right: 0; margin: auto; cursor: pointer;" />
+<!-- Dynamically inserted content ends here -->

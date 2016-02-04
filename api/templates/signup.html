@@ -1,31 +1,43 @@
-<html>
-<head>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+{% from "macros.html" import render_field with context %}
 
-<h1 class="center">Brown University APIs</h1>
-<p class="center"><em>...helping you build cool things!</em></p>
+{% block title %}Brown APIs - Sign Up{% endblock %}
 
+{% block contents %}
 
-<h2>Sign up for a Client ID!</h1>
+<div class="container">
+  <div class="row">
+    <h1>Sign up for a Client ID!</h1>
+  </div>
 
-<p>We can't wait for you to join our community of developers! Fill out the form below to get started.</p>
+  <div class="row">
+    <p>We can't wait for you to join our community of developers! Fill out the form below to get started.</p>
+  </div>
 
-<form action="/signup" method="POST">
-First Name: 
-<input type="text" name="firstname" value="Josiah" onfocus="if (this.value == 'Josiah') this.value=''"> <br />
-Last Name: 
-<input type="text" name="lastname" value="Carberry" onfocus="if (this.value == 'Carberry') this.value=''"> <br />
-Brown Email Address: 
-<input type="text" name="email" value="josiah_carberry@brown.edu" onfocus="if (this.value == 'josiah_carberry@brown.edu') this.value=''"> <br />
+  <div class="row">
+    <!--<form action="{{ url_for('signup') }}" method="POST">-->
+    <!--<div class="form-group">-->
+      <!--<label for="lastname">Last Name</label>-->
+      <!--<input type="text" class="form-control" name="lastname" id="lastname" placeholder="Carberry">-->
+    <!--</div>-->
+    <!--<div class="form-group">-->
+      <!--<label for="email">Email Address</label>-->
+      <!--<input type="email" class="form-control" name="email" id="email" placeholder="josiah_carberry@brown.edu">-->
+    <!--</div>-->
+  <!--</form>-->
 
-<br />
+  <form method="POST" action="/signup">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ render_field(form.name, class="form-control", placeholder="Josiah Carberry")}}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.email, class="form-control", placeholder="josiah_carberry@brown.edu")}}
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Send me a Client ID!</button>
+  </form>
+  </div>
+</div>
 
-<input type="submit" value="Send me a Client ID!" id="submit">
-</form>
-
-<br />
-<br />
-<br />
-<a href="/">Return to Home</a>
+{% endblock %}
