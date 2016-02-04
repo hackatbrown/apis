@@ -29,7 +29,7 @@ def support_jsonp(f):
         callback = request.args.get('callback', False)
         if callback:
             from json import dumps
-            content = str(callback) + '(' + dumps(f(*args, **kwargs).data) + ')'
+            content = str(callback) + '(' + f(*args, **kwargs).data + ')'
             return current_app.response_class(
                 content, mimetype='application/javascript')
         else:
