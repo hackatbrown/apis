@@ -52,12 +52,14 @@ except IOError:
 for code in default_exceptions:
     app.error_handler_spec[None][code] = make_json_error
 
+
 if 'MONGO_URI' in app.config:
     db = pymongo.MongoClient(app.config['MONGO_URI']).brown
 elif 'MONGO_URI' in os.environ:
     db = pymongo.MongoClient(os.environ['MONGO_URI']).brown
 else:
     print("The database URI's environment variable was not found.")
+
 
 import api.meta
 import api.dining
