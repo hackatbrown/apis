@@ -70,7 +70,7 @@ def gen_current_semester():
     year = today.year
     month = today.month
     season_tuple = list(filter(lambda p: month in p[1], seasons))[0][0]
-    return season_tuple
+    return season_tuple + str(year)
 
 
 def gen_next_semester(semester_string):
@@ -331,9 +331,13 @@ def _gen_search_results_soup(ss, semester, department):
     headers['Referer'] = url
     current = 1
 
-    #L_PAGE923009   L_PAGE887098
+    # L_PAGE923009   L_PAGE887098
+    if ss.username == "hpincket":
+        L_PAGE_value = "L_PAGE887098"
+    else:
+        L_PAGE_value = "L_PAGE923009"
     requests.utils.add_dict_to_cookiejar(ss.s.cookies,
-                                         {'L_PAGE923009': str(current)})
+                                         {L_PAGE_value: str(current)})
 
     r = ss.s.post(url, data=payload, headers=headers)
     s = bs4.BeautifulSoup(r.content, 'html.parser')
@@ -700,7 +704,6 @@ def main():
             os.makedirs(path+semester, exist_ok=True)
         for department in Departments:
             for course in gen_courses(s, semester, department):
-                print(course)
                 queue.put((path, semester, department, course))
         print("Done.", file=sys.stderr)
     queue.join()
