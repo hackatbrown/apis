@@ -16,7 +16,7 @@ import requests
 from pymongo import ASCENDING
 
 from mongoengine import connect
-from api.scripts.coursemodels import BannerCourse, BannerDepartment,\
+from coursemodels import BannerCourse, BannerDepartment,\
     CourseMeeting, NonconflictEntry, CourseInstructor
 
 # TODO: Only local
@@ -70,7 +70,7 @@ def gen_current_semester():
     year = today.year
     month = today.month
     season_tuple = list(filter(lambda p: month in p[1], seasons))[0][0]
-    return season_tuple + str(year)
+    return season_tuple
 
 
 def gen_next_semester(semester_string):
@@ -102,11 +102,12 @@ def generate_semesters(n):
     the upcoming semesters in order (including
     the current semester)
     """
+    n = 0
     semesters = []
     semesters.append(gen_current_semester())
     for i in range(1, n):
         semesters.append(gen_next_semester(semesters[i-1]))
-        return semesters
+    return semesters
 
 Semesters = generate_semesters(3)
 Departments = [
@@ -283,7 +284,9 @@ class SelfserviceSession:
                           allow_redirects=True)
 
         if 'Invalid login information' in res.text:
+            print('login failed')
             return False
+        print('login successful')
         return True
 
 
@@ -328,22 +331,25 @@ def _gen_search_results_soup(ss, semester, department):
     headers['Referer'] = url
     current = 1
 
+    #L_PAGE923009   L_PAGE887098
     requests.utils.add_dict_to_cookiejar(ss.s.cookies,
-                                         {'L_PAGE887098': str(current)})
+                                         {'L_PAGE923009': str(current)})
 
     r = ss.s.post(url, data=payload, headers=headers)
     s = bs4.BeautifulSoup(r.content, 'html.parser')
     # max_page = len(s.select("#SearchResults")[0].select('a')) - 1
     set_results_string = s.select('img[onload^=setResults2]')
     if len(set_results_string) == 0:  # No Classes
+        print("No classes!")
         return
     set_results_string = set_results_string[0]['onload']
     max_page = int(set_results_string[12:-1].split(',')[0])
     yield s  # Page 1
     current += 1
     while current <= max_page:
+        #       L_PAGE887098
         requests.utils.add_dict_to_cookiejar(
-            ss.s.cookies, {'L_PAGE887098': str(current)})
+            ss.s.cookies, {'L_PAGE923009': str(current)})
 
         r = ss.s.post(url, data=payload, headers=headers)
         s = bs4.BeautifulSoup(r.content, 'html.parser')
@@ -566,7 +572,11 @@ def _extract_course_exam_info(course_soup):
             for row in more_exam_info_rows:
                 location_info.append([entry.text
                                       for entry in row.find_all('td')])
+            if type(location_info) == list:
+                print(location_info[0])
+                location_info = ' '.join(location_info[0])
             exam_data['exam_location'] = location_info
+            print(location_info)
     return exam_data
 
 
@@ -690,6 +700,7 @@ def main():
             os.makedirs(path+semester, exist_ok=True)
         for department in Departments:
             for course in gen_courses(s, semester, department):
+                print(course)
                 queue.put((path, semester, department, course))
         print("Done.", file=sys.stderr)
     queue.join()

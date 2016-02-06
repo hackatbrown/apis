@@ -28,7 +28,8 @@ def support_jsonp(f):
     def decorated_function(*args, **kwargs):
         callback = request.args.get('callback', False)
         if callback:
-            content = str(callback) + '(' + str(f(*args, **kwargs).data) + ')'
+            from json import dumps
+            content = callback.encode("utf-8") + b'(' + f(*args, **kwargs).data + b')'
             return current_app.response_class(
                 content, mimetype='application/javascript')
         else:
@@ -51,14 +52,13 @@ except IOError:
 for code in default_exceptions:
     app.error_handler_spec[None][code] = make_json_error
 
+
 if 'MONGO_URI' in app.config:
     db = pymongo.MongoClient(app.config['MONGO_URI']).brown
 elif 'MONGO_URI' in os.environ:
     db = pymongo.MongoClient(os.environ['MONGO_URI']).brown
 else:
     print("The database URI's environment variable was not found.")
-
-
 
 # BASIC AUTH
 
@@ -94,7 +94,7 @@ def requires_auth(f):
 import api.meta
 import api.dining
 import api.wifi
-import api.courses
 import api.laundry
+import api.courses
 
 __all__ = ['api', ]

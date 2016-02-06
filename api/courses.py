@@ -14,8 +14,10 @@ from datetime import date
 PREFIX = "/academic"
 PAGINATION_LIMIT = 10
 PAGINATION_MAX = 42
+
 #TODO: Maybe there's some way to use the same connection as given by 'db'.
-connect('brown')
+
+connect('brown', host=app.config['MONGO_URI'])
 
 
 @app.route(PREFIX + '/courses')
@@ -209,7 +211,7 @@ def filter_semester(query_args):
 
     pvalue = request.args.get('semester', None)
     if pvalue == "all":
-        pass
+        return query_args
     if is_valid(pvalue):
         query_args['semester'] = pvalue
     else:
