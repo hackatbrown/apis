@@ -9,6 +9,7 @@ import random
 from api.scripts.coursemodels import *
 import bson
 from datetime import date
+import os
 
 
 PREFIX = "/academic"
@@ -17,7 +18,12 @@ PAGINATION_MAX = 42
 
 #TODO: Maybe there's some way to use the same connection as given by 'db'.
 
-connect('brown', host=app.config['MONGO_URI'])
+if 'MONGO_URI' in app.config:
+    connect('brown', host=app.config['MONGO_URI'])
+elif 'MONGO_URI' in os.environ:
+    connect('brown', host=os.environ['MONGO_URI'])
+else:
+    print("The database URI's environment variable was not found.")
 
 
 @app.route(PREFIX + '/courses')
