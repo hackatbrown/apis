@@ -24,7 +24,7 @@ def scrape(eateries, get_menus=True, get_hours=True, alert=True):
             traceback.print_exc()
             print("Could not scrape data for", eatery.name)
             if alert:
-                send_alert_email("Could not scrape data for " + eatery.name, urgent=True)
+                send_alert_email("Could not scrape data for " + eatery.name, urgent=False)
             continue
         elapsed = time.time() - start
         print(num_menus, "menus and", num_hours, "hours scraped for", eatery.name, "in", str(elapsed), "seconds.")

@@ -1,0 +1,67 @@
+a {
+	cursor: pointer;
+}
+
+article {
+	max-width: 600px;
+	margin-top: 2em;
+	margin-left: auto;
+	margin-right: auto;
+	color: #000000; 
+	font-family: 'Josefin Sans', sans-serif;
+	font-size: 1.5rem;
+	line-height: 110%;
+}
+
+.apiDocLink {
+	font-family: 'Amatic SC', cursive;
+	font-weight: bold;
+	cursor: pointer;
+	font-size: 3.0rem;
+}
+
+.shadow {
+	text-shadow: 1px 1px #666666;
+}
+
+.codeExample {
+	width: 90%;
+	margin-top: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	font-size: 1.35rem;
+	font-family: "Courier New", Courier, monospace;
+	font-weight: bold;
+}
+
+.apiTable {
+	width: 70%;
+	margin-top: 2.2em;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+/* Footer */
+.brownAPIsFooter.stackable.grid {
+	padding-top: 3rem;
+	padding-bottom: 2rem;
+}
+
+.brownAPIsFooter.stackable.grid h5 {
+	text-transform: uppercase;
+}
+
+#requests {
+	font-size: 0.8em;
+	font-family: HelveticaNeue-Light, 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+	font-weight: lighter;
+	color: white;
+	background-color: #CC0000;
+	padding-bottom: 1em;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}

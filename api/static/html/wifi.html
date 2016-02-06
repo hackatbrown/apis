@@ -1,0 +1,53 @@
+<!-- Dynamically inserted content begins here -->
+<div class="wifi page"></div>
+
+<h1 class="ui center aligned header" style="font-size: 6rem; font-family: 'Amatic SC', cursive; color: #CC0000;">WiFi API</h1>
+
+<article>
+	<p>The WiFi API provides information about WiFi usage around campus. This is particularly useful when determining how many people are at a certain place on campus. The only locations currently supported are: <em>ratty</em>, <em>vdub</em>, <em>jos</em>, <em>andrews</em>, and <em>blueroom</em>. More locations may be added in the future. Check the <em>/wifi/locations</em> endpoint (documented below) for the most up-to-date information.</p>
+
+    <p style="font-size: 3rem; font-weight: bold;">Count Users at a Location</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/wifi/count</em></li>
+        <li><strong>Arguments:</strong>
+            <ul>
+                <li><em>location</em> &lt;string&gt;: one of the location names mentioned above</li>
+                <li><em>history</em> &lt;boolean&gt; (optional): if true, measurements from the past hour will be returned</li>
+            </ul>
+        </li>
+        <li><strong>Returns:</strong> A JSON dictionary of the form:
+            <pre style="font-size: 1rem;">
+    {'location': STRING, 
+     'timestamp': FLOAT (Unix Timestamp),
+     'count': INTEGER }
+            </pre>
+            Or, if the <em>history</em> argument is <strong>true</strong>, the response will contain multiple timestamps and counts:
+            <pre style="font-size: 1rem;">
+    {'location': STRING, 
+     'history': [{'timestamp': FLOAT, 'count': INTEGER},
+                 {'timestamp': FLOAT, 'count': INTEGER},
+                 ...]}
+            </pre>
+        </li>
+    </ul>
+
+    <p style="font-size: 3rem; font-weight: bold;">Get All Location Names</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/wifi/locations</em></li>
+        <li><strong>Arguments:</strong> <em>None</em></li>
+        <li><strong>Returns:</strong> A list of location names in the form:
+            <pre style="font-size: 1rem;">
+    {'locations': [STRING, STRING, ...]}
+            </pre>
+        </li>
+        <li><em>Note:</em> Each string is the name of a location.</li>
+    </ul>
+</table>
+
+<br />
+<br />
+<br />
+<br />
+
+<img id="arrow" src="/static/img/arrow.svg" style="position: fixed; width: 48px; bottom: 24px; left: 0; right: 0; margin: auto; cursor: pointer;" />
+<!-- Dynamically inserted content ends here -->

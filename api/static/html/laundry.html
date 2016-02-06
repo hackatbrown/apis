@@ -1,0 +1,86 @@
+<!-- Dynamically inserted content begins here -->
+<div class="wifi page"></div>
+
+<h1 class="ui center aligned header" style="font-size: 6rem; font-family: 'Amatic SC', cursive; color: #CC0000;">WiFi API</h1>
+
+<article>
+    <p>The Laundry API provides information about laundry rooms, the machines therein, and the availability of these machines.</p>
+    <p style="font-size: 3rem; font-weight: bold;">List Laundry Rooms</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/laundry/rooms</em></li>
+        <li><strong>Arguments:</strong> None</li>
+        <li><strong>Returns:</strong> A JSON dictionary of the form:
+            <pre style="font-size: 1rem;">
+    {'num_result': INT, 
+     'results': [{'id': STRING, 'name': STRING}, ...]}
+            </pre>
+        </li>
+    </ul>
+
+    <p style="font-size: 3rem; font-weight: bold;">Get Laundry Room Details</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/laundry/rooms/<code>room</code></em></li>
+        <li><strong>Arguments:</strong> 
+            <ul><li><code>room</code>, the ID of the room in question</li></ul>
+        </li>
+
+        <li><strong>Returns:</strong> Details about the room in the form:
+            <pre style="font-size: 1rem;">
+    {'result': {
+        'id': STRING,
+        'name': STRING,
+        'machines': [{'id': STRING, 'type': STRING}, ...]}}
+            </pre>
+        </li>
+    </ul>
+
+    <p style="font-size: 3rem; font-weight: bold;">List Laundry Machines</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/laundry/rooms/<code>room</code>/machines</em></li>
+        <li><strong>Arguments:</strong> 
+            <ul>
+                <li><code>room</code>, the ID of the room in question</li>
+                <li><code>get_status</code>, an optional query parameter indicating whether or not to include the status of the machines (availability, minutes remaining, etcetera)</li>
+            </ul>
+        </li>
+
+        <li><strong>Returns:</strong> A list of machines in the form:
+            <pre style="font-size: 1rem;">
+    {'results': [{'id': STRING, 'type': STRING}, ...]}
+            </pre>
+        If <code>get_status</code> is true-ish (<code>bool()</code> evaluates it to True in Python), each result will also contain:
+            <ul>
+                <li><code>avail</code>: BOOL indicating whether or not the machine is available</li>
+                <li><code>time_remaining</code>: INT indicating number of minutes until machine is done, may be non-zero even if <code>avail</code> is <code>false</code></li>
+                <li><code>message</code>: STRING with a special status message about this machine if applicable, or <code>null</code></li>
+            </ul>
+        </li>
+    </ul>
+
+    <p style="font-size: 3rem; font-weight: bold;">Get Laundry Machine Details</p>
+    <ul>
+        <li><strong>Endpoint:</strong> <em>/laundry/rooms/<code>room</code>/machines/<code>machine_id</code></em></li>
+        <li><strong>Arguments:</strong> 
+            <ul>
+                <li><code>room</code>, the ID of the room in question</li>
+                <li><code>machine_id</code>, the ID of the machine in question</li>
+                <li><code>get_status</code>, an optional query parameter indicating whether or not to include the status of the machines (availability, minutes remaining, etcetera)</li>
+            </ul>
+        </li>
+
+        <li><strong>Returns:</strong> Details about the machine in the form:
+            <pre style="font-size: 1rem;">
+    {'result': {'id': STRING, 'type': STRING}}
+            </pre>
+            If <code>get_status</code> is true-ish (<code>bool()</code> evaluates it to True in Python), the result will also contain the additional fields contained at the <em>Get Laundry Machine Details</em> endpoint.
+        </li>
+    </ul>
+</table>
+
+<br />
+<br />
+<br />
+<br />
+
+<img id="arrow" src="/static/img/arrow.svg" style="position: fixed; width: 48px; bottom: 24px; left: 0; right: 0; margin: auto; cursor: pointer;" />
+<!-- Dynamically inserted content ends here -->
