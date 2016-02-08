@@ -1,0 +1,43 @@
+#console {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	color: white;
+	z-index: 100;
+}
+#console .top-row {
+	padding: 12px;
+	text-align: right;
+}
+#console .top-row > * {
+	display: inline-block;
+	background-color: #333;
+	border-radius: 2px;
+	color: white;
+	padding: 6px 12px;
+	text-transform: lowercase;
+	cursor: default;
+	margin-left: 12px;
+}
+#console .top-row .showhide {
+	
+}
+#console .expansion {
+	background-color: #333;
+	border: 1px solid transparent;
+}
+#console .top-row select {
+	border: none;
+	background-color: #333;
+	font-family: inherit;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	padding-right: 30px;
+	outline: none;
+	position: relative;
+	background-image: url(/static/console/dropdown-arrow.svg);
+	background-position: right;
+	background-repeat: no-repeat;
+}
