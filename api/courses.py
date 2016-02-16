@@ -28,6 +28,7 @@ else:
 
 @app.route(PREFIX + '/courses')
 @support_jsonp
+@require_client_id()
 def courses_index():
     '''
     Returns all courses
@@ -49,6 +50,7 @@ def courses_index():
 
 @app.route(PREFIX + '/courses/<course_id>')
 @support_jsonp
+@require_client_id()
 def course_specified(course_id):
     '''
     Either,
@@ -69,6 +71,7 @@ def course_specified(course_id):
 
 @app.route(PREFIX + '/instructors')
 @support_jsonp
+@require_client_id()
 def instructors_index():
     ''' Endpoint for all instructors '''
     res = BannerCourse.objects().distinct("instructors.name")
@@ -77,6 +80,7 @@ def instructors_index():
 
 @app.route(PREFIX + '/instructors/<instructor_name>')
 @support_jsonp
+@require_client_id()
 def instructors_specified(instructor_name):
     ''' Endpoint for a given instructor '''
     ans = paginate(filter_semester({"instructors__name": instructor_name}))
@@ -85,6 +89,7 @@ def instructors_specified(instructor_name):
 
 @app.route(PREFIX + '/departments')
 @support_jsonp
+@require_client_id()
 def departments_index():
     '''Endpoint for unique departments as a list'''
     res = BannerCourse._get_collection()\
@@ -95,6 +100,7 @@ def departments_index():
 
 @app.route(PREFIX + '/departments/<dept_code>')
 @support_jsonp
+@require_client_id()
 def departments_specified(dept_code):
     ''' Endpoint for courses for a given department '''
     ans = paginate(filter_semester({"dept__code": dept_code}))
@@ -104,6 +110,7 @@ def departments_specified(dept_code):
 # TODO: Think of a good end-point name
 @app.route(PREFIX + '/during')
 @support_jsonp
+@require_client_id()
 def schedule_time():
     '''Endpoint for courses ocurring during a given time'''
     day = request.args.get('day', None)
@@ -120,6 +127,7 @@ def schedule_time():
 
 @app.route(PREFIX + '/non-conflicting')
 @support_jsonp
+@require_client_id()
 def non_conflicting():
     courses = request.args.get('numbers', '').split(",")
     if BannerCourse.objects().count() == NonconflictEntry.objects().count():
