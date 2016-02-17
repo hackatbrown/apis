@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from api import app, make_json_error, support_jsonp
-from api.meta import is_valid_client, log_client, INVALID_CLIENT_MSG
+from api.meta import is_valid_client, require_client_id, log_client, INVALID_CLIENT_MSG
 from mongoengine import connect
 import json
 import urllib
@@ -44,7 +44,7 @@ def courses_index():
                 full_numbers.append(n)
             else:
                 numbers.append(n)
-        return jsonify(paginate(filter_semester({"$or": [{"full_number": {"$in": full_numbers}}, {"number": {"$in": numbers}}]}),raw=True))
+        return jsonify(paginate(filter_semester({"$or": [{"full_number": {"$in": full_numbers}}, {"number": {"$in": numbers}}]}), raw=True))
     return jsonify(paginate(filter_semester({})))
 
 
@@ -179,12 +179,13 @@ def check_against_time(day, stime, etime):
 
 def paginate(query, params=None, raw=False):
     '''
-    Paginates the reuslts of a mongoengine query,
+    Paginates the results of a mongoengine query,
     query:: A dictionary of kwargs to include in the query
     '''
     offset = request.args.get('offset', None)
     limit = int(request.args.get('limit', PAGINATION_LIMIT))
     limit = min(max(limit, 1), PAGINATION_MAX)
+
     if not raw:  # Make Raw
         query = BannerCourse.objects(**query)._query
     if offset is not None:
@@ -197,6 +198,8 @@ def paginate(query, params=None, raw=False):
         next_url = request.base_url + "?" +\
             urllib.parse.urlencode({"limit": limit,
                                     "offset": res[limit - 1].id})
+        client_id = request.args.get('client_id')
+        next_url = next_url + "&" + urllib.parse.urlencode({"client_id": client_id})
         if params is not None:
             next_url = next_url+"&"+urllib.parse.urlencode(params)
         res.pop()
