@@ -7,6 +7,7 @@ from api.forms import SignupForm, DocumentationForm, MemberForm
 from flask import Markup
 import markdown
 from datetime import datetime
+import os
 
 '''
 DATABASE OBJECTS: View templates on the private, repository README.
@@ -16,12 +17,6 @@ DATABASE OBJECTS: View templates on the private, repository README.
 clients = db.clients
 api_documentations = db['api_documentations']
 members = db['members']
-
-# Messages for success/failure during Client ID signup
-SUCCESS_MSG = "Your Client ID has been emailed to you!"
-FAILURE_MSG = ("Your request could not be processed. "
-               "Please email 'joseph_engelman@brown.edu' for "
-               "manual registration.")
 
 @app.route('/favicon.ico')
 def favicon():
