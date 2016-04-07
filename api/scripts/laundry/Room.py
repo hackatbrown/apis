@@ -29,8 +29,8 @@ def scrape_machines(room):
 
 
 def get_machine_statuses(room):
-    html = util.get_html(_room_dynamic_url % room['id'], need_auth=True)
-    for kv in html.split('&'):
+    html = util.get_html(_room_dynamic_url % room['id'], need_auth=True)[1:]
+    for kv in re.split('\n&', html):
         if kv == '':
             continue
 
