@@ -45,7 +45,7 @@ def get_machine_statuses(room):
                         room['machines'][idx]['message'] = None
                     else:
                         room['machines'][idx]['message'] = props[6]
-                    room['machines'][idx]['avail'] = bool(props[0])
+                    room['machines'][idx]['avail'] = props[0] == "1"
                     room['machines'][idx]['time_remaining'] = int(props[1])
                     break
     return room
