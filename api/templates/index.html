@@ -85,7 +85,7 @@
                                         $('#body').load('{{ url_for("static", filename="html/bugreport_failure.html") }}', 0 , function() {
                                                 setupArrow();
                                                 var obj = {};
-                                                history.pushState(obj, 'Oh dear', '/bugreport_failure');
+                                                history.pushState(obj, 'Oh dear', '/bugreport/failure');
                                             });
                                     };
                                     $.post('bugreport_submit', { description: $('#description').val() }, function(response) {
@@ -93,7 +93,7 @@
                                             $('#body').load('{{ url_for("static", filename="html/bugreport_success.html") }}', 0 , function() {
                                                 setupArrow();
                                                 var obj = {};
-                                                history.pushState(obj, 'Bug Reported!', '/bugreport_success');
+                                                history.pushState(obj, 'Bug Reported!', '/bugreport/success');
                                             });
                                         } else {
                                             failureCallback();
@@ -145,7 +145,7 @@
                         $('#footer').css("top", $("#body").height());
                     });
                     var obj = {};
-                    history.pushState(obj, 'Start', '/start');
+                    history.pushState(obj, 'Start', '/documentation/start');
                 }
                 $.scrollTo(0, 400);
             };
@@ -154,7 +154,7 @@
                 if ($('#body').find('.examples.page').length == 0) {
                     $('#body').load('{{ url_for("static", filename="html/examples.html") }}');
                     var obj = {};
-                    history.pushState(obj, 'Examples', '/examples');
+                    history.pushState(obj, 'Examples', '/documentation/examples');
                 }
                 $.scrollTo(0, 400);
             };
@@ -163,20 +163,8 @@
                 if ($('#body').find('.resources.page').length == 0) {
                     $('#body').load('{{ url_for("static", filename="html/resources.html") }}');
 
-                    $('.dining').click(function() {
-                        diningPage();
-                    });
-
-                    $('.shuttle').click(function() {
-                        shuttlePage();
-                    });
-
-                    $('.wifi').click(function() {
-                        wifiPage();
-                    });
-
                     var obj = {};
-                    history.pushState(obj, 'Resources', '/resources');
+                    history.pushState(obj, 'Resources', '/documentation/resources');
                 }
                 $.scrollTo(0, 400);
             };
@@ -185,37 +173,19 @@
                 if ($('#body').find('.featured.page').length == 0) {
                     $('#body').load('{{ url_for("static", filename="html/featured.html") }}');
                     var obj = {};
-                    history.pushState(obj, 'Featured', '/featured');
+                    history.pushState(obj, 'Featured', '/documentation/featured');
                 }
                 $.scrollTo(0, 400);
             };
 
-            var diningPage = function() {
-                if ($('#body').find('.dining.page').length == 0) {
-                    $('#body').load('{{ url_for("static", filename="html/dining.html") }}');
-                    var obj = {};
-                    history.pushState(obj, 'Dining', '/documentation/dining');
+            var loadSimpleDocPage = function(slug, name) {
+                if ($('#body').find('.'+slug+'.page').length == 0) {
+                    $('#body').load('{{ url_for("static", filename="html/") }}' + slug + '.html');
+                    history.pushState({}, name, '/documentation/'+slug);
                 }
                 $.scrollTo(0, 400);
             };
 
-            var shuttlePage = function() {
-                if ($('#body').find('.shuttle.page').length == 0) {
-                    $('#body').load('{{ url_for("static", filename="html/shuttle.html") }}');
-                    var obj = {};
-                    history.pushState(obj, 'Shuttle', '/documentation/shuttle');
-                }
-                $.scrollTo(0, 400);
-            };
-
-            var wifiPage = function() {
-                if ($('#body').find('.wifi.page').length == 0) {
-                    $('#body').load('{{ url_for("static", filename="html/wifi.html") }}');
-                    var obj = {};
-                    history.pushState(obj, 'WiFi', '/documentation/wifi');
-                }
-                $.scrollTo(0, 400);
-            };
 
             var laundryPage = function() {
                 if ($('#body').find('.laundry.page').length == 0) {
@@ -234,45 +204,23 @@
                  * Links to dynamically load other pages *
                  *****************************************/
 
-                $('.home').on('click', function() {
-                    homePage();
-                });
+                $('.home').on('click', homePage);
 
-                $('.jobs').on('click', function() {
-                    jobsPage();
-                });
+                $('.jobs').on('click', jobsPage);
 
-                $('.support').on('click', function() {
-                    supportPage();
-                });
+                $('.support').on('click', supportPage);
 
-                $('.start').on('click', function() {
-                    startPage();
-                });
+                $('.start').on('click', startPage);
 
-                $('.examples').on('click', function() {
-                    examplesPage();
-                });
+                $('.examples').on('click', examplesPage);
 
-                $('.resources').on('click', function() {
-                    resourcesPage();
-                });
+                $('.resources').on('click', resourcesPage);
 
-                $('.featured').on('click', function() {
-                    featuredPage();
-                });
+                $('.featured').on('click', featuredPage);
 
-                $('.dining').on('click', function() {
-                    diningPage();
-                });
-
-                $('.shuttle').on('click', function() {
-                    shuttlePage();
-                });
-
-                $('.wifi').on('click', function() {
-                    wifiPage();
-                });
+                $('body').on('click', 'a.dining', loadSimpleDocPage.bind(this, 'dining', 'Dining'));
+                $('body').on('click', 'a.shuttle', loadSimpleDocPage.bind(this, 'shuttle', 'Shuttle'));
+                $('body').on('click', 'a.wifi', loadSimpleDocPage.bind(this, 'wifi', 'WiFi'));
 
                 $('.laundry').on('click', laundryPage);
 

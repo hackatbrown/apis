@@ -119,7 +119,7 @@ def req_wifi_locations():
     ''' Endpoint for all WiFi location requests
         (see public docs for documentation) '''
 
-    return jsonify(locations=location_names.keys())
+    return jsonify(locations=list(location_names.keys()))
 
 # Helper methods
 
