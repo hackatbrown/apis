@@ -39,8 +39,8 @@ You'll need the latest version of Python 3, along with `virtualenv` and `pip`. G
 	- `git checkout stage`
 	- `git fetch origin`
 	- `git reset --hard origin/master`
-	- `git rebase -i <your-branch-name>`
-	- `git push`
+	- `git rebase <your-branch-name>`
+	- `git push --force`
 	- Note: This won't work if multiple developers are doing this at the same time.
 9. You're code will be merged into `master` once your pull request is accepted.
 
