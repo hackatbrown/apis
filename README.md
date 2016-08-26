@@ -3,45 +3,37 @@ Brown University APIs
 
 _This README is for development of the APIs. Public documentation is located [here](http://api.students.brown.edu)._
 
-**DO NOT PUSH DIRECTLY TO MASTER UNLESS YOU INTEND TO DEPLOY A NEW VERSION OF THE SITE. YOU COULD BREAK EVERYTHING!**
+**DO NOT PUSH DIRECTLY TO MASTER UNLESS YOU INTEND TO DEPLOY A NEW VERSION OF THE SITE. THE SITE AND ALL APIS IS CONTINUOUSLY REDEPLOYED WHEN THE MASTER BRANCH IS UPDATED.**
 
 
-Requirements
+Before Getting Started
 ------------
-- Python 3
-    - `virtualenv`
-    - `pip`
-- MongoDB
-- Git
+
+You'll need the latest version of Python 3, along with `virtualenv` and `pip`. Go ahead and look up these programs if you aren't familiar with them. They're crucial to our development process.
 
 Getting Started on Development
 ------------------------------
 
 1. Clone this repository to your own machine:
 	- `git clone https://github.com/hackatbrown/brown-apis.git`
-2. If you don't have 'pip' installed, install 'pip' (find instructions online).
-3. Also, make sure you have 'virtualenv' installed (find instructions online).
-4. Open a terminal and navigate to the top level of the reposity (_brown-apis/_).
-5. Create and activate a virtual environment:
+2. Open a terminal and navigate to the top level of the repository (_brown-apis/_).
+3. Create and activate a virtual environment (again, look up `virtualenv` online to understand what this does):
 	- ``virtualenv -p `which python3` venv``
 	- `source venv/bin/activate`
-6. Install all the required libraries in your virtual environment:
+4. Install all the required libraries in your virtual environment:
 	- `pip install -r requirements.txt`
-7. Change to your feature's branch with Git. For example:
-	- `git checkout feature/courses`
-	- Or, if your feature's branch does not exist yet: `git checkout -b feature/<name>`
-8. Edit any necessary files with whichever editor you prefer.
-9. Commit your changes:
-	- `git add --all`
-	- `git commit -m "Some informative message your changes"`
-	- `git push origin feature/<name>` or just `git push`
-10. To test your code, you may merge them into the `stage` branch. These changes will be automatically reflected on our [staging server](http://brown-apis-staging.herokuapp.com/). You can merge changes from the develop branch into the staging branch with:
+5. Create a new branch for your changes. For example (while on the master branch):
+	- `git checkout -b <descriptive-branch-name>`
+6. Make any changes you want to make.
+7. Commit your changes, push them to `origin/<branch-name>`, and open a new pull request.
+8. To test your code, you may merge them into the `stage` branch. These changes will be automatically reflected on our [staging server](http://brown-apis-staging.herokuapp.com/). You can merge changes from the develop branch into the staging branch with:
 	- `git checkout stage`
-	- `git merge --no-ff feature/<name>`
-	- Type a very brief explanation of the merge (if you can't figure out how, lookup 'Vim' online)
+	- `git fetch origin`
+	- `git reset --hard origin/master`
+	- `git rebase -i <your-branch-name>`
 	- `git push`
-11. Deactivate the virtual environment when you're finished developing:
-	- `deactivate`
+	- Note: This won't work if multiple developers are doing this at the same time.
+9. You're code will be merged into `master` once your pull request is accepted.
 
 How to Manually Run Scripts
 ---------------------------
