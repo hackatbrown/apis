@@ -1,6 +1,5 @@
 import unittest
 import requests
-import sys
 
 base = "http://localhost:5000/academic"
 
@@ -10,7 +9,7 @@ class TestNonConflictingEndpoint(unittest.TestCase):
     def test_non_conflicting(self):
         # Test for time collisions
         mycourse = 'CSCI1670-S01'
-        r = requests.get(base+"/courses/"+mycourse)
+        r = requests.get(base + "/courses/" + mycourse)
         data = r.json()
         mymeetings = data['meeting']
 
@@ -30,7 +29,7 @@ class TestNonConflictingEndpoint(unittest.TestCase):
             return True
 
         check_pages(self, check_course, requests.get(
-            base+"/non-conflicting", params={'numbers': mycourse}))
+            base + "/non-conflicting", params={'numbers': mycourse}))
 
 
 class TestPagination(unittest.TestCase):
@@ -38,7 +37,7 @@ class TestPagination(unittest.TestCase):
     def test_limit_constraint(self):
         ''' Makes sure we don't go over limit '''
         value = 4
-        r = requests.get(base+"/departments/CSCI", params={"limit": value})
+        r = requests.get(base + "/departments/CSCI", params={"limit": value})
         data = r.json()
         while True:
             self.assertTrue(data['limit'] == value)
@@ -53,7 +52,7 @@ class TestPagination(unittest.TestCase):
         '''
         count = 0
         seen = set()
-        r = requests.get(base+"/courses")
+        r = requests.get(base + "/courses")
         data = r.json()
         while True:
             count += len(data['items'])
@@ -80,7 +79,7 @@ class TestSemesterFilter(unittest.TestCase):
                 return True
             return False
 
-        check_pages(self, check_course, requests.get(base+"/courses"))
+        check_pages(self, check_course, requests.get(base + "/courses"))
 
     def test_alternative_semester(self):
 
@@ -91,7 +90,7 @@ class TestSemesterFilter(unittest.TestCase):
             return False
 
         check_pages(self, check_course, requests.get(
-            base+'/courses',
+            base + '/courses',
             params={"semester": "Summer 2016"}))
 
 
