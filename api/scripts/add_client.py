@@ -10,7 +10,6 @@ MAX_IDS_PER_STUDENT = 1
 # simplify collection name
 clients = db.clients
 
-
 def add_client_id(email, username, client_id=None):
     if email[-10:] != '@brown.edu':
         print("Invalid student email")
@@ -23,12 +22,12 @@ def add_client_id(email, username, client_id=None):
     while clients.find_one({'client_id': client_id}):
         client_id = str(uuid4())
     new_client = {
-        'client_id': client_id,
-        'username': username,
-        'client_email': email,
-        'joined': str(datetime.now()),
-        'valid': True
-    }
+                  'client_id': client_id,
+                  'username': username,
+                  'client_email': email,
+                  'joined': str(datetime.now()),
+                  'valid': True
+                 }
     clients.insert(new_client)
     return client_id
 
@@ -39,7 +38,7 @@ if __name__ == '__main__':
         print("\tusername - Required. A user who owns this client (typically a first and last name, like 'Josiah Carberry').")
         print("\tclient_id - Optional. Provide a string representation of a UUID4 client ID.")
         exit()
-
+        
     if len(argv) == 3:
         client_id = add_client_id(argv[1], argv[2])
     if len(argv) == 4:

@@ -2,7 +2,6 @@ import requests
 import json
 import collections
 
-
 class Client:
     ''' A client for interacting with Brown resources '''
 
@@ -40,12 +39,7 @@ class Client:
 
         return convert(json.loads(requests.get(url, params=options).text))
 
-
 def convert(data):
-    try:
-        basestring
-    except NameError:
-        basestring = str
     if isinstance(data, basestring):
         return str(data)
     elif isinstance(data, collections.Mapping):
@@ -57,7 +51,10 @@ def convert(data):
 
 if __name__ == '__main__':
     c = Client(client_id='test_client')
-    print("Welcome to the demo! This uses the /dining/menu endpoint to find current menus.")
+    print "Welcome to the demo! This uses the /dining/menu endpoint to find current menus."
     while True:
-        eatery = input("Eatery (or 'exit'): ")
-        print(c.get('/dining/menu', eatery=eatery))
+        eatery = raw_input("Eatery (or 'exit'): ")
+        print c.get('/dining/menu', eatery=eatery)
+
+
+

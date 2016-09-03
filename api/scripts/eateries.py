@@ -2,6 +2,7 @@ import requests
 from urllib.parse import unquote
 from bs4 import BeautifulSoup as soup
 from datetime import date, timedelta
+import time
 from api import db
 
 # simplify database names
@@ -9,8 +10,8 @@ menus = db.dining_menus
 hours = db.dining_hours
 all_foods = db.dining_all_foods
 
-
 class Eatery:
+
     # a set of meal names to ignore, because dining services will often put items that aren't meals in the spreadsheets
     food_ignore_list = set(["closed for breakfast",
                             "closed for breakfat",
@@ -81,17 +82,16 @@ class Eatery:
             Return True if successful, otherwise False
         '''
         # create separate menu docs to query and update the DB
-        menu_query = {
-            'eatery': self.name,
-            'year': year,
-            'month': month,
-            'day': day,
-            'start_hour': self.mealtimes[meal]['start']['hour'],
-            'start_minute': self.mealtimes[meal]['start']['minute'],
-            'end_hour': self.mealtimes[meal]['end']['hour'],
-            'end_minute': self.mealtimes[meal]['end']['minute'],
-            'meal': meal
-        }
+        menu_query = {'eatery': self.name, 
+                      'year': year,
+                      'month': month,
+                      'day': day,
+                      'start_hour': self.mealtimes[meal]['start']['hour'],        
+                      'start_minute': self.mealtimes[meal]['start']['minute'],     
+                      'end_hour': self.mealtimes[meal]['end']['hour'], 
+                      'end_minute': self.mealtimes[meal]['end']['minute'],
+                      'meal': meal
+                     }
         menu_full = {'food': food}
         menu_full.update(section_dict)
         menu_full.update(menu_query)
@@ -101,7 +101,7 @@ class Eatery:
         ''' Update the eatery's food list in the all_foods collection
             Return True if successful, otherwise False
         '''
-        return True if all_foods.update({'eatery': self.name}, {'$addToSet': {'food': {'$each': food}}}, upsert=True) else False
+        return True if all_foods.update({'eatery':self.name}, {'$addToSet' : {'food': {'$each': food}}}, upsert=True) else False
 
     def scrape_hours(self):
         ''' Scrape hours for this eatery
@@ -114,39 +114,39 @@ class Eatery:
             'open' and 'close' are tuples (<hour>, <minute>)
             Return the ObjectID of the hours document in the database
         '''
-        hours_doc = {
-            'eatery': self.name,
-            'year': year,
-            'month': month,
-            'day': day,
-            'open_hour': open_time[0],
-            'open_minute': open_time[1],
-            'close_hour': close_time[0],
-            'close_minute': close_time[1]
-        }
+        hours_doc = {'eatery': self.name,
+                     'year': year,
+                     'month': month,
+                     'day': day,
+                     'open_hour': open_time[0],
+                     'open_minute': open_time[1],
+                     'close_hour': close_time[0],
+                     'close_minute': close_time[1]
+                    }
         return True if hours.update(hours_doc, hours_doc, upsert=True) else False
 
 
+
 class Ratty(Eatery):
+
     def __init__(self):
         self.name = 'ratty'
         self.eatery_page = "refectory.php"
-        self.mealtimes = {
-            'breakfast': {'start': {'hour': 7, 'minute': 30},
-                          'end': {'hour': 11, 'minute': 00}},
-            'brunch': {'start': {'hour': 10, 'minute': 30},
-                       'end': {'hour': 16, 'minute': 00}},
-            'lunch': {'start': {'hour': 11, 'minute': 00},
-                      'end': {'hour': 16, 'minute': 00}},
-            'dinner': {'start': {'hour': 16, 'minute': 00},
-                       'end': {'hour': 19, 'minute': 30}}
-        }
+        self.mealtimes = {'breakfast': {'start': {'hour':7, 'minute':30},
+                                          'end': {'hour':11, 'minute':00}},
+                          'brunch':    {'start': {'hour':10, 'minute':30},
+                                          'end': {'hour':16, 'minute':00}},
+                          'lunch':     {'start': {'hour':11, 'minute':00},
+                                          'end': {'hour':16, 'minute':00}},
+                          'dinner':    {'start': {'hour':16, 'minute':00},
+                                          'end': {'hour':19, 'minute':30}}
+                         }
 
     def find_available_days_and_meals(self):
         ''' see description in superclass (Eatery) '''
         html = get_html(self.base_url + self.eatery_page)
         parsed = soup(html, 'html5lib')
-        table = parsed.find('table', {'class': 'lines'})
+        table  = parsed.find('table', {'class':'lines'})
         rows = table.find_all('tr')[1:]
         days = [str(unquote(r.find_all('td')[1].text)).lower() for r in rows]
         days_meals = {}
@@ -170,7 +170,7 @@ class Ratty(Eatery):
             for day in ordered_days:
                 for meal in days_meals[day]:
                     import time
-                    time.sleep(1)  # delays for 1 second (BDS rate limits their site)
+                    time.sleep(1) # delays for 1 second (BDS rate limits their site)
                     try:
                         print(meal, "for", day, menu_date, "->", self.scrape_menu(menu_date, day, meal))
                         num_menus += 1
@@ -190,39 +190,39 @@ class Ratty(Eatery):
         # start at the main page for the Ratty
         main_html = get_html(self.base_url + self.eatery_page)
         main_parsed = soup(main_html, 'html5lib')  # the Ratty website has errors, so the default parser fails -> use html5lib instead
-
+        
         # Navigate to the specified day
-        menus_url = main_parsed.find('table', {'class': 'lines'}).find('a', text=day.title())['href']
+        menus_url = main_parsed.find('table', {'class':'lines'}).find('a', text=day.title())['href']
         menus_html = get_html(self.base_url + menus_url)
         menus_parsed = soup(menus_html, 'html5lib')
 
         # Convert 'brunch' to 'lunch' in order to navigate the HTML correctly
         meal_query = 'lunch' if meal == 'brunch' else meal
-
+        
         # Get the table for the specified meal
-        meal_url = menus_parsed.find('iframe', {'id': meal_query.title()})['src']
+        meal_url = menus_parsed.find('iframe', {'id':meal_query.title()})['src']
         meal_html = get_html(meal_url)
         meal_parsed = soup(meal_html, 'html5lib')
 
-        #  Scrape the table into a dict of sections (Chef's Corner, Bistro, etc)
-        table = meal_parsed.find('table', {'id': 'tblMain'})
-        if table is None:
-            table = meal_parsed.find('table', {'class': 'waffle'})
+        # Scrape the table into a dict of sections (Chef's Corner, Bistro, etc)
+        table = meal_parsed.find('table', {'id':'tblMain'})
+        if table == None:
+            table = meal_parsed.find('table', {'class':'waffle'})
         rows = table.find_all('tr')[1:]
         cols = [unquote(col.text).lower() for col in rows[0].find_all('td')]
-        data = {col: [] for col in cols}
+        data = {col:[] for col in cols}
         for row in rows[1:-1]:
             row_cols = row.find_all('td')
             for ix, c in enumerate(row_cols):
                 if c.text and not c.text.lower().strip() in self.food_ignore_list:
                         data[cols[ix]].append(c.text.lower().strip())
-        data['daily sidebars'] = [col.text.lower().strip() for col in rows[-1].findAll('td')
-                                  if col.text and col.text.lower().strip() not in self.food_ignore_list]
+        data['daily sidebars'] = [col.text.lower().strip() for col in rows[-1].findAll('td') \
+                        if col.text and col.text.lower().strip() not in self.food_ignore_list]
 
         # For now, convert the dict into a single list of food items before adding to the DB
-        flat_data = [d for d in flatten(data) if d not in self.food_ignore_list]
+        flat_data = [d for d in flatten(data) if not d in self.food_ignore_list]
         return self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, flat_data, data) and \
-            self.update_all_foods_in_db(flat_data)
+               self.update_all_foods_in_db(flat_data)
 
     def scrape_hours(self):
         ''' see description in superclass (Eatery) '''
@@ -233,7 +233,7 @@ class Ratty(Eatery):
         if today > date(2016, 5, 31):
             print("ERROR: hours scraper is out of date")
             return num_hours
-        while today < date(2016, 5, 31):
+        while today < date(2016, 5,31):
             if today.month == 3 and today.day >= 26:
                 # spring break
                 pass
@@ -264,25 +264,24 @@ class VDub(Eatery):
     def __init__(self):
         self.name = 'vdub'
         self.eatery_page = "verneywoolley_menu.php"
-        self.mealtimes = {
-            'breakfast': {'start': {'hour': 7, 'minute': 30},
-                          'end': {'hour': 9, 'minute': 30}},
-            'continental breakfast': {'start': {'hour': 9, 'minute': 30},
-                                      'end': {'hour': 11, 'minute': 00}},
-            'lunch': {'start': {'hour': 11, 'minute': 00},
-                      'end': {'hour': 14, 'minute': 00}},
-            'dinner': {'start': {'hour': 16, 'minute': 30},
-                       'end': {'hour': 19, 'minute': 30}}
-        }
+        self.mealtimes = {'breakfast':              {'start': {'hour':7, 'minute':30},
+                                                       'end': {'hour':9, 'minute':30}},
+                          'continental breakfast':  {'start': {'hour':9, 'minute':30},
+                                                       'end': {'hour':11, 'minute':00}},
+                          'lunch':                  {'start': {'hour':11, 'minute':00},
+                                                       'end': {'hour':14, 'minute':00}},
+                          'dinner':                 {'start': {'hour':16, 'minute':30},
+                                                       'end': {'hour':19, 'minute':30}}
+                         }
 
     def find_available_days_and_meals(self):
         ''' see description in superclass (Eatery) '''
         html = get_html(self.base_url + self.eatery_page)
         parsed_html = soup(html, 'html5lib')
-
+        
         # search for all 'h4' tags on the page -- the VDub staff uses these as headers for the days available
         available_days = [h4.text.split()[0].lower() for h4 in parsed_html.find_all("h4")]
-
+        
         # the VDub serves breakfast, continental breakfast, lunch, and dinner every weekday
         days_meals = {}
         for day in available_days:
@@ -306,7 +305,7 @@ class VDub(Eatery):
             for n, day in enumerate(ordered_days):
                 # menu_ids is a list [('breakfast', _id), ('continental breakfast', _id), ...]
                 import time
-                time.sleep(1)  # delays for 1 second (BDS rate limits their site)
+                time.sleep(1) # delays for 1 second (BDS rate limits their site)
                 try:
                     menu_ids = self.scrape_menu(menu_date, day, days_meals[day], n)
                     for menu_id in menu_ids:
@@ -324,10 +323,10 @@ class VDub(Eatery):
         return num_menus
 
     def scrape_menu(self, menu_date, day, meals, nth_day):
-        ''' see description in superclass (Eatery)
+        ''' see description in superclass (Eatery) 
             nth_day - allows scraper to determine which table to use on VDub website
         '''
-        # start at the main page for the VDub
+        # start at the main page for the VDub 
         main_html = get_html(self.base_url + self.eatery_page)
         main_parsed = soup(main_html, 'html5lib')  # the VDub website has errors, so the default parser fails -> use html5lib instead
 
@@ -340,18 +339,18 @@ class VDub(Eatery):
         meal_parsed = soup(menu_html, 'html5lib')
 
         # scrape the table into a dict of sections (Chef's Corner, Bistro, etc)
-        table = meal_parsed.find('table', {'id': 'tblMain'})
-        if table is None:
-            table = meal_parsed.find('table', {'class': 'waffle'})
+        table = meal_parsed.find('table', {'id':'tblMain'})
+        if table == None:
+            table = meal_parsed.find('table', {'class':'waffle'})
         rows = table.find_all('tr')[1:]
         cols = [unquote(col.text).lower() for col in rows[0].find_all('td')]
-        data = {col: [] for col in cols}
+        data = {col:[] for col in cols}
         for row in rows[1:-1]:
             row_cols = row.find_all('td')
             for ix, c in enumerate(row_cols):
                 if c.text:
                     data[cols[ix]].append(c.text.lower().strip())
-
+        
         # continental breakfast doesn't have its own menu -- copy breakfast data
         data['continental breakfast'] = data['breakfast']
 
@@ -360,15 +359,16 @@ class VDub(Eatery):
         # add each meal's menu to DB
         for meal in meals:
             section_dict = {}
-            section_dict['main menu'] = [d for d in data[meal] if d not in self.food_ignore_list]
-            section_dict['daily sidebars'] = [d for d in data['daily sidebars'] if d not in self.food_ignore_list]
-            flat_data = list({d.lower().strip() for d in data[meal] if d not in self.food_ignore_list for ds in data['daily sidebars']
-                              if ds not in self.food_ignore_list})
+            section_dict['main menu'] = [d for d in data[meal] if not d in self.food_ignore_list]
+            section_dict['daily sidebars'] = [d for d in data['daily sidebars'] if not d in self.food_ignore_list]
+            flat_data = list({d.lower().strip() for d in data[meal] if not d in self.food_ignore_list for ds in data['daily sidebars'] \
+                         if not ds in self.food_ignore_list})
             res_add = self.add_menu_to_db(menu_date.year, menu_date.month, menu_date.day, meal, flat_data, section_dict)
             res_update = self.update_all_foods_in_db(flat_data)
             results.append((meal, res_add and res_update))
 
         return results
+
 
     def scrape_hours(self):
         ''' see description in superclass (Eatery) '''
@@ -402,13 +402,14 @@ class VDub(Eatery):
         return num_hours
 
 
+
 class Jos(Eatery):
 
     def __init__(self):
         self.name = "jos"
         self.eatery_page = "josiahs.php"
-        self.mealtimes = {'dinner': {'start': {'hour': 18, 'minute': 00},
-                                     'end': {'hour': 26, 'minute': 00}}}
+        self.mealtimes = {'dinner':   {'start': {'hour':18, 'minute':00},
+                                       'end': {'hour':26, 'minute':00}}}
 
     def find_available_days_and_meals(self):
         return None
@@ -417,16 +418,16 @@ class Jos(Eatery):
         return None
 
     def scrape_hours(self):
-        # TODO: Implement Jos scraping
+        #TODO: Implement Jos scraping
         return None
 
-# Helper methods
 
+
+# Helper methods
 
 def get_html(url):
     ''' The HTML data for a given URL '''
     return requests.get(url).text
-
 
 def flatten(dct):
     ''' Flatten a dictionary's values into a list '''
@@ -434,3 +435,5 @@ def flatten(dct):
     for val in dct.values():
         result += val
     return list(set(result))
+
+

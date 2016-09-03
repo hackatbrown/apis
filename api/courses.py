@@ -1,10 +1,12 @@
 from flask import request, jsonify
 from api import app, make_json_error, support_jsonp
-from api.meta import require_client_id
+from api.meta import is_valid_client, require_client_id, log_client, INVALID_CLIENT_MSG
 from mongoengine import connect
 import json
 import urllib
-from api.scripts.coursemodels import BannerCourse, NonconflictEntry
+from collections import defaultdict
+import random
+from api.scripts.coursemodels import *
 import bson
 from datetime import date
 import os
@@ -14,7 +16,7 @@ PREFIX = "/academic"
 PAGINATION_LIMIT = 10
 PAGINATION_MAX = 42
 
-# TODO: Maybe there's some way to use the same connection as given by 'db'.
+#TODO: Maybe there's some way to use the same connection as given by 'db'.
 
 if 'MONGO_URI' in app.config:
     connect('brown', host=app.config['MONGO_URI'])
@@ -33,7 +35,7 @@ def courses_index():
     or
     Returns the sections ids specified
     '''
-    arg_numbers = request.args.get('numbers', None)
+    arg_numbers = request.args.get('numbers',None)
     if arg_numbers is not None:
         numbers = []
         full_numbers = []
@@ -117,9 +119,9 @@ def schedule_time():
     time = int(request.args.get('time', '-1'))
     if time < 0:
         return make_json_error("Invalid or Missing parameter: time")
-    query_args = {'meeting.day_of_week': day,
-                  'meeting.start_time': {'$lte': time},
-                  'meeting.end_time': {'$gte': time}}
+    query_args = {'meeting.day_of_week':day,
+            "meeting.start_time": {'$lte': time},
+            "meeting.end_time": {'$gte': time}}
     return jsonify(paginate(filter_semester(query_args), params={'day': day, 'time': time}, raw=True))
 
 
@@ -134,16 +136,21 @@ def non_conflicting():
         for course_number in courses:
             res = BannerCourse.objects(full_number=course_number)
             if len(res) <= 0:
-                return make_json_error("Invalid course section/lab/conference:" + course_number)
+                return make_json_error(\
+                    "Invalid course section/lab/conference:"\
+                    +course_number)
             course = res.first().id
             non_conflicting_list = NonconflictEntry.objects(course_id=course)
             if len(non_conflicting_list) <= 0:
-                return make_json_error("Error with course section/lab/conference:" + course_number)
+                return make_json_error(\
+                        "Error with course section/lab/conference:"\
+                        +course_number)
             non_conflicting_list = non_conflicting_list.first().non_conflicting
             if available_set is None:
                 available_set = set(non_conflicting_list)
             else:
-                available_set = set.intersection(available_set, non_conflicting_list)
+                available_set = set.intersection(available_set,
+                        non_conflicting_list)
         query_args = {"id__in": list(available_set)}
     else:
         # Slower method, a couple of seconds
@@ -185,20 +192,19 @@ def paginate(query, params=None, raw=False):
         if '_id' not in query:
             query['_id'] = {}
         query['_id']['$gt'] = bson.objectid.ObjectId(offset)
-    res = list(BannerCourse.objects(__raw__=query).order_by('_id')[:limit + 1])
+    res = list(BannerCourse.objects(__raw__=query).order_by('_id')[:limit+1])
     next_url = "null"
-    if len(res) == limit + 1:
+    if len(res) == limit+1:
         next_url = request.base_url + "?" +\
             urllib.parse.urlencode({"limit": limit,
                                     "offset": res[limit - 1].id})
         client_id = request.args.get('client_id')
         next_url = next_url + "&" + urllib.parse.urlencode({"client_id": client_id})
         if params is not None:
-            next_url = next_url + "&" + urllib.parse.urlencode(params)
+            next_url = next_url+"&"+urllib.parse.urlencode(params)
         res.pop()
 
-    if offset is None:
-        offset = "null"
+    if offset is None: offset = "null"
     ans = {"href": request.url,
            "items": [json.loads(elm.to_json()) for elm in res],
            "limit": limit,

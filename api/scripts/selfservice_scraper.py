@@ -106,7 +106,7 @@ def generate_semesters(n):
     semesters = []
     semesters.append(gen_current_semester())
     for i in range(1, n):
-        semesters.append(gen_next_semester(semesters[i - 1]))
+        semesters.append(gen_next_semester(semesters[i-1]))
     return semesters
 
 Semesters = generate_semesters(3)
@@ -698,10 +698,10 @@ def main():
         worker.start()
 
     for semester in Semesters:
-        print("Scraping: " + semester + "...", end="", flush=True,
+        print("Scraping: "+semester + "...", end="", flush=True,
               file=sys.stderr)
         if args.to_files is not None:
-            os.makedirs(path + semester, exist_ok=True)
+            os.makedirs(path+semester, exist_ok=True)
         for department in Departments:
             for course in gen_courses(s, semester, department):
                 queue.put((path, semester, department, course))
