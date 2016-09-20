@@ -43,6 +43,9 @@ You'll need the latest version of Python 3, along with `virtualenv` and `pip`. G
 	- `git push --force`
 	- Note: This won't work if multiple developers are doing this at the same time.
 9. You're code will be merged into `master` once your pull request is accepted.
+   Your code will be run against flake8, a tool which will check for coding
+   style and common mistakes. You can run `flake8` locally from within the virtual
+   environment. 
 
 #### How to Run Scripts
 

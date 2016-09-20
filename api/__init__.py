@@ -4,11 +4,6 @@ from werkzeug.exceptions import HTTPException
 from functools import wraps
 import pymongo
 import os
-import api.meta
-import api.dining
-import api.wifi
-import api.laundry
-import api.courses
 
 
 def make_json_error(ex):
@@ -114,5 +109,16 @@ def requires_auth(f):
         return f(*args, **kwargs)
     return decorated
 
+import api.meta
+import api.dining
+import api.wifi
+import api.laundry
+import api.courses
+
+import api.meta
+import api.dining
+import api.wifi
+import api.laundry
+import api.courses
 
 __all__ = ['api', ]
