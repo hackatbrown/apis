@@ -28,7 +28,6 @@ def support_jsonp(f):
     def decorated_function(*args, **kwargs):
         callback = request.args.get('callback', False)
         if callback:
-            from json import dumps
             content = callback.encode("utf-8") + b'(' + f(*args, **kwargs).data + b')'
             return current_app.response_class(
                 content, mimetype='application/javascript')
@@ -79,6 +78,7 @@ else:
 
 # BASIC AUTH
 
+
 def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
@@ -91,12 +91,14 @@ def check_auth(username, password):
         print("The dashboard password's environment variable was not found.")
     return username == 'admin' and password == correct_password
 
+
 def authenticate():
     """Sends a 401 response that enables basic auth"""
     return Response(
-    'Could not verify your access level for that URL.\n'
-    'You have to login with proper credentials', 401,
-    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+        'Could not verify your access level for that URL.\n'
+        'You have to login with proper credentials', 401,
+        {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
 
 def requires_auth(f):
     @wraps(f)
@@ -107,6 +109,11 @@ def requires_auth(f):
         return f(*args, **kwargs)
     return decorated
 
+import api.meta
+import api.dining
+import api.wifi
+import api.laundry
+import api.courses
 
 import api.meta
 import api.dining

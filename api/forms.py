@@ -7,12 +7,13 @@ from api.scripts.email_handler import send_id_email
 from api.scripts.add_documentation import add_documentation
 from api.scripts.add_member import add_member
 
+
 class SignupForm(Form):
     name = StringField('Name', validators=[DataRequired()])
     email = EmailField('Email', validators=[DataRequired(), Email()])
-    
+
     def validate(self):
-        if Form.validate(self): 
+        if Form.validate(self):
             client_id = add_client_id(self.email.data, self.name.data)
             if client_id:
                 send_id_email(self.email.data, self.name.data, client_id)
@@ -23,6 +24,7 @@ class SignupForm(Form):
         else:
             return False
 
+
 class DocumentationForm(Form):
     name = StringField('Name', validators=[DataRequired()])
     urlname = StringField('URL Name', validators=[DataRequired()])
@@ -30,9 +32,9 @@ class DocumentationForm(Form):
     contents = TextAreaField('Contents', validators=[DataRequired()])
 
     def validate(self):
-        if Form.validate(self): 
+        if Form.validate(self):
             documentation = add_documentation(self.contents.data,
-                    self.name.data, self.urlname.data, self.imageurl.data)
+                                              self.name.data, self.urlname.data, self.imageurl.data)
             if documentation:
                 return True
             else:
@@ -41,15 +43,16 @@ class DocumentationForm(Form):
         else:
             return False
 
+
 class MemberForm(Form):
     name = StringField('Name', validators=[DataRequired()])
     imageurl = StringField('Image URL', validators=[DataRequired()])
     about = TextAreaField('Contents', validators=[DataRequired()])
 
     def validate(self):
-        if Form.validate(self): 
+        if Form.validate(self):
             member = add_member(self.about.data,
-                    self.name.data, self.imageurl.data)
+                                self.name.data, self.imageurl.data)
             if member:
                 return True
             else:
