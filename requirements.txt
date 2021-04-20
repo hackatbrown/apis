@@ -18,5 +18,5 @@ requests==2.7.0
 six==1.9.0
 urllib3==1.12
 webassets==0.11.1
-Werkzeug==0.10.4
+Werkzeug==0.15.3
 WTForms==2.1
